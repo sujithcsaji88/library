@@ -119,10 +119,18 @@ var Grid = React.memo(function (props) {
       data = props.data,
       globalSearchLogic = props.globalSearchLogic,
       updateCellData = props.updateCellData,
-      updateRowData = props.updateRowData,
       selectBulkData = props.selectBulkData,
       calculateRowHeight = props.calculateRowHeight,
       renderExpandedContent = props.renderExpandedContent;
+
+  if (!(data && data.length) || !(columns && columns.length)) {
+    return /*#__PURE__*/React__default.createElement("h2", {
+      style: {
+        marginTop: "50px",
+        textAlign: "center"
+      }
+    }, "Invalid Data or Columns Configuration");
+  }
 
   var _useState = React.useState(false),
       isFilterOpen = _useState[0],
@@ -143,9 +151,12 @@ var Grid = React.memo(function (props) {
     data: data,
     defaultColumn: defaultColumn,
     updateCellData: updateCellData,
-    updateRowData: updateRowData,
     globalFilter: function globalFilter(rows, columns, filterValue) {
-      return globalSearchLogic(rows, columns, filterValue);
+      if (globalSearchLogic && typeof globalSearchLogic === "function") {
+        return globalSearchLogic(rows, columns, filterValue);
+      } else {
+        return rows;
+      }
     }
   }, reactTable.useFilters, reactTable.useGlobalFilter, reactTable.useSortBy, reactTable.useRowSelect, reactTable.useFlexLayout, reactTable.useResizeColumns, reactTable.useExpanded, function (hooks) {
     hooks.allColumns.push(function (columns) {
@@ -194,11 +205,13 @@ var Grid = React.memo(function (props) {
       }), cell.render("Cell"));
     })), row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
       className: "expand"
-    }, renderExpandedContent(row)) : null);
+    }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
   }, [prepareRow, rows, renderExpandedContent]);
 
   var bulkSelector = function bulkSelector() {
-    selectBulkData(selectedFlatRows);
+    if (selectBulkData) {
+      selectBulkData(selectedFlatRows);
+    }
   };
 
   React.useEffect(function () {
@@ -233,7 +246,7 @@ var Grid = React.memo(function (props) {
   })))), /*#__PURE__*/React__default.createElement("div", {
     className: "tableContainer table-outer",
     style: {
-      height: gridHeight
+      height: gridHeight ? gridHeight : "50vh"
     }
   }, /*#__PURE__*/React__default.createElement(AutoSizer, {
     disableWidth: true,
@@ -270,7 +283,11 @@ var Grid = React.memo(function (props) {
       height: height,
       itemCount: rows.length,
       itemSize: function itemSize(index) {
-        return calculateRowHeight(rows, index, headerGroups);
+        if (calculateRowHeight && typeof calculateRowHeight === "function") {
+          return calculateRowHeight(rows, index, headerGroups);
+        } else {
+          return 70;
+        }
       },
       overscanCount: 20
     }, RenderRow)));

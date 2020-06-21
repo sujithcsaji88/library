@@ -78,11 +78,20 @@ const Grid = memo(props => {
     data,
     globalSearchLogic,
     updateCellData,
-    updateRowData,
     selectBulkData,
     calculateRowHeight,
     renderExpandedContent
   } = props;
+
+  if (!(data && data.length) || !(columns && columns.length)) {
+    return /*#__PURE__*/React.createElement("h2", {
+      style: {
+        marginTop: "50px",
+        textAlign: "center"
+      }
+    }, "Invalid Data or Columns Configuration");
+  }
+
   const [isFilterOpen, setFilterOpen] = useState(false);
 
   const toggleColumnFilter = () => {
@@ -106,8 +115,13 @@ const Grid = memo(props => {
     data,
     defaultColumn,
     updateCellData,
-    updateRowData,
-    globalFilter: (rows, columns, filterValue) => globalSearchLogic(rows, columns, filterValue)
+    globalFilter: (rows, columns, filterValue) => {
+      if (globalSearchLogic && typeof globalSearchLogic === "function") {
+        return globalSearchLogic(rows, columns, filterValue);
+      } else {
+        return rows;
+      }
+    }
   }, useFilters, useGlobalFilter, useSortBy, useRowSelect, useFlexLayout, useResizeColumns, useExpanded, hooks => {
     hooks.allColumns.push(columns => [{
       id: "selection",
@@ -143,11 +157,13 @@ const Grid = memo(props => {
       }), cell.render("Cell"));
     })), row.isExpanded ? /*#__PURE__*/React.createElement("div", {
       className: "expand"
-    }, renderExpandedContent(row)) : null);
+    }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
   }, [prepareRow, rows, renderExpandedContent]);
 
   const bulkSelector = () => {
-    selectBulkData(selectedFlatRows);
+    if (selectBulkData) {
+      selectBulkData(selectedFlatRows);
+    }
   };
 
   useEffect(() => {
@@ -182,7 +198,7 @@ const Grid = memo(props => {
   })))), /*#__PURE__*/React.createElement("div", {
     className: "tableContainer table-outer",
     style: {
-      height: gridHeight
+      height: gridHeight ? gridHeight : "50vh"
     }
   }, /*#__PURE__*/React.createElement(AutoSizer, {
     disableWidth: true,
@@ -214,7 +230,13 @@ const Grid = memo(props => {
     className: "table-list",
     height: height,
     itemCount: rows.length,
-    itemSize: index => calculateRowHeight(rows, index, headerGroups),
+    itemSize: index => {
+      if (calculateRowHeight && typeof calculateRowHeight === "function") {
+        return calculateRowHeight(rows, index, headerGroups);
+      } else {
+        return 70;
+      }
+    },
     overscanCount: 20
   }, RenderRow))))));
 });
