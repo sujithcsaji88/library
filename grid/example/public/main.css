@@ -1,0 +1,530 @@
+/*  Fonts
+*  ------------------------------------------------------ */
+@font-face {
+    font-family: "Montserrat Regular";
+    font-style: normal;
+    font-weight: normal;
+    src: url("http://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2") format("woff");
+}
+/*  Global Styles
+*  ------------------------------------------------------ */
+htm,
+body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 12px;
+    color: #566a81;
+    font-family: "Montserrat Regular", Helvetica, Arial, sans-serif;
+    transition: all 0.11s ease 0s;
+    -webkit-overflow-scrolling: touch !important;
+    height: 100% !important;
+}
+
+ul,
+li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-weight: 700;
+}
+
+a {
+    transition: all 0.3s ease 0s;
+    color: #566a81;
+}
+a:hover {
+    cursor: pointer;
+}
+
+*:focus {
+    outline: none;
+}
+
+i {
+    font-style: normal;
+}
+
+::placeholder {
+    color: #bbb;
+}
+
+::-ms-input-placeholder {
+    color: #bbb;
+}
+
+::-ms-input-placeholder {
+    color: #bbb;
+}
+
+/*  Button Styles
+*  ------------------------------------------------------ */
+/*  Form Styles
+*  ------------------------------------------------------ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: none;
+    background-color: #fff !important;
+}
+
+.select-wrap {
+    position: relative;
+}
+
+.txt-wrap {
+    position: relative;
+}
+
+.txt {
+    height: 25px;
+    border-radius: 3px;
+    padding: 1px 0 0 3px;
+    font-size: 12px;
+    color: #000;
+    border: #cfd0d0 solid 1px;
+}
+
+.check-wrap {
+    width: 13px;
+    height: 13px;
+    position: relative;
+}
+.check-wrap > * {
+    position: absolute;
+}
+.check-wrap .checkbox-custom {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translatex(-50%) translatey(-50%);
+    display: block;
+    cursor: pointer;
+    width: 13px;
+    height: 13px;
+}
+.check-wrap .checkbox-custom,
+.check-wrap .checkbox-custom-label {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    cursor: pointer;
+}
+.check-wrap .checkbox-custom-label {
+    position: relative;
+}
+.check-wrap .checkbox-custom + .checkbox-custom-label:before {
+    content: "";
+    background: #fff;
+    border: 2px solid #969cb2;
+    display: inline-block;
+    vertical-align: middle;
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    margin-right: 0;
+    text-align: center;
+}
+.check-wrap .checkbox-custom:checked + .checkbox-custom-label:before {
+    content: "\f00c";
+    font-family: "FontAwesome";
+    color: #797979;
+    font-size: 12px;
+    line-height: 12px;
+    padding-left: 0;
+    border-width: 2px;
+    background: #fff;
+}
+
+/*  CLEARFIX
+ *  ------------------------------------------------------ */
+.clearfix {
+    clear: both;
+    display: block;
+}
+
+/*  General Styles
+ *  ------------------------------------------------------ */
+.table-outer .table {
+    border-top: 1px solid #d2d5de;
+}
+.table-outer .table .table-row {
+    border-bottom: 1px solid #d2d5de;
+    flex-wrap: wrap;
+}
+.table-outer .table .table-row:last-child {
+    margin-bottom: 150px;
+}
+.table-outer .table .table-row .table-row-wrap {
+    width: 100%;
+    display: flex;
+}
+.table-outer .table .table-row .table-cell {
+    padding: 0.8em 1.2em;
+    position: relative;
+}
+.table-outer .table .table-row .table-cell.column-heading {
+    background: #f4f7f9;
+    color: #204d6f;
+    vertical-align: top;
+    font-weight: bold;
+}
+.table-outer .table .table-row .table-cell.column-heading:hover {
+    border-left: 1px solid #d2d5de;
+    border-right: 1px solid #d2d5de;
+}
+.table-outer .table .table-row .table-cell .action {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    margin-right: 5px;
+}
+.table-outer .table .table-row .table-cell .action .expander .fa {
+    font-size: 22px;
+    color: #999999;
+}
+.table-outer .table .table-row .expand {
+    width: 100%;
+    padding: 0 10px 0 100px;
+}
+.tableContainer .table .th .resizer,
+.tableContainer .table .td .resizer {
+    right: -5px;
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    touch-action: none;
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer */
+    -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+    -webkit-user-select: none; /* Chrome, Safari, and Opera */
+    -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+}
+.table-cell.column-heading.th i.fa {
+    margin-left: 5px;
+}
+.table-outer .table .table-row .table-cell.column-heading .txt-wrap {
+    display: none;
+    margin-top: 5px;
+}
+.table-outer .table .table-row .table-cell.column-heading .txt-wrap.open {
+    display: block;
+}
+.table-outer .table .table-row .table-cell.column-heading .txt-wrap .txt {
+    width: 100%;
+}
+.table-outer .table .table-row .table-cell .table-cell--heading {
+    display: none;
+}
+.table-outer .table .table-row .table-cell .table-cell--content a {
+    font-size: 2em;
+    color: #333;
+}
+.table-outer .table .table-row .table-cell .table-cell--content .webinar-date {
+    font-weight: 700;
+}
+.table-outer .table .table-row .table-cell .content .content-edit {
+    display: none;
+    position: absolute;
+    z-index: 9;
+    background: #fff;
+    border: #eee solid 1px;
+    top: 5px;
+    padding: 5px;
+    border-radius: 4px;
+    width: auto;
+    white-space: nowrap;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.35);
+}
+.table-outer .table .table-row .table-cell .content .content-edit.open {
+    display: flex;
+}
+.table-outer .table .table-row .table-cell .content .content-edit input,
+.table-outer .table .table-row .table-cell .content .content-edit select {
+    display: inline-block;
+    height: 23px;
+    width: 120px;
+    border-radius: 3px;
+    border: #ccc solid 1px;
+    padding: 2px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+.table-outer .table .table-row .table-cell .content .content-edit .ok {
+    width: 27px;
+    height: 27px;
+    background: #169bd5;
+    border: #169bd5 solid 1px;
+    border-radius: 4px;
+    margin: 0 5px;
+    position: relative;
+    cursor: pointer;
+}
+.table-outer .table .table-row .table-cell .content .content-edit .ok:before {
+    font-family: FontAwesome;
+    position: absolute;
+    content: "\f00c";
+    font-size: 18px;
+    left: 3px;
+    top: 3px;
+    color: #fff;
+}
+.table-outer .table .table-row .table-cell .content .content-edit .cancel {
+    width: 27px;
+    height: 27px;
+    background: #fff;
+    border: #d3d3d3 solid 1px;
+    border-radius: 4px;
+    margin: 0 5px;
+    position: relative;
+    cursor: pointer;
+}
+.table-outer .table .table-row .table-cell .content .content-edit .cancel:before {
+    font-family: FontAwesome;
+    position: absolute;
+    content: "\f00d";
+    font-size: 18px;
+    left: 5px;
+    top: 3px;
+    color: #e9e9e9;
+}
+.table-outer .table .flight-details strong {
+    display: block;
+    color: #3171b2;
+}
+.table-outer .table .segment-details {
+    display: flex;
+}
+.table-outer .table .segment-details i {
+    margin: 0 7px;
+}
+.table-outer .table .segment-details img {
+    transform: rotate(45deg);
+    height: 8px;
+    width: 8px;
+    vertical-align: inherit;
+}
+.table-outer .table .segment-details select ::-ms-expand {
+    display: none;
+}
+.table-outer .table .segment-details select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    width: 50px;
+}
+.table-outer .table .segment-details select:hover {
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
+    margin: 0;
+    padding: 0;
+}
+.details-wrap ul li {
+    display: inline;
+    padding-right: 5px;
+    margin-right: 5px;
+    position: relative;
+}
+.details-wrap ul li:last-child {
+    padding-right: 0;
+    margin-right: 0;
+}
+.details-wrap ul li.divider {
+    color: #dadfe9;
+}
+.details-wrap ul li span {
+    color: #566a81;
+}
+.details-wrap ul li strong {
+    color: #ff6666;
+}
+.table-outer .table .weight-details > strong {
+    font-size: 15px;
+    color: #40bf5c;
+}
+.table-outer .table .weight-details span {
+    display: block;
+}
+.table-outer .table .weight-details span strong {
+    color: #566a81;
+}
+.table-outer .table .uld-details {
+    display: flex;
+}
+.table-outer .table .uld-details ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+.table-outer .table .uld-details ul li {
+    margin-bottom: 5px;
+    width: 50%;
+}
+.table-outer .table .uld-details strong {
+    color: #566a81;
+    font-weight: normal;
+    margin-left: 7px;
+}
+.table-outer .table .revenue-details span {
+    display: block;
+    color: #566a81;
+}
+.table-outer .table .revenue-details span.large {
+    font-size: 15px;
+}
+.table-outer .table .sr-details {
+    color: #3171b2;
+}
+.table-outer .table .queued-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.table-outer .table .queued-details span {
+    display: block;
+}
+.table-outer .table .queued-details span strong {
+    font-weight: normal;
+    color: #566a81;
+}
+.table-outer .table .row-options-edit-wrap {
+    position: relative;
+}
+.table-outer .table .row-options-edit-wrap .icon-edit {
+    position: relative;
+    cursor: pointer;
+}
+.table-outer .table .row-options-edit-wrap .icon-edit i {
+    background: #999999;
+    width: 4px;
+    height: 4px;
+    display: block;
+    margin-bottom: 2px;
+}
+.table-outer .table .row-options-edit-wrap .row-options-edit {
+    display: none;
+    position: absolute;
+    background: #fff;
+    border-radius: 4px;
+    border: #dadada solid 1px;
+    width: 125px;
+    right: 0;
+    top: 0;
+    padding: 15px 10px;
+    margin-bottom: 40px;
+    z-index: 9;
+}
+.table-outer .table .row-options-edit-wrap .row-options-edit.open {
+    display: block;
+}
+.table-outer .table .row-options-edit-wrap .row-options-edit li {
+    margin-bottom: 13px;
+    cursor: pointer;
+}
+.table-outer .table .row-options-edit-wrap .row-options-edit li:last-child {
+    margin: 0;
+}
+.table-outer .table .row-options-edit-wrap .row-options-edit li i {
+    width: 14px;
+    display: inline-block;
+}
+.table-outer .table .row-options-edit-wrap .row-options-edit li span {
+    margin-left: 8px;
+}
+.table-outer .table .row-options-edit-wrap .row-options-edit .close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 15px;
+    color: #ccc;
+    cursor: pointer;
+}
+.table-filter {
+    background: #f9fafb;
+    display: flex;
+    padding: 20px 15px;
+    justify-content: space-between;
+}
+.table-filter .results {
+    display: flex;
+    font-size: 14px;
+    color: #26577d;
+    font-weight: bold;
+}
+.table-filter .results .showing {
+    margin-left: 5px;
+    padding-left: 5px;
+    position: relative;
+}
+.table-filter .results .showing:before {
+    content: "";
+    position: absolute;
+    height: 15px;
+    width: 1px;
+    left: 0;
+    top: 3px;
+    background: #26577d;
+}
+.table-filter .filter-utilities {
+    display: flex;
+    align-items: center;
+}
+.table-filter .filter-utilities .filter-icon {
+    margin-left: 10px;
+    border: #d8d8d8 solid 1px;
+    padding: 0 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    line-height: 1px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+}
+.table-filter .filter-utilities .txt-wrap {
+    position: relative;
+}
+.table-filter .filter-utilities .txt-wrap .txt {
+    padding-left: 23px;
+}
+.table-filter .filter-utilities .txt-wrap .fa {
+    position: absolute;
+    left: 7px;
+    top: 7px;
+}
+.cell-edit {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    color: #dadfe9;
+    display: none;
+}
+@media screen and (max-width: 1024px) {
+    .cell-edit {
+        display: block;
+        right: 0;
+    }
+}
+.table-outer .table .table-row .table-cell:hover .cell-edit {
+    display: block;
+}

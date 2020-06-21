@@ -1,9 +1,13 @@
-/* add css module styles here (optional) */
-
-._styles-module__test__3ybTi {
-  margin: 2em;
-  padding: 0.5em;
-  border: 2px solid #000;
-  font-size: 2em;
-  text-align: center;
+/*****************************************************************************
+Do not modify below styles. These are required by the table to work properly
+******************************************************************************/
+._tablestyles__table__2f0X3 ._tablestyles__thead__voDZ1 {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+._tablestyles__table__2f0X3 ._tablestyles__tbody__24-1T {
+    height: 100%;
+}
+._tablestyles__table__2f0X3 ._tablestyles__tbody__24-1T ._tablestyles__table-list__1WwxT {
+    overflow-x: hidden !important;
 }

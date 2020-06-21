@@ -1,14 +1,223 @@
-import React from 'react';
+import React, { memo, forwardRef, useState, useRef, useEffect, createRef, useMemo, useCallback } from 'react';
+import { useAsyncDebounce, useTable, useFilters, useGlobalFilter, useSortBy, useRowSelect, useFlexLayout, useResizeColumns, useExpanded } from 'react-table';
+import { VariableSizeList } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
-var styles = {"test":"_styles-module__test__3ybTi"};
+const RowSelector = memo(forwardRef(({
+  indeterminate,
+  ...rest
+}, ref) => {
+  const [checkValue, setCheckValue] = useState(indeterminate);
+  const defaultRef = useRef();
+  const resolvedRef = ref || defaultRef;
 
-const ExampleComponent = ({
-  text
-}) => {
+  const onChange = () => {
+    setCheckValue(!indeterminate);
+  };
+
+  useEffect(() => {
+    resolvedRef.current.indeterminate = indeterminate;
+  }, [resolvedRef, indeterminate]);
   return /*#__PURE__*/React.createElement("div", {
-    className: styles.test
-  }, "Example Component: ", text);
-};
+    className: "check-wrap"
+  }, /*#__PURE__*/React.createElement("input", Object.assign({
+    type: "checkbox",
+    checked: checkValue,
+    onChange: onChange,
+    ref: resolvedRef
+  }, rest)));
+}));
 
-export { ExampleComponent };
+const DefaultColumnFilter = memo(({
+  column: {
+    filterValue,
+    setFilter
+  }
+}) => {
+  return /*#__PURE__*/React.createElement("input", {
+    className: "txt",
+    value: filterValue || "",
+    onChange: e => {
+      setFilter(e.target.value || undefined);
+    },
+    placeholder: "Search"
+  });
+});
+
+const GlobalFilter = memo(({
+  globalFilter,
+  setGlobalFilter
+}) => {
+  const [value, setValue] = useState(globalFilter);
+  const onChange = useAsyncDebounce(value => {
+    setGlobalFilter(value || undefined);
+  }, 200);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "txt-wrap"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: value || "",
+    onChange: e => {
+      setValue(e.target.value);
+      onChange(e.target.value);
+    },
+    className: "txt",
+    placeholder: "Search"
+  }), /*#__PURE__*/React.createElement("i", {
+    className: "fa fa-search fa-6",
+    "aria-hidden": "true"
+  }));
+});
+
+const listRef = createRef();
+const Grid = memo(props => {
+  const {
+    title,
+    gridHeight,
+    columns,
+    data,
+    globalSearchLogic,
+    updateCellData,
+    updateRowData,
+    selectBulkData,
+    calculateRowHeight,
+    renderExpandedContent
+  } = props;
+  const [isFilterOpen, setFilterOpen] = useState(false);
+
+  const toggleColumnFilter = () => {
+    setFilterOpen(!isFilterOpen);
+  };
+
+  const defaultColumn = useMemo(() => ({
+    Filter: DefaultColumnFilter
+  }), []);
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    selectedFlatRows,
+    state,
+    setGlobalFilter
+  } = useTable({
+    columns,
+    data,
+    defaultColumn,
+    updateCellData,
+    updateRowData,
+    globalFilter: (rows, columns, filterValue) => globalSearchLogic(rows, columns, filterValue)
+  }, useFilters, useGlobalFilter, useSortBy, useRowSelect, useFlexLayout, useResizeColumns, useExpanded, hooks => {
+    hooks.allColumns.push(columns => [{
+      id: "selection",
+      disableResizing: true,
+      disableFilters: true,
+      disableSortBy: true,
+      minWidth: 35,
+      width: 35,
+      maxWidth: 35,
+      Header: ({
+        getToggleAllRowsSelectedProps
+      }) => /*#__PURE__*/React.createElement(RowSelector, getToggleAllRowsSelectedProps()),
+      Cell: ({
+        row
+      }) => /*#__PURE__*/React.createElement(RowSelector, row.getToggleRowSelectedProps())
+    }, ...columns]);
+  });
+  const RenderRow = useCallback(({
+    index,
+    style
+  }) => {
+    const row = rows[index];
+    prepareRow(row);
+    return /*#__PURE__*/React.createElement("div", Object.assign({}, row.getRowProps({
+      style
+    }), {
+      className: "table-row tr"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "table-row-wrap"
+    }, row.cells.map(cell => {
+      return /*#__PURE__*/React.createElement("div", Object.assign({}, cell.getCellProps(), {
+        className: "table-cell td"
+      }), cell.render("Cell"));
+    })), row.isExpanded ? /*#__PURE__*/React.createElement("div", {
+      className: "expand"
+    }, renderExpandedContent(row)) : null);
+  }, [prepareRow, rows, renderExpandedContent]);
+
+  const bulkSelector = () => {
+    selectBulkData(selectedFlatRows);
+  };
+
+  useEffect(() => {
+    if (listRef && listRef.current) {
+      listRef.current.resetAfterIndex(0, true);
+    }
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "wrapper"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "table-filter"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "results"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "name"
+  }, /*#__PURE__*/React.createElement("strong", null, rows.length), /*#__PURE__*/React.createElement("span", null, " ", title ? title : "Rows"))), /*#__PURE__*/React.createElement("div", {
+    className: "filter-utilities"
+  }, /*#__PURE__*/React.createElement(GlobalFilter, {
+    globalFilter: state.globalFilter,
+    setGlobalFilter: setGlobalFilter
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "filter-icon keyword-search",
+    onClick: toggleColumnFilter
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa fa-filter",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "filter-icon bulk-select",
+    onClick: bulkSelector
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa fa-pencil-square-o"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "tableContainer table-outer",
+    style: {
+      height: gridHeight
+    }
+  }, /*#__PURE__*/React.createElement(AutoSizer, {
+    disableWidth: true,
+    disableResizing: true
+  }, ({
+    height
+  }) => /*#__PURE__*/React.createElement("div", Object.assign({}, getTableProps(), {
+    className: "table"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "thead table-row table-row--head"
+  }, headerGroups.map(headerGroup => /*#__PURE__*/React.createElement("div", Object.assign({}, headerGroup.getHeaderGroupProps(), {
+    className: "tr"
+  }), headerGroup.headers.map(column => /*#__PURE__*/React.createElement("div", Object.assign({}, column.getHeaderProps(), {
+    className: "table-cell column-heading th"
+  }), /*#__PURE__*/React.createElement("div", column.getSortByToggleProps(), column.render("Header"), /*#__PURE__*/React.createElement("span", null, column.isSorted ? column.isSortedDesc ? /*#__PURE__*/React.createElement("i", {
+    className: "fa fa-sort-desc",
+    "aria-hidden": "true"
+  }) : /*#__PURE__*/React.createElement("i", {
+    className: "fa fa-sort-asc",
+    "aria-hidden": "true"
+  }) : "")), /*#__PURE__*/React.createElement("div", {
+    className: `txt-wrap column-filter ${isFilterOpen ? "open" : ""}`
+  }, !column.disableFilters ? column.render("Filter") : null), column.canResize && /*#__PURE__*/React.createElement("div", Object.assign({}, column.getResizerProps(), {
+    className: "resizer"
+  }))))))), /*#__PURE__*/React.createElement("div", Object.assign({}, getTableBodyProps(), {
+    className: "tbody"
+  }), /*#__PURE__*/React.createElement(VariableSizeList, {
+    ref: listRef,
+    className: "table-list",
+    height: height,
+    itemCount: rows.length,
+    itemSize: index => calculateRowHeight(rows, index, headerGroups),
+    overscanCount: 20
+  }, RenderRow))))));
+});
+
+export default Grid;
 //# sourceMappingURL=index.modern.js.map
