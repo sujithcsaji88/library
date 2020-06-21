@@ -5,12 +5,12 @@ import RowEdit from "../images/RowEdit.svg";
 import RowPin from "../images/RowPin.png";
 
 const RowOptions = memo((props) => {
-    const { row, updateRowData } = props;
+    const { row, selectRowOptions } = props;
     const [isOpen, setOpen] = useState(false);
     const openOverlay = () => {
         setOpen(true);
-        if (updateRowData) {
-            updateRowData(row);
+        if (selectRowOptions) {
+            selectRowOptions(row);
         }
     };
 

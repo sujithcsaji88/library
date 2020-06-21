@@ -11,7 +11,7 @@ const App = memo(() => {
     const isDesktop = window.innerWidth > 1024;
 
     //Get grid height value, which is a required value
-    const gridHeight = "85vh";
+    const gridHeight = "80vh";
 
     //Create an array of airports
     const airportCodeList = useMemo(
@@ -344,7 +344,7 @@ const App = memo(() => {
                 Cell: ({ row }) => {
                     return (
                         <div className="action">
-                            <RowOptions row={row} updateRowData={updateRowData} />
+                            <RowOptions row={row} selectRowOptions={selectRowOptions} />
                             <span className="expander" {...row.getToggleRowExpandedProps()}>
                                 {row.isExpanded ? (
                                     <i className="fa fa-angle-up" aria-hidden="true"></i>
@@ -494,7 +494,7 @@ const App = memo(() => {
     };
 
     //Gets called when Row option is selected
-    const updateRowData = (row) => {
+    const selectRowOptions = (row) => {
         console.log(row);
     };
 
@@ -511,7 +511,6 @@ const App = memo(() => {
             data={data}
             globalSearchLogic={globalSearchLogic}
             updateCellData={updateCellData}
-            updateRowData={updateRowData}
             selectBulkData={selectBulkData}
             calculateRowHeight={calculateRowHeight}
             renderExpandedContent={renderExpandedContent}
