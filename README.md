@@ -1,2 +1,2 @@
 # library
-Repo for storing reusable libraries
+Repo for storing reusable libraries for iCargo application
