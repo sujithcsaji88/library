@@ -515,12 +515,12 @@ const App = memo(() => {
     //Gets called when page scroll reaches the bottom of the grid
     //Fetch the next set of data and append it to the variable holding grid date and update the state value
     const loadNextPage = (...args) => {
-        if (args.length) {
-            const newIndex = args[0];
-            console.log("loadNextPage", newIndex);
+        const totalRecordsCount = getFullDataCount();
+        const newIndex = args && args.length ? args[0] : -1;
+        if (newIndex >= 0 && newIndex < totalRecordsCount) {
             setIsNextPageLoading(true);
             setTimeout(() => {
-                setHasNextPage(items.length <= getFullDataCount());
+                setHasNextPage(items.length <= totalRecordsCount);
                 setIsNextPageLoading(false);
                 setItems(items.concat(getData(newIndex, newIndex + recordsCount)));
             }, 100);
@@ -528,20 +528,23 @@ const App = memo(() => {
     };
 
     return (
-        <Grid
-            title="AWBs"
-            gridHeight={gridHeight}
-            columns={columns}
-            data={items}
-            globalSearchLogic={globalSearchLogic}
-            updateCellData={updateCellData}
-            selectBulkData={selectBulkData}
-            calculateRowHeight={calculateRowHeight}
-            renderExpandedContent={renderExpandedContent}
-            hasNextPage={hasNextPage}
-            isNextPageLoading={isNextPageLoading}
-            loadNextPage={loadNextPage}
-        />
+        <div>
+            <Grid
+                title="AWBs"
+                gridHeight={gridHeight}
+                columns={columns}
+                data={items}
+                globalSearchLogic={globalSearchLogic}
+                updateCellData={updateCellData}
+                selectBulkData={selectBulkData}
+                calculateRowHeight={calculateRowHeight}
+                renderExpandedContent={renderExpandedContent}
+                hasNextPage={hasNextPage}
+                isNextPageLoading={isNextPageLoading}
+                loadNextPage={loadNextPage}
+            />
+            {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
+        </div>
     );
 });
 
