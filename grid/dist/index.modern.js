@@ -2,6 +2,7 @@ import React, { memo, forwardRef, useState, useRef, useEffect, createRef, useMem
 import { useAsyncDebounce, useTable, useFilters, useGlobalFilter, useSortBy, useRowSelect, useFlexLayout, useResizeColumns, useExpanded } from 'react-table';
 import { VariableSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import InfiniteLoader from 'react-window-infinite-loader';
 
 const RowSelector = memo(forwardRef(({
   indeterminate,
@@ -69,7 +70,7 @@ const GlobalFilter = memo(({
   }));
 });
 
-const listRef = createRef();
+const listRef = createRef(null);
 const Grid = memo(props => {
   const {
     title,
@@ -80,7 +81,10 @@ const Grid = memo(props => {
     updateCellData,
     selectBulkData,
     calculateRowHeight,
-    renderExpandedContent
+    renderExpandedContent,
+    hasNextPage,
+    isNextPageLoading,
+    loadNextPage
   } = props;
 
   if (!(data && data.length) || !(columns && columns.length)) {
@@ -91,6 +95,11 @@ const Grid = memo(props => {
       }
     }, "Invalid Data or Columns Configuration");
   }
+
+  const itemCount = hasNextPage ? data.length + 1 : data.length;
+  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage ? loadNextPage : () => {};
+
+  const isItemLoaded = index => !hasNextPage || index < data.length;
 
   const [isFilterOpen, setFilterOpen] = useState(false);
 
@@ -143,21 +152,23 @@ const Grid = memo(props => {
     index,
     style
   }) => {
-    const row = rows[index];
-    prepareRow(row);
-    return /*#__PURE__*/React.createElement("div", Object.assign({}, row.getRowProps({
-      style
-    }), {
-      className: "table-row tr"
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "table-row-wrap"
-    }, row.cells.map(cell => {
-      return /*#__PURE__*/React.createElement("div", Object.assign({}, cell.getCellProps(), {
-        className: "table-cell td"
-      }), cell.render("Cell"));
-    })), row.isExpanded ? /*#__PURE__*/React.createElement("div", {
-      className: "expand"
-    }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
+    if (isItemLoaded(index)) {
+      const row = rows[index];
+      prepareRow(row);
+      return /*#__PURE__*/React.createElement("div", Object.assign({}, row.getRowProps({
+        style
+      }), {
+        className: "table-row tr"
+      }), /*#__PURE__*/React.createElement("div", {
+        className: "table-row-wrap"
+      }, row.cells.map(cell => {
+        return /*#__PURE__*/React.createElement("div", Object.assign({}, cell.getCellProps(), {
+          className: "table-cell td"
+        }), cell.render("Cell"));
+      })), row.isExpanded ? /*#__PURE__*/React.createElement("div", {
+        className: "expand"
+      }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
+    }
   }, [prepareRow, rows, renderExpandedContent]);
 
   const bulkSelector = () => {
@@ -225,8 +236,18 @@ const Grid = memo(props => {
     className: "resizer"
   }))))))), /*#__PURE__*/React.createElement("div", Object.assign({}, getTableBodyProps(), {
     className: "tbody"
-  }), /*#__PURE__*/React.createElement(VariableSizeList, {
-    ref: listRef,
+  }), /*#__PURE__*/React.createElement(InfiniteLoader, {
+    isItemLoaded: isItemLoaded,
+    itemCount: itemCount,
+    loadMoreItems: loadMoreItems
+  }, ({
+    onItemsRendered,
+    ref
+  }) => /*#__PURE__*/React.createElement(VariableSizeList, {
+    ref: list => {
+      ref(list);
+      listRef.current = list;
+    },
     className: "table-list",
     height: height,
     itemCount: rows.length,
@@ -237,8 +258,9 @@ const Grid = memo(props => {
         return 70;
       }
     },
+    onItemsRendered: onItemsRendered,
     overscanCount: 20
-  }, RenderRow))))));
+  }, RenderRow)))))));
 });
 
 export default Grid;
