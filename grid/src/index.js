@@ -11,12 +11,13 @@ import {
 } from "react-table";
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import InfiniteLoader from "react-window-infinite-loader";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import "./tablestyles.css";
 
-const listRef = createRef();
+const listRef = createRef(null);
 
 const Grid = memo((props) => {
     const {
@@ -28,12 +29,22 @@ const Grid = memo((props) => {
         updateCellData,
         selectBulkData,
         calculateRowHeight,
-        renderExpandedContent
+        renderExpandedContent,
+        hasNextPage,
+        isNextPageLoading,
+        loadNextPage
     } = props;
 
     if (!(data && data.length) || !(columns && columns.length)) {
         return <h2 style={{ marginTop: "50px", textAlign: "center" }}>Invalid Data or Columns Configuration</h2>;
     }
+
+    const itemCount = hasNextPage ? data.length + 1 : data.length;
+
+    const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage ? loadNextPage : () => {};
+
+    const isItemLoaded = (index) => !hasNextPage || index < data.length;
+
     const [isFilterOpen, setFilterOpen] = useState(false);
 
     const toggleColumnFilter = () => {
@@ -96,24 +107,26 @@ const Grid = memo((props) => {
 
     const RenderRow = useCallback(
         ({ index, style }) => {
-            const row = rows[index];
-            prepareRow(row);
-            return (
-                <div {...row.getRowProps({ style })} className="table-row tr">
-                    <div className="table-row-wrap">
-                        {row.cells.map((cell) => {
-                            return (
-                                <div {...cell.getCellProps()} className="table-cell td">
-                                    {cell.render("Cell")}
-                                </div>
-                            );
-                        })}
+            if (isItemLoaded(index)) {
+                const row = rows[index];
+                prepareRow(row);
+                return (
+                    <div {...row.getRowProps({ style })} className="table-row tr">
+                        <div className="table-row-wrap">
+                            {row.cells.map((cell) => {
+                                return (
+                                    <div {...cell.getCellProps()} className="table-cell td">
+                                        {cell.render("Cell")}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        {row.isExpanded ? (
+                            <div className="expand">{renderExpandedContent ? renderExpandedContent(row) : null}</div>
+                        ) : null}
                     </div>
-                    {row.isExpanded ? (
-                        <div className="expand">{renderExpandedContent ? renderExpandedContent(row) : null}</div>
-                    ) : null}
-                </div>
-            );
+                );
+            }
         },
         [prepareRow, rows, renderExpandedContent]
     );
@@ -182,22 +195,30 @@ const Grid = memo((props) => {
                                 ))}
                             </div>
                             <div {...getTableBodyProps()} className="tbody">
-                                <List
-                                    ref={listRef}
-                                    className="table-list"
-                                    height={height}
-                                    itemCount={rows.length}
-                                    itemSize={(index) => {
-                                        if (calculateRowHeight && typeof calculateRowHeight === "function") {
-                                            return calculateRowHeight(rows, index, headerGroups);
-                                        } else {
-                                            return 70;
-                                        }
-                                    }}
-                                    overscanCount={20}
-                                >
-                                    {RenderRow}
-                                </List>
+                                <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={loadMoreItems}>
+                                    {({ onItemsRendered, ref }) => (
+                                        <List
+                                            ref={(list) => {
+                                                ref(list);
+                                                listRef.current = list;
+                                            }}
+                                            className="table-list"
+                                            height={height}
+                                            itemCount={rows.length}
+                                            itemSize={(index) => {
+                                                if (calculateRowHeight && typeof calculateRowHeight === "function") {
+                                                    return calculateRowHeight(rows, index, headerGroups);
+                                                } else {
+                                                    return 70;
+                                                }
+                                            }}
+                                            onItemsRendered={onItemsRendered}
+                                            overscanCount={20}
+                                        >
+                                            {RenderRow}
+                                        </List>
+                                    )}
+                                </InfiniteLoader>
                             </div>
                         </div>
                     )}
