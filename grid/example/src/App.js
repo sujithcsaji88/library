@@ -1,26 +1,18 @@
 import React, { useMemo, memo, useState } from "react";
 import Grid from "grid";
-import data from "./data.json";
+import { getData, getFullDataCount } from "./getData";
 import RowOptions from "./cells/RowOptions";
 import SREdit from "./cells/SREdit";
 import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = memo(() => {
-    //Reducing table data to 763 for testing purpose
-    const tableData = data.filter((dataItem, index) => {
-        return index < 763;
-    });
     //Set state value for variable to check if there is anext page available
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
     //Set state value for variable to hold initial data
-    const [items, setItems] = useState(
-        tableData.filter((dataItem, index) => {
-            return index < 100;
-        })
-    );
+    const [items, setItems] = useState(getData(0, 100));
 
     //Check if device is desktop
     const isDesktop = window.innerWidth > 1024;
@@ -526,15 +518,9 @@ const App = memo(() => {
             console.log("loadNextPage", newIndex);
             setIsNextPageLoading(true);
             setTimeout(() => {
-                setHasNextPage(items.length <= tableData.length);
+                setHasNextPage(items.length <= getFullDataCount());
                 setIsNextPageLoading(false);
-                setItems(
-                    items.concat(
-                        tableData.filter((dataItem, index) => {
-                            return index >= newIndex && index < newIndex + 100;
-                        })
-                    )
-                );
+                setItems(items.concat(getData(newIndex, newIndex + 100)));
             }, 100);
         }
     };
