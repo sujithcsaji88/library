@@ -35,28 +35,33 @@ const Grid = memo((props) => {
         loadNextPage
     } = props;
 
+    //Display error message if data or columns configuration is missing.
     if (!(data && data.length) || !(columns && columns.length)) {
         return <h2 style={{ marginTop: "50px", textAlign: "center" }}>Invalid Data or Columns Configuration</h2>;
     }
 
+    //Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
-
     const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage ? loadNextPage : () => {};
-
     const isItemLoaded = (index) => !hasNextPage || index < data.length;
 
+    //Local state value for checking if column filter is open/closed
     const [isFilterOpen, setFilterOpen] = useState(false);
 
+    //Toggle column filter state value based on UI clicks
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
     };
 
+    //Column filter added for all columns by default
     const defaultColumn = useMemo(
         () => ({
             Filter: DefaultColumnFilter
         }),
         []
     );
+
+    //Initialize react-table instance with the values received through properties
     const {
         getTableProps,
         getTableBodyProps,
@@ -73,6 +78,7 @@ const Grid = memo((props) => {
             defaultColumn,
             updateCellData,
             globalFilter: (rows, columns, filterValue) => {
+                //Call global search function defined in application, if it is present
                 if (globalSearchLogic && typeof globalSearchLogic === "function") {
                     return globalSearchLogic(rows, columns, filterValue);
                 } else {
@@ -88,6 +94,7 @@ const Grid = memo((props) => {
         useResizeColumns,
         useExpanded,
         (hooks) => {
+            //Add checkbox for all rows in grid, with different properties for header row and body rows
             hooks.allColumns.push((columns) => [
                 {
                     id: "selection",
@@ -105,6 +112,7 @@ const Grid = memo((props) => {
         }
     );
 
+    //Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
             if (isItemLoaded(index)) {
@@ -121,6 +129,7 @@ const Grid = memo((props) => {
                                 );
                             })}
                         </div>
+                        {/*Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region*/}
                         {row.isExpanded ? (
                             <div className="expand">{renderExpandedContent ? renderExpandedContent(row) : null}</div>
                         ) : null}
@@ -131,18 +140,25 @@ const Grid = memo((props) => {
         [prepareRow, rows, renderExpandedContent]
     );
 
+    //Export selected row data and pass it to the callback method
     const bulkSelector = () => {
         if (selectBulkData) {
             selectBulkData(selectedFlatRows);
         }
     };
 
+    //This code is to handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
 
+    //Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
+    //Use properties and methods provided by react-table
+    //Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
+    //Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
+    //React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
     return (
         <div className="wrapper">
             <div className="table-filter">
