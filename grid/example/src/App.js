@@ -7,12 +7,14 @@ import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = memo(() => {
+    //Number of records to be pulled from single API
+    const recordsCount = 30;
     //Set state value for variable to check if there is anext page available
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
     //Set state value for variable to hold initial data
-    const [items, setItems] = useState(getData(0, 100));
+    const [items, setItems] = useState(getData(0, recordsCount));
 
     //Check if device is desktop
     const isDesktop = window.innerWidth > 1024;
@@ -520,7 +522,7 @@ const App = memo(() => {
             setTimeout(() => {
                 setHasNextPage(items.length <= getFullDataCount());
                 setIsNextPageLoading(false);
-                setItems(items.concat(getData(newIndex, newIndex + 100)));
+                setItems(items.concat(getData(newIndex, newIndex + recordsCount)));
             }, 100);
         }
     };
