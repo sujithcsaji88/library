@@ -10,11 +10,12 @@
         "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
     },
     "dependencies": {
+        "axios": "^0.19.2",
+        "grid": "file:..",
         "react": "file:../node_modules/react",
-        "react-dom": "file:../node_modules/react-dom",
-        "react-scripts": "file:../node_modules/react-scripts",
         "react-click-away-listener": "^1.2.0",
-        "grid": "file:.."
+        "react-dom": "file:../node_modules/react-dom",
+        "react-scripts": "file:../node_modules/react-scripts"
     },
     "devDependencies": {
         "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
