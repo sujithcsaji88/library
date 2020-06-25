@@ -1,14 +1,14 @@
-import data from "./data.json";
+import axios from "axios";
 
-export const getData = (startIndex, endIndex) => {
-    if (data && data.length && typeof startIndex === "number" && typeof endIndex === "number" && endIndex > startIndex) {
-        return data.filter((dataItem, index) => {
-            return index >= startIndex && index < endIndex;
-        });
+export const fetchData = async (currentPage, pageSize) => {
+    const response = await axios(
+        `https://skyforce-api.azurewebsites.net/api/cargoflightdetails?currentPage=${currentPage}&pageSize=${pageSize}`
+    );
+    if (response && response.data && response.data.data) {
+        const { result } = response.data.data;
+        if (result) {
+            return result;
+        }
     }
     return [];
-};
-
-export const getFullDataCount = () => {
-    return data ? data.length : 0;
 };

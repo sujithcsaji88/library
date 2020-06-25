@@ -1,6 +1,6 @@
-import React, { useMemo, memo, useState } from "react";
+import React, { useMemo, memo, useState, useEffect } from "react";
 import Grid from "grid";
-import { getData, getFullDataCount } from "./getData";
+import { fetchData } from "./getData";
 import RowOptions from "./cells/RowOptions";
 import SREdit from "./cells/SREdit";
 import FlightEdit from "./cells/FlightEdit";
@@ -14,7 +14,7 @@ const App = memo(() => {
     //Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
     //Set state value for variable to hold initial data
-    const [items, setItems] = useState(getData(0, recordsCount));
+    const [items, setItems] = useState([]);
 
     //Check if device is desktop
     const isDesktop = window.innerWidth > 1024;
@@ -515,37 +515,48 @@ const App = memo(() => {
     //Gets called when page scroll reaches the bottom of the grid
     //Fetch the next set of data and append it to the variable holding grid date and update the state value
     const loadNextPage = (...args) => {
-        const totalRecordsCount = getFullDataCount();
         const newIndex = args && args.length ? args[0] : -1;
-        if (newIndex >= 0 && newIndex < totalRecordsCount) {
+        const pageNumber = Math.floor(newIndex / recordsCount) + 1;
+        if (newIndex >= 0 && hasNextPage) {
             setIsNextPageLoading(true);
-            setTimeout(() => {
-                setHasNextPage(items.length <= totalRecordsCount);
+            fetchData(pageNumber, recordsCount).then((data) => {
+                setHasNextPage(data && data.length > 0);
                 setIsNextPageLoading(false);
-                setItems(items.concat(getData(newIndex, newIndex + recordsCount)));
-            }, 100);
+                setItems(items.concat(data));
+            });
         }
     };
 
-    return (
-        <div>
-            <Grid
-                title="AWBs"
-                gridHeight={gridHeight}
-                columns={columns}
-                data={items}
-                globalSearchLogic={globalSearchLogic}
-                updateCellData={updateCellData}
-                selectBulkData={selectBulkData}
-                calculateRowHeight={calculateRowHeight}
-                renderExpandedContent={renderExpandedContent}
-                hasNextPage={hasNextPage}
-                isNextPageLoading={isNextPageLoading}
-                loadNextPage={loadNextPage}
-            />
-            {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
-        </div>
-    );
+    //Make API call to fetch data.
+    useEffect(() => {
+        fetchData(1, recordsCount).then((data) => {
+            setItems(data);
+        });
+    }, []);
+
+    if (items && items.length) {
+        return (
+            <div>
+                <Grid
+                    title="AWBs"
+                    gridHeight={gridHeight}
+                    columns={columns}
+                    data={items}
+                    globalSearchLogic={globalSearchLogic}
+                    updateCellData={updateCellData}
+                    selectBulkData={selectBulkData}
+                    calculateRowHeight={calculateRowHeight}
+                    renderExpandedContent={renderExpandedContent}
+                    hasNextPage={hasNextPage}
+                    isNextPageLoading={isNextPageLoading}
+                    loadNextPage={loadNextPage}
+                />
+                {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
+            </div>
+        );
+    } else {
+        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
+    }
 });
 
 export default App;
