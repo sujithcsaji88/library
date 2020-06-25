@@ -36,7 +36,7 @@ const Grid = memo((props) => {
     } = props;
 
     //Display error message if data or columns configuration is missing.
-    if (!(data && data.length) || !(columns && columns.length)) {
+    if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
         return <h2 style={{ marginTop: "50px", textAlign: "center" }}>Invalid Data or Columns Configuration</h2>;
     }
 

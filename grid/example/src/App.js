@@ -13,7 +13,7 @@ const App = memo(() => {
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-    //Set state value for variable to hold initial data
+    //Set state value for variable to hold grid data
     const [items, setItems] = useState([]);
 
     //Check if device is desktop
@@ -463,7 +463,7 @@ const App = memo(() => {
     //Add logic to calculate height of each row, based on the content of  or more columns
     const calculateRowHeight = (rows, index, headerCells) => {
         let rowHeight = 50;
-        if (headerCells && headerCells.length && rows && rows.length && index >= 0) {
+        if (headerCells && headerCells.length > 0 && rows && rows.length > 0 && index >= 0) {
             const { headers } = headerCells[0];
             const { original, isExpanded } = rows[index];
             headers.forEach((header) => {
@@ -512,10 +512,11 @@ const App = memo(() => {
         console.log(selectedRows);
     };
 
-    //Gets called when page scroll reaches the bottom of the grid
-    //Fetch the next set of data and append it to the variable holding grid date and update the state value
+    //Gets called when page scroll reaches the bottom of the grid.
+    //Fetch the next set of data and append it to the variable holding grid data and update the state value.
+    //Also update the hasNextPage state value to False once API response is empty, to avoid unwanted API calls.
     const loadNextPage = (...args) => {
-        const newIndex = args && args.length ? args[0] : -1;
+        const newIndex = args && args.length > 0 ? args[0] : -1;
         const pageNumber = Math.floor(newIndex / recordsCount) + 1;
         if (newIndex >= 0 && hasNextPage) {
             setIsNextPageLoading(true);
@@ -527,14 +528,14 @@ const App = memo(() => {
         }
     };
 
-    //Make API call to fetch data.
     useEffect(() => {
+        //Make API call to fetch initial set of data.
         fetchData(1, recordsCount).then((data) => {
             setItems(data);
         });
     }, []);
 
-    if (items && items.length) {
+    if (items && items.length > 0) {
         return (
             <div>
                 <Grid
