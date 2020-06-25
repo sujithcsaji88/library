@@ -1,12 +1,21 @@
-import React, { useMemo, memo } from "react";
+import React, { useMemo, memo, useState } from "react";
 import Grid from "grid";
-import data from "./data.json";
+import { getData, getFullDataCount } from "./getData";
 import RowOptions from "./cells/RowOptions";
 import SREdit from "./cells/SREdit";
 import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = memo(() => {
+    //Number of records to be pulled from single API
+    const recordsCount = 30;
+    //Set state value for variable to check if there is anext page available
+    const [hasNextPage, setHasNextPage] = useState(true);
+    //Set state value for variable to check if the loading process is going on
+    const [isNextPageLoading, setIsNextPageLoading] = useState(false);
+    //Set state value for variable to hold initial data
+    const [items, setItems] = useState(getData(0, recordsCount));
+
     //Check if device is desktop
     const isDesktop = window.innerWidth > 1024;
 
@@ -503,18 +512,39 @@ const App = memo(() => {
         console.log(selectedRows);
     };
 
+    //Gets called when page scroll reaches the bottom of the grid
+    //Fetch the next set of data and append it to the variable holding grid date and update the state value
+    const loadNextPage = (...args) => {
+        const totalRecordsCount = getFullDataCount();
+        const newIndex = args && args.length ? args[0] : -1;
+        if (newIndex >= 0 && newIndex < totalRecordsCount) {
+            setIsNextPageLoading(true);
+            setTimeout(() => {
+                setHasNextPage(items.length <= totalRecordsCount);
+                setIsNextPageLoading(false);
+                setItems(items.concat(getData(newIndex, newIndex + recordsCount)));
+            }, 100);
+        }
+    };
+
     return (
-        <Grid
-            title="AWBs"
-            gridHeight={gridHeight}
-            columns={columns}
-            data={data}
-            globalSearchLogic={globalSearchLogic}
-            updateCellData={updateCellData}
-            selectBulkData={selectBulkData}
-            calculateRowHeight={calculateRowHeight}
-            renderExpandedContent={renderExpandedContent}
-        />
+        <div>
+            <Grid
+                title="AWBs"
+                gridHeight={gridHeight}
+                columns={columns}
+                data={items}
+                globalSearchLogic={globalSearchLogic}
+                updateCellData={updateCellData}
+                selectBulkData={selectBulkData}
+                calculateRowHeight={calculateRowHeight}
+                renderExpandedContent={renderExpandedContent}
+                hasNextPage={hasNextPage}
+                isNextPageLoading={isNextPageLoading}
+                loadNextPage={loadNextPage}
+            />
+            {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
+        </div>
     );
 });
 

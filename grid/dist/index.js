@@ -5,6 +5,7 @@ var React__default = _interopDefault(React);
 var reactTable = require('react-table');
 var reactWindow = require('react-window');
 var AutoSizer = _interopDefault(require('react-virtualized-auto-sizer'));
+var InfiniteLoader = _interopDefault(require('react-window-infinite-loader'));
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -111,7 +112,7 @@ var GlobalFilter = React.memo(function (_ref) {
   }));
 });
 
-var listRef = React.createRef();
+var listRef = React.createRef(null);
 var Grid = React.memo(function (props) {
   var title = props.title,
       gridHeight = props.gridHeight,
@@ -121,7 +122,10 @@ var Grid = React.memo(function (props) {
       updateCellData = props.updateCellData,
       selectBulkData = props.selectBulkData,
       calculateRowHeight = props.calculateRowHeight,
-      renderExpandedContent = props.renderExpandedContent;
+      renderExpandedContent = props.renderExpandedContent,
+      hasNextPage = props.hasNextPage,
+      isNextPageLoading = props.isNextPageLoading,
+      loadNextPage = props.loadNextPage;
 
   if (!(data && data.length) || !(columns && columns.length)) {
     return /*#__PURE__*/React__default.createElement("h2", {
@@ -131,6 +135,13 @@ var Grid = React.memo(function (props) {
       }
     }, "Invalid Data or Columns Configuration");
   }
+
+  var itemCount = hasNextPage ? data.length + 1 : data.length;
+  var loadMoreItems = isNextPageLoading ? function () {} : loadNextPage ? loadNextPage : function () {};
+
+  var isItemLoaded = function isItemLoaded(index) {
+    return !hasNextPage || index < data.length;
+  };
 
   var _useState = React.useState(false),
       isFilterOpen = _useState[0],
@@ -191,21 +202,24 @@ var Grid = React.memo(function (props) {
   var RenderRow = React.useCallback(function (_ref3) {
     var index = _ref3.index,
         style = _ref3.style;
-    var row = rows[index];
-    prepareRow(row);
-    return /*#__PURE__*/React__default.createElement("div", _extends({}, row.getRowProps({
-      style: style
-    }), {
-      className: "table-row tr"
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "table-row-wrap"
-    }, row.cells.map(function (cell) {
-      return /*#__PURE__*/React__default.createElement("div", _extends({}, cell.getCellProps(), {
-        className: "table-cell td"
-      }), cell.render("Cell"));
-    })), row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
-      className: "expand"
-    }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
+
+    if (isItemLoaded(index)) {
+      var row = rows[index];
+      prepareRow(row);
+      return /*#__PURE__*/React__default.createElement("div", _extends({}, row.getRowProps({
+        style: style
+      }), {
+        className: "table-row tr"
+      }), /*#__PURE__*/React__default.createElement("div", {
+        className: "table-row-wrap"
+      }, row.cells.map(function (cell) {
+        return /*#__PURE__*/React__default.createElement("div", _extends({}, cell.getCellProps(), {
+          className: "table-cell td"
+        }), cell.render("Cell"));
+      })), row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
+        className: "expand"
+      }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
+    }
   }, [prepareRow, rows, renderExpandedContent]);
 
   var bulkSelector = function bulkSelector() {
@@ -277,20 +291,33 @@ var Grid = React.memo(function (props) {
       }));
     })), /*#__PURE__*/React__default.createElement("div", _extends({}, getTableBodyProps(), {
       className: "tbody"
-    }), /*#__PURE__*/React__default.createElement(reactWindow.VariableSizeList, {
-      ref: listRef,
-      className: "table-list",
-      height: height,
-      itemCount: rows.length,
-      itemSize: function itemSize(index) {
-        if (calculateRowHeight && typeof calculateRowHeight === "function") {
-          return calculateRowHeight(rows, index, headerGroups);
-        } else {
-          return 70;
-        }
-      },
-      overscanCount: 20
-    }, RenderRow)));
+    }), /*#__PURE__*/React__default.createElement(InfiniteLoader, {
+      isItemLoaded: isItemLoaded,
+      itemCount: itemCount,
+      loadMoreItems: loadMoreItems
+    }, function (_ref5) {
+      var onItemsRendered = _ref5.onItemsRendered,
+          _ref6 = _ref5.ref;
+      return /*#__PURE__*/React__default.createElement(reactWindow.VariableSizeList, {
+        ref: function ref(list) {
+          _ref6(list);
+
+          listRef.current = list;
+        },
+        className: "table-list",
+        height: height,
+        itemCount: rows.length,
+        itemSize: function itemSize(index) {
+          if (calculateRowHeight && typeof calculateRowHeight === "function") {
+            return calculateRowHeight(rows, index, headerGroups);
+          } else {
+            return 70;
+          }
+        },
+        onItemsRendered: onItemsRendered,
+        overscanCount: 20
+      }, RenderRow);
+    })));
   })));
 });
 

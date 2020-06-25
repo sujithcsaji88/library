@@ -11,12 +11,13 @@ import {
 } from "react-table";
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import InfiniteLoader from "react-window-infinite-loader";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import "./tablestyles.css";
 
-const listRef = createRef();
+const listRef = createRef(null);
 
 const Grid = memo((props) => {
     const {
@@ -28,24 +29,39 @@ const Grid = memo((props) => {
         updateCellData,
         selectBulkData,
         calculateRowHeight,
-        renderExpandedContent
+        renderExpandedContent,
+        hasNextPage,
+        isNextPageLoading,
+        loadNextPage
     } = props;
 
+    //Display error message if data or columns configuration is missing.
     if (!(data && data.length) || !(columns && columns.length)) {
         return <h2 style={{ marginTop: "50px", textAlign: "center" }}>Invalid Data or Columns Configuration</h2>;
     }
+
+    //Variables used for handling infinite loading
+    const itemCount = hasNextPage ? data.length + 1 : data.length;
+    const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage ? loadNextPage : () => {};
+    const isItemLoaded = (index) => !hasNextPage || index < data.length;
+
+    //Local state value for checking if column filter is open/closed
     const [isFilterOpen, setFilterOpen] = useState(false);
 
+    //Toggle column filter state value based on UI clicks
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
     };
 
+    //Column filter added for all columns by default
     const defaultColumn = useMemo(
         () => ({
             Filter: DefaultColumnFilter
         }),
         []
     );
+
+    //Initialize react-table instance with the values received through properties
     const {
         getTableProps,
         getTableBodyProps,
@@ -62,6 +78,7 @@ const Grid = memo((props) => {
             defaultColumn,
             updateCellData,
             globalFilter: (rows, columns, filterValue) => {
+                //Call global search function defined in application, if it is present
                 if (globalSearchLogic && typeof globalSearchLogic === "function") {
                     return globalSearchLogic(rows, columns, filterValue);
                 } else {
@@ -77,6 +94,7 @@ const Grid = memo((props) => {
         useResizeColumns,
         useExpanded,
         (hooks) => {
+            //Add checkbox for all rows in grid, with different properties for header row and body rows
             hooks.allColumns.push((columns) => [
                 {
                     id: "selection",
@@ -94,42 +112,53 @@ const Grid = memo((props) => {
         }
     );
 
+    //Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
-            const row = rows[index];
-            prepareRow(row);
-            return (
-                <div {...row.getRowProps({ style })} className="table-row tr">
-                    <div className="table-row-wrap">
-                        {row.cells.map((cell) => {
-                            return (
-                                <div {...cell.getCellProps()} className="table-cell td">
-                                    {cell.render("Cell")}
-                                </div>
-                            );
-                        })}
+            if (isItemLoaded(index)) {
+                const row = rows[index];
+                prepareRow(row);
+                return (
+                    <div {...row.getRowProps({ style })} className="table-row tr">
+                        <div className="table-row-wrap">
+                            {row.cells.map((cell) => {
+                                return (
+                                    <div {...cell.getCellProps()} className="table-cell td">
+                                        {cell.render("Cell")}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        {/*Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region*/}
+                        {row.isExpanded ? (
+                            <div className="expand">{renderExpandedContent ? renderExpandedContent(row) : null}</div>
+                        ) : null}
                     </div>
-                    {row.isExpanded ? (
-                        <div className="expand">{renderExpandedContent ? renderExpandedContent(row) : null}</div>
-                    ) : null}
-                </div>
-            );
+                );
+            }
         },
         [prepareRow, rows, renderExpandedContent]
     );
 
+    //Export selected row data and pass it to the callback method
     const bulkSelector = () => {
         if (selectBulkData) {
             selectBulkData(selectedFlatRows);
         }
     };
 
+    //This code is to handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
 
+    //Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
+    //Use properties and methods provided by react-table
+    //Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
+    //Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
+    //React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
     return (
         <div className="wrapper">
             <div className="table-filter">
@@ -182,22 +211,30 @@ const Grid = memo((props) => {
                                 ))}
                             </div>
                             <div {...getTableBodyProps()} className="tbody">
-                                <List
-                                    ref={listRef}
-                                    className="table-list"
-                                    height={height}
-                                    itemCount={rows.length}
-                                    itemSize={(index) => {
-                                        if (calculateRowHeight && typeof calculateRowHeight === "function") {
-                                            return calculateRowHeight(rows, index, headerGroups);
-                                        } else {
-                                            return 70;
-                                        }
-                                    }}
-                                    overscanCount={20}
-                                >
-                                    {RenderRow}
-                                </List>
+                                <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={loadMoreItems}>
+                                    {({ onItemsRendered, ref }) => (
+                                        <List
+                                            ref={(list) => {
+                                                ref(list);
+                                                listRef.current = list;
+                                            }}
+                                            className="table-list"
+                                            height={height}
+                                            itemCount={rows.length}
+                                            itemSize={(index) => {
+                                                if (calculateRowHeight && typeof calculateRowHeight === "function") {
+                                                    return calculateRowHeight(rows, index, headerGroups);
+                                                } else {
+                                                    return 70;
+                                                }
+                                            }}
+                                            onItemsRendered={onItemsRendered}
+                                            overscanCount={20}
+                                        >
+                                            {RenderRow}
+                                        </List>
+                                    )}
+                                </InfiniteLoader>
                             </div>
                         </div>
                     )}
