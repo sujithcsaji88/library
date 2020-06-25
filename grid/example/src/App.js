@@ -500,6 +500,17 @@ const App = memo(() => {
     //Gets called when there is a cell edit
     const updateCellData = (rowIndex, columnId, value) => {
         console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
+        setItems((old) =>
+            old.map((row, index) => {
+                if (index === rowIndex) {
+                    return {
+                        ...old[rowIndex],
+                        [columnId]: value
+                    };
+                }
+                return row;
+            })
+        );
     };
 
     //Gets called when Row option is selected
