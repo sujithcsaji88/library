@@ -8,7 +8,7 @@ import SegmentEdit from "./cells/SegmentEdit";
 
 const App = memo(() => {
     //Number of records to be pulled from single API
-    const recordsCount = 30;
+    const recordsCount = 300;
     //Set state value for variable to check if there is anext page available
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
