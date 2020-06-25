@@ -87,7 +87,7 @@ const Grid = memo(props => {
     loadNextPage
   } = props;
 
-  if (!(data && data.length) || !(columns && columns.length)) {
+  if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
     return /*#__PURE__*/React.createElement("h2", {
       style: {
         marginTop: "50px",
@@ -130,7 +130,10 @@ const Grid = memo(props => {
       } else {
         return rows;
       }
-    }
+    },
+    autoResetSelectedRows: false,
+    autoResetSortBy: false,
+    autoResetFilters: false
   }, useFilters, useGlobalFilter, useSortBy, useRowSelect, useFlexLayout, useResizeColumns, useExpanded, hooks => {
     hooks.allColumns.push(columns => [{
       id: "selection",

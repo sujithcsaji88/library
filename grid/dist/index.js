@@ -127,7 +127,7 @@ var Grid = React.memo(function (props) {
       isNextPageLoading = props.isNextPageLoading,
       loadNextPage = props.loadNextPage;
 
-  if (!(data && data.length) || !(columns && columns.length)) {
+  if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
     return /*#__PURE__*/React__default.createElement("h2", {
       style: {
         marginTop: "50px",
@@ -168,7 +168,10 @@ var Grid = React.memo(function (props) {
       } else {
         return rows;
       }
-    }
+    },
+    autoResetSelectedRows: false,
+    autoResetSortBy: false,
+    autoResetFilters: false
   }, reactTable.useFilters, reactTable.useGlobalFilter, reactTable.useSortBy, reactTable.useRowSelect, reactTable.useFlexLayout, reactTable.useResizeColumns, reactTable.useExpanded, function (hooks) {
     hooks.allColumns.push(function (columns) {
       return [{
