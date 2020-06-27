@@ -7,8 +7,6 @@ import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = memo(() => {
-    //Number of records to be pulled from single API
-    const recordsCount = 300;
     //Set state value for variable to check if there is anext page available
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
@@ -528,10 +526,9 @@ const App = memo(() => {
     //Also update the hasNextPage state value to False once API response is empty, to avoid unwanted API calls.
     const loadNextPage = (...args) => {
         const newIndex = args && args.length > 0 ? args[0] : -1;
-        const pageNumber = Math.floor(newIndex / recordsCount) + 1;
         if (newIndex >= 0 && hasNextPage) {
             setIsNextPageLoading(true);
-            fetchData(pageNumber, recordsCount).then((data) => {
+            fetchData(newIndex).then((data) => {
                 setHasNextPage(data && data.length > 0);
                 setIsNextPageLoading(false);
                 setItems(items.concat(data));
@@ -541,7 +538,7 @@ const App = memo(() => {
 
     useEffect(() => {
         //Make API call to fetch initial set of data.
-        fetchData(1, recordsCount).then((data) => {
+        fetchData(0).then((data) => {
             setItems(data);
         });
     }, []);
