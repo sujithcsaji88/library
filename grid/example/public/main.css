@@ -271,6 +271,9 @@ select:-webkit-autofill:focus {
     font-size: 12px;
     margin-right: 5px;
 }
+.table-outer .table .table-row .table-cell .content .content-edit select {
+    height: 29px;
+}
 .table-outer .table .table-row .table-cell .content .content-edit .ok {
     width: 27px;
     height: 27px;

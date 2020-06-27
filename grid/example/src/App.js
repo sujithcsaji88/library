@@ -112,15 +112,22 @@ const App = memo(() => {
                 accessor: "segment",
                 width: 100,
                 disableSortBy: true,
-                Cell: (row) => (
-                    <SegmentEdit
-                        airportCodeList={airportCodeList}
-                        index={row.row.index}
-                        id="segment"
-                        updateCellData={updateCellData}
-                        value={row.value}
-                    />
-                ),
+                Cell: (row) => {
+                    const otherColumn = "weight";
+                    const { value, column } = row;
+                    const { index, original } = row.row;
+                    return (
+                        <SegmentEdit
+                            airportCodeList={airportCodeList}
+                            index={index}
+                            segmentId={column.id}
+                            segmentValue={value}
+                            weightId={otherColumn}
+                            weightValue={original[otherColumn]}
+                            updateCellData={updateCellData}
+                        />
+                    );
+                },
                 filter: (rows, id, filterValue) => {
                     const filterText = filterValue ? filterValue.toLowerCase() : "";
                     return rows.filter((row) => {

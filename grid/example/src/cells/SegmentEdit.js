@@ -2,9 +2,11 @@ import React, { memo, useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import FlightIcon from "../images/FlightIcon.png";
 
-const SegmentEdit = memo(({ value: initialValue, index, id, airportCodeList, updateCellData }) => {
-    const [value, setValue] = useState(initialValue);
-    const [oldValue] = useState(initialValue);
+const SegmentEdit = memo(({ index, segmentId, segmentValue, weightId, weightValue, airportCodeList, updateCellData }) => {
+    const [cellSegmentValue, setCellSegmentValue] = useState(segmentValue);
+    const [oldSegValue] = useState(segmentValue);
+    const [cellWeightValue, setCellWeightValue] = useState(weightValue);
+    const [oldWeightValue] = useState(weightValue);
     const [isEdit, setEdit] = useState(false);
 
     const openEdit = (e) => {
@@ -12,34 +14,51 @@ const SegmentEdit = memo(({ value: initialValue, index, id, airportCodeList, upd
     };
 
     const onChangeFrom = (e) => {
-        setValue({
-            ...value,
+        setCellSegmentValue({
+            ...cellSegmentValue,
             from: e.target.value
         });
     };
 
     const onChangeTo = (e) => {
-        setValue({
-            ...value,
+        setCellSegmentValue({
+            ...cellSegmentValue,
             to: e.target.value
+        });
+    };
+
+    const onWeightPercentageChange = (e) => {
+        setCellWeightValue({
+            ...cellWeightValue,
+            percentage: e.target.value
+        });
+    };
+
+    const onWeightValueChange = (e) => {
+        setCellWeightValue({
+            ...cellWeightValue,
+            value: e.target.value
         });
     };
 
     const saveEdit = () => {
         setEdit(false);
         if (updateCellData) {
-            updateCellData(index, id, value);
+            updateCellData(index, segmentId, cellSegmentValue);
+            updateCellData(index, weightId, cellWeightValue);
         }
     };
 
     const clearEdit = () => {
-        setValue(oldValue);
+        setCellSegmentValue(oldSegValue);
+        setCellWeightValue(oldWeightValue);
         setEdit(false);
     };
 
     useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
+        setCellSegmentValue(cellSegmentValue);
+        setCellWeightValue(cellWeightValue);
+    }, [cellSegmentValue, cellWeightValue]);
 
     return (
         <ClickAwayListener onClickAway={clearEdit}>
@@ -48,14 +67,14 @@ const SegmentEdit = memo(({ value: initialValue, index, id, airportCodeList, upd
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                 </div>
                 <div className={`segment-details content ${isEdit ? "close" : "open"}`}>
-                    <span>{value.from}</span>
+                    <span>{cellSegmentValue.from}</span>
                     <i>
                         <img src={FlightIcon} alt="segment" />
                     </i>
-                    <span>{value.to}</span>
+                    <span>{cellSegmentValue.to}</span>
                 </div>
                 <div className={`content-edit ${isEdit ? "open" : "close"}`}>
-                    <select onChange={onChangeFrom} key={value.from} value={value.from}>
+                    <select onChange={onChangeFrom} key={cellSegmentValue.from} value={cellSegmentValue.from}>
                         {airportCodeList.map((item, index) => {
                             return (
                                 <option key={index} value={item}>
@@ -64,7 +83,7 @@ const SegmentEdit = memo(({ value: initialValue, index, id, airportCodeList, upd
                             );
                         })}
                     </select>
-                    <select onChange={onChangeTo} key={value.to} value={value.to}>
+                    <select onChange={onChangeTo} key={cellSegmentValue.to} value={cellSegmentValue.to}>
                         {airportCodeList.map((item, index) => {
                             return (
                                 <option key={index} value={item}>
@@ -73,6 +92,8 @@ const SegmentEdit = memo(({ value: initialValue, index, id, airportCodeList, upd
                             );
                         })}
                     </select>
+                    <input type="text" value={cellWeightValue.percentage} onChange={onWeightPercentageChange} />
+                    <input type="text" value={cellWeightValue.value} onChange={onWeightValueChange} />
                     <button className="ok" onClick={saveEdit} />
                     <button className="cancel" onClick={clearEdit} />
                 </div>
