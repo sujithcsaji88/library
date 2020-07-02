@@ -361,7 +361,7 @@ const App = memo(() => {
                 Cell: ({ row }) => {
                     return (
                         <div className="action">
-                            <RowOptions row={row} selectRowOptions={selectRowOptions} />
+                            <RowOptions updateCellData={updateCellData} row={row} airportCodeList={airportCodeList} selectRowOptions={selectRowOptions} />
                             <span className="expander" {...row.getToggleRowExpandedProps()}>
                                 {row.isExpanded ? (
                                     <i className="fa fa-angle-up" aria-hidden="true"></i>
