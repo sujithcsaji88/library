@@ -263,7 +263,9 @@ var Grid = React.memo(function (props) {
   })))), /*#__PURE__*/React__default.createElement("div", {
     className: "tableContainer table-outer",
     style: {
-      height: gridHeight ? gridHeight : "50vh"
+      height: gridHeight ? gridHeight : "50vh",
+      overflowX: "auto",
+      overflowY: "hidden"
     }
   }, /*#__PURE__*/React__default.createElement(AutoSizer, {
     disableWidth: true,
@@ -307,8 +309,10 @@ var Grid = React.memo(function (props) {
 
           listRef.current = list;
         },
-        className: "table-list",
-        height: height,
+        style: {
+          overflowX: "hidden"
+        },
+        height: height - 50,
         itemCount: rows.length,
         itemSize: function itemSize(index) {
           if (calculateRowHeight && typeof calculateRowHeight === "function") {
