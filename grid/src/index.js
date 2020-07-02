@@ -92,10 +92,10 @@ const Grid = memo((props) => {
         useFilters,
         useGlobalFilter,
         useSortBy,
+        useExpanded,
         useRowSelect,
         useFlexLayout,
         useResizeColumns,
-        useExpanded,
         (hooks) => {
             //Add checkbox for all rows in grid, with different properties for header row and body rows
             hooks.allColumns.push((columns) => [
