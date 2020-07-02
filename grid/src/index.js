@@ -22,6 +22,7 @@ const Grid = memo((props) => {
     const {
         title,
         gridHeight,
+        gridWidth,
         columns,
         data,
         globalSearchLogic,
@@ -162,7 +163,7 @@ const Grid = memo((props) => {
     //Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
     //React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
     return (
-        <div className="wrapper">
+        <div className="wrapper" style={{ width: gridWidth ? gridWidth : "100%" }}>
             <div className="table-filter">
                 <div className="results">
                     <div className="name">

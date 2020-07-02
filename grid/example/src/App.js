@@ -20,6 +20,9 @@ const App = memo(() => {
     //Get grid height value, which is a required value
     const gridHeight = "80vh";
 
+    //Get grid width value
+    const gridWidth = "100%";
+
     //Create an array of airports
     const airportCodeList = useMemo(
         () => [
@@ -556,6 +559,7 @@ const App = memo(() => {
                 <Grid
                     title="AWBs"
                     gridHeight={gridHeight}
+                    gridWidth={gridWidth}
                     columns={columns}
                     data={items}
                     globalSearchLogic={globalSearchLogic}
