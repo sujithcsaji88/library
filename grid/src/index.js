@@ -115,6 +115,20 @@ const Grid = memo((props) => {
         }
     );
 
+    //Export selected row data and pass it to the callback method
+    const bulkSelector = () => {
+        if (selectBulkData) {
+            selectBulkData(selectedFlatRows);
+        }
+    };
+
+    //This code is to handle the row height calculation while expanding a row or resizing a column
+    useEffect(() => {
+        if (listRef && listRef.current) {
+            listRef.current.resetAfterIndex(0, true);
+        }
+    });
+
     //Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
@@ -142,20 +156,6 @@ const Grid = memo((props) => {
         },
         [prepareRow, rows, renderExpandedContent]
     );
-
-    //Export selected row data and pass it to the callback method
-    const bulkSelector = () => {
-        if (selectBulkData) {
-            selectBulkData(selectedFlatRows);
-        }
-    };
-
-    //This code is to handle the row height calculation while expanding a row or resizing a column
-    useEffect(() => {
-        if (listRef && listRef.current) {
-            listRef.current.resetAfterIndex(0, true);
-        }
-    });
 
     //Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
     //Use properties and methods provided by react-table
