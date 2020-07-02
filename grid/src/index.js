@@ -15,7 +15,6 @@ import InfiniteLoader from "react-window-infinite-loader";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
-import "./tablestyles.css";
 
 const listRef = createRef(null);
 
@@ -181,7 +180,10 @@ const Grid = memo((props) => {
                     </div>
                 </div>
             </div>
-            <div className="tableContainer table-outer" style={{ height: gridHeight ? gridHeight : "50vh" }}>
+            <div
+                className="tableContainer table-outer"
+                style={{ height: gridHeight ? gridHeight : "50vh", overflowX: "auto", overflowY: "hidden" }}
+            >
                 <AutoSizer disableWidth disableResizing>
                     {({ height }) => (
                         <div {...getTableProps()} className="table">
@@ -221,8 +223,8 @@ const Grid = memo((props) => {
                                                 ref(list);
                                                 listRef.current = list;
                                             }}
-                                            className="table-list"
-                                            height={height}
+                                            style={{ overflowX: "hidden" }}
+                                            height={height - 50}
                                             itemCount={rows.length}
                                             itemSize={(index) => {
                                                 if (calculateRowHeight && typeof calculateRowHeight === "function") {
