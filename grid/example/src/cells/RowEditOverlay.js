@@ -1,4 +1,5 @@
 import React, { memo, useState } from "react";
+import getValueOfDate from '../utils/DateUtility';
 
 const divStyle = {
     backgroundColor: "#ccc",
@@ -40,7 +41,8 @@ const buttonDivStyle = {
     marginLeft: "1244px"
 }
 const RowEditOverLay = memo((props) => {
-    const { row, airportCodeList, updateCellData } = props;
+    const { row, airportCodeList, updateCellData, setOverLayClose } = props;
+    const { flight, segment, weight, sr, remarks} = row.original;
     const [value, setValue] = useState(row.original.flight);
     const [cellSegmentValue, setCellSegmentValue] = useState(row.original.segment);
     const [cellWeightValue, setCellWeightValue] = useState(row.original.weight);
@@ -98,24 +100,6 @@ const RowEditOverLay = memo((props) => {
         });
     };
 
-    /**
-     * Method to Convert Date to required Format as per value of type
-     * @param {String} inputDate 
-     * @param {String} type 
-     */
-    const getValueOfDate = (dateValue, type) => {
-        const date = new Date(dateValue);
-        if (type === "calendar") {
-            const dateTimeFormat = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
-            const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date);
-            return `${year}-${month}-${day}`;
-        } else {
-            const dateTimeFormat = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "2-digit" });
-            const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date);
-            return `${day}-${month}-${year}`;
-        }
-    };
-
     const saveChangesForRowEdit = (row) => {
         updateCellData(row.index, "flight", value);
         updateCellData(row.index, "segment", cellSegmentValue);
@@ -125,14 +109,13 @@ const RowEditOverLay = memo((props) => {
     }
     return (
         <div className="main-div" style={divStyle}>
-            {/* <ClickAwayListener onClickAway={closeOverlay}> */}
             <div className={`row-options-edit open`}>
                 <br />
                 <div className="edit-flight-no">
                     &nbsp;&nbsp;
                 <span>Flight No</span> &nbsp;
                     <input type="text" onChange={(e) => onChangeSaveFlightNo(e)}
-                        defaultValue={row.original.flight.flightno} />
+                        defaultValue={flight.flightno} />
                 </div>
                 <br />
                 <div className="edit-flight-date">
@@ -140,14 +123,14 @@ const RowEditOverLay = memo((props) => {
                     <span>
                         Date
                     </span> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="date" onChange={(e) => onDateChange(e)} defaultValue={getValueOfDate(row.original.flight.date, "calendar")} />
+                    <input type="date" onChange={(e) => onDateChange(e)} defaultValue={getValueOfDate(flight.date, "calendar")} />
                 </div>
                 <div className="edit-flight-segment" style={segmetEditStyle}>
                     <span>
                         From
                     </span>
                     &nbsp;
-                    <select defaultValue={row.original.segment.from} onChange={(e) => onChangeFrom(e)}>
+                    <select defaultValue={segment.from} onChange={(e) => onChangeFrom(e)}>
                         {airportCodeList.map((item, index) => {
                             return (
                                 <option key={index} value={item}>
@@ -161,7 +144,7 @@ const RowEditOverLay = memo((props) => {
                         To
                     </span>
                     &nbsp;
-                    <select defaultValue={row.original.segment.to} onChange={(e) => onChangeTo(e)}>
+                    <select defaultValue={segment.to} onChange={(e) => onChangeTo(e)}>
                         {airportCodeList.map((item, index) => {
                             return (
                                 <option key={index} value={item}>
@@ -175,14 +158,14 @@ const RowEditOverLay = memo((props) => {
                     <div className="edit-weight-percentage-value" style={weightPercentageStyle}>
                         <span>Weight Percentage</span>
                     &nbsp;
-                <input type="text" defaultValue={row.original.weight.percentage}
+                <input type="text" defaultValue={weight.percentage}
                             onChange={(e) => onWeightPercentageChange(e)} />
                     </div>
                     <div className="edit-weight-value-value" style={weightValueStyle}>
                         <span>Weight Value</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="text" onChange={(e) => onWeightValueChange(e)}
-                            defaultValue={row.original.weight.value} />
+                            defaultValue={weight.value} />
                     </div>
                 </div>
 
@@ -192,21 +175,20 @@ const RowEditOverLay = memo((props) => {
                 </span>
                 &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="text" onChange={(e)=>onChangeSaveSr(e)} defaultValue={row.original.sr} />
+                <input type="text" onChange={(e)=>onChangeSaveSr(e)} defaultValue={sr} />
                 </div>
                 <div className="edit-remarks-value" style={editRemarksStyle}>
                     <span>
                         Remarks
                 </span>
                     <br />
-                    <textarea onChange={(e)=>onChangeSaveRemarks(e)} defaultValue={row.original.remarks} rows="3" cols="80"></textarea>
+                    <textarea onChange={(e)=>onChangeSaveRemarks(e)} defaultValue={remarks} rows="3" cols="80"></textarea>
                 </div>
             </div>
-            {/* </ClickAwayListener> */}
             <div className="cancel-save-buttons" style={buttonDivStyle}>
                 <button className="save-Button" onClick={() => saveChangesForRowEdit(row)}>Save</button>
                     &nbsp;&nbsp;&nbsp;
-            <button className="cancel-Button" onClick={props.setOverLayClose}>Cancel</button>
+            <button className="cancel-Button" onClick={setOverLayClose}>Cancel</button>
             </div>
         </div>
     );

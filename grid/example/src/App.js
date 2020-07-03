@@ -361,7 +361,7 @@ const App = memo(() => {
                 Cell: ({ row }) => {
                     return (
                         <div className="action">
-                            <RowOptions updateCellData={updateCellData} row={row} airportCodeList={airportCodeList} selectRowOptions={selectRowOptions} />
+                            <RowOptions updateCellData={updateCellData} row={row} airportCodeList={airportCodeList} />
                             <span className="expander" {...row.getToggleRowExpandedProps()}>
                                 {row.isExpanded ? (
                                     <i className="fa fa-angle-up" aria-hidden="true"></i>
@@ -521,10 +521,6 @@ const App = memo(() => {
         );
     };
 
-    //Gets called when Row option is selected
-    const selectRowOptions = (row) => {
-        console.log(row);
-    };
 
     //Gets called when row bulk edit is done
     const selectBulkData = (selectedRows) => {

@@ -6,14 +6,10 @@ import RowEdit from "../images/RowEdit.svg";
 import RowPin from "../images/RowPin.png";
 
 const RowOptions = memo((props) => {
-    const { row, selectRowOptions } = props;
     const [isOpen, setOpen] = useState(false);
     const [isOverLayOpen, setOverLayOpen] = useState(false);
     const openOverlay = () => {
         setOpen(true);
-        if (selectRowOptions) {
-            selectRowOptions(row);
-        }
     };
 
     const closeOverlay = () => {
@@ -21,7 +17,6 @@ const RowOptions = memo((props) => {
     };
 
     const showEditOverLay = () => {
-        console.log("showEditOverLay");
         setOpen(false);
         setOverLayOpen(true)
     }
