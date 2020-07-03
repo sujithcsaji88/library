@@ -1,24 +1,31 @@
 import React, { useState, memo } from "react";
 import ClickAwayListener from "react-click-away-listener";
+import RowEditOverLay from '../cells/RowEditOverlay'
 import RowDelete from "../images/RowDelete.svg";
 import RowEdit from "../images/RowEdit.svg";
 import RowPin from "../images/RowPin.png";
 
 const RowOptions = memo((props) => {
-    const { row, selectRowOptions } = props;
     const [isOpen, setOpen] = useState(false);
+    const [isOverLayOpen, setOverLayOpen] = useState(false);
     const openOverlay = () => {
         setOpen(true);
-        if (selectRowOptions) {
-            selectRowOptions(row);
-        }
     };
 
     const closeOverlay = () => {
         setOpen(false);
     };
 
-    return (
+    const showEditOverLay = () => {
+        setOpen(false);
+        setOverLayOpen(true)
+    }
+
+    const setOverLayClose = () => {
+        setOverLayOpen(false)
+    }
+
+    let htmlReturnValue = isOverLayOpen === false ?
         <ClickAwayListener onClickAway={closeOverlay}>
             <div className="row-options-edit-wrap">
                 <span className="icon-edit" onClick={openOverlay}>
@@ -29,7 +36,7 @@ const RowOptions = memo((props) => {
                 <div className={`row-options-edit ${isOpen ? "open" : "close"}`}>
                     <ul>
                         <li>
-                            <span>
+                            <span onClick={showEditOverLay}>
                                 <i>
                                     <img src={RowEdit} alt="cargo" />
                                 </i>
@@ -58,7 +65,14 @@ const RowOptions = memo((props) => {
                     </span>
                 </div>
             </div>
+        </ClickAwayListener> :
+        <ClickAwayListener onClickAway={setOverLayClose}>
+            <RowEditOverLay setOverLayClose={setOverLayClose}
+                isOpenOverLay={true} {...props} />
         </ClickAwayListener>
+
+    return (
+        htmlReturnValue
     );
 });
 

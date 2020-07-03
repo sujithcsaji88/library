@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
+import getDateValue from '../utils/DateUtility';
 
 const FlightEdit = memo(({ value: initialValue, row: { index }, column: { id }, updateCellData }) => {
     const [value, setValue] = useState(initialValue);
@@ -33,19 +34,6 @@ const FlightEdit = memo(({ value: initialValue, row: { index }, column: { id }, 
     const clearEdit = () => {
         setValue(oldValue);
         setEdit(false);
-    };
-
-    const getDateValue = (dateValue, type) => {
-        const date = new Date(dateValue);
-        if (type === "calendar") {
-            const dateTimeFormat = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
-            const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date);
-            return `${year}-${month}-${day}`;
-        } else {
-            const dateTimeFormat = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "2-digit" });
-            const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date);
-            return `${day}-${month}-${year}`;
-        }
     };
 
     useEffect(() => {
