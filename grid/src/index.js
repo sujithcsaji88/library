@@ -87,7 +87,8 @@ const Grid = memo((props) => {
             },
             autoResetSelectedRows: false,
             autoResetSortBy: false,
-            autoResetFilters: false
+            autoResetFilters: false,
+            autoResetExpanded: false
         },
         useFilters,
         useGlobalFilter,
