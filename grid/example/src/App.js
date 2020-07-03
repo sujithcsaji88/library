@@ -18,7 +18,7 @@ const App = memo(() => {
     const isDesktop = window.innerWidth > 1024;
 
     //Get grid height value, which is a required value
-    const gridHeight = "80vh";
+    const gridHeight = "84vh";
 
     //Get grid width value
     const gridWidth = "100%";

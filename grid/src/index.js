@@ -225,7 +225,7 @@ const Grid = memo((props) => {
                                                 listRef.current = list;
                                             }}
                                             style={{ overflowX: "hidden" }}
-                                            height={height - 50}
+                                            height={height - 60}
                                             itemCount={rows.length}
                                             itemSize={(index) => {
                                                 if (calculateRowHeight && typeof calculateRowHeight === "function") {
