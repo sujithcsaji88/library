@@ -361,7 +361,12 @@ const App = memo(() => {
                 Cell: ({ row }) => {
                     return (
                         <div className="action">
-                            <RowOptions deleteRowFromGrid={deleteRowFromGrid} updateCellData={updateCellData} row={row} airportCodeList={airportCodeList} />
+                            <RowOptions
+                                deleteRowFromGrid={deleteRowFromGrid}
+                                updateCellData={updateCellData}
+                                row={row}
+                                airportCodeList={airportCodeList}
+                            />
                             <span className="expander" {...row.getToggleRowExpandedProps()}>
                                 {row.isExpanded ? (
                                     <i className="fa fa-angle-up" aria-hidden="true"></i>
@@ -521,16 +526,14 @@ const App = memo(() => {
         );
     };
 
-//get triggered when one row item is deleted
-    const deleteRowFromGrid=(rowIndexToBeDeleted)=>{
-        setItems((old) => 
+    //Gets triggered when one row item is deleted
+    const deleteRowFromGrid = (rowIndexToBeDeleted) => {
+        setItems((old) =>
             old.filter((row, index) => {
-            return index !== rowIndexToBeDeleted
-        }   
-        )
-    );   
-}
-
+                return index !== rowIndexToBeDeleted;
+            })
+        );
+    };
 
     //Gets called when page scroll reaches the bottom of the grid.
     //Fetch the next set of data and append it to the variable holding grid data and update the state value.

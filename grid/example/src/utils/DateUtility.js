@@ -1,8 +1,8 @@
 /**
-* Utils Method to Convert Date to required Format as per value of type
-* @param {String} inputDate 
-* @param {String} type 
-*/
+ * Utils Method to Convert Date to required Format as per value of type
+ * @param {String} inputDate
+ * @param {String} type
+ */
 const getValueOfDate = (dateValue, type) => {
     const date = new Date(dateValue);
     if (type === "calendar") {
@@ -16,4 +16,4 @@ const getValueOfDate = (dateValue, type) => {
     }
 };
 
-export default getValueOfDate
+export default getValueOfDate;

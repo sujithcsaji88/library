@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
-import getDateValue from '../utils/DateUtility';
+import getDateValue from "../utils/DateUtility";
 
 const FlightEdit = memo(({ value: initialValue, row: { index }, column: { id }, updateCellData }) => {
     const [value, setValue] = useState(initialValue);

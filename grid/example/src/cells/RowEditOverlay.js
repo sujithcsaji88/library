@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import getValueOfDate from '../utils/DateUtility';
+import getValueOfDate from "../utils/DateUtility";
 
 const divStyle = {
     backgroundColor: "#ccc",
@@ -7,56 +7,55 @@ const divStyle = {
     width: "1365px",
     marginLeft: "-1370px",
     marginTop: "-5px"
-}
+};
 
 const segmetEditStyle = {
     marginLeft: "240px",
     marginTop: "-60px"
-}
+};
 
 const weightPercentageStyle = {
     width: "25%",
     marginLeft: "410px",
-    marginTop: "-20px",
-}
+    marginTop: "-20px"
+};
 
 const weightValueStyle = {
     width: "25%",
     marginLeft: "410px",
-    marginTop: "6px",
-}
+    marginTop: "6px"
+};
 const srStyle = {
     marginLeft: "410px",
     marginTop: "4px"
-}
+};
 
 const editRemarksStyle = {
     marginTop: "-75px",
     marginLeft: "700px"
-}
+};
 
 const buttonDivStyle = {
     width: "15%",
     marginTop: "-80px",
     marginLeft: "1244px"
-}
+};
 const RowEditOverLay = memo((props) => {
     const { row, airportCodeList, updateCellData, setOverLayClose } = props;
-    const { flight, segment, weight, sr, remarks} = row.original;
+    const { flight, segment, weight, sr, remarks } = row.original;
     const [value, setValue] = useState(row.original.flight);
     const [cellSegmentValue, setCellSegmentValue] = useState(row.original.segment);
     const [cellWeightValue, setCellWeightValue] = useState(row.original.weight);
     const [srValue, setSrValue] = useState(row.original.sr);
     const [remarksValue, setRemarksValue] = useState(row.original.remarks);
 
+    const onChangeSaveRemarks = (e) => {
+        setRemarksValue(e.target.value);
+    };
 
-    const onChangeSaveRemarks=(e)=>{
-    setRemarksValue(e.target.value)
-    }
     const onChangeSaveSr = (e) => {
         setSrValue(e.target.value);
     };
-
 
     const onWeightPercentageChange = (e) => {
         setCellWeightValue({
@@ -91,7 +90,7 @@ const RowEditOverLay = memo((props) => {
             ...value,
             flightno: e.target.value
         });
-    }
+    };
 
     const onDateChange = (e) => {
         setValue({
@@ -106,29 +105,25 @@ const RowEditOverLay = memo((props) => {
         updateCellData(row.index, "weight", cellWeightValue);
         updateCellData(row.index, "sr", srValue);
         updateCellData(row.index, "remarks", remarksValue);
-    }
+    };
+
     return (
         <div className="main-div" style={divStyle}>
             <div className={`row-options-edit open`}>
                 <br />
                 <div className="edit-flight-no">
                     &nbsp;&nbsp;
-                <span>Flight No</span> &nbsp;
-                    <input type="text" onChange={(e) => onChangeSaveFlightNo(e)}
-                        defaultValue={flight.flightno} />
+                    <span>Flight No</span> &nbsp;
+                    <input type="text" onChange={(e) => onChangeSaveFlightNo(e)} defaultValue={flight.flightno} />
                 </div>
                 <br />
                 <div className="edit-flight-date">
                     &nbsp;&nbsp;
-                    <span>
-                        Date
-                    </span> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span>Date</span> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="date" onChange={(e) => onDateChange(e)} defaultValue={getValueOfDate(flight.date, "calendar")} />
                 </div>
                 <div className="edit-flight-segment" style={segmetEditStyle}>
-                    <span>
-                        From
-                    </span>
+                    <span>From</span>
                     &nbsp;
                     <select defaultValue={segment.from} onChange={(e) => onChangeFrom(e)}>
                         {airportCodeList.map((item, index) => {
@@ -140,9 +135,7 @@ const RowEditOverLay = memo((props) => {
                         })}
                     </select>
                     &nbsp;&nbsp;&nbsp;
-                    <span>
-                        To
-                    </span>
+                    <span>To</span>
                     &nbsp;
                     <select defaultValue={segment.to} onChange={(e) => onChangeTo(e)}>
                         {airportCodeList.map((item, index) => {
@@ -157,38 +150,36 @@ const RowEditOverLay = memo((props) => {
                 <div className="edit-weight-value">
                     <div className="edit-weight-percentage-value" style={weightPercentageStyle}>
                         <span>Weight Percentage</span>
-                    &nbsp;
-                <input type="text" defaultValue={weight.percentage}
-                            onChange={(e) => onWeightPercentageChange(e)} />
+                        &nbsp;
+                        <input type="text" defaultValue={weight.percentage} onChange={(e) => onWeightPercentageChange(e)} />
                     </div>
                     <div className="edit-weight-value-value" style={weightValueStyle}>
                         <span>Weight Value</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="text" onChange={(e) => onWeightValueChange(e)}
-                            defaultValue={weight.value} />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" onChange={(e) => onWeightValueChange(e)} defaultValue={weight.value} />
                     </div>
                 </div>
 
                 <div className="edit-sr-value" style={srStyle}>
-                    <span>
-                        SR
-                </span>
-                &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="text" onChange={(e)=>onChangeSaveSr(e)} defaultValue={sr} />
+                    <span>SR</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="text" onChange={(e) => onChangeSaveSr(e)} defaultValue={sr} />
                 </div>
                 <div className="edit-remarks-value" style={editRemarksStyle}>
-                    <span>
-                        Remarks
-                </span>
+                    <span>Remarks</span>
                     <br />
-                    <textarea onChange={(e)=>onChangeSaveRemarks(e)} defaultValue={remarks} rows="3" cols="80"></textarea>
+                    <textarea onChange={(e) => onChangeSaveRemarks(e)} defaultValue={remarks} rows="3" cols="80"></textarea>
                 </div>
             </div>
             <div className="cancel-save-buttons" style={buttonDivStyle}>
-                <button className="save-Button" onClick={() => saveChangesForRowEdit(row)}>Save</button>
-                    &nbsp;&nbsp;&nbsp;
-            <button className="cancel-Button" onClick={setOverLayClose}>Cancel</button>
+                <button className="save-Button" onClick={() => saveChangesForRowEdit(row)}>
+                    Save
+                </button>
+                &nbsp;&nbsp;&nbsp;
+                <button className="cancel-Button" onClick={setOverLayClose}>
+                    Cancel
+                </button>
             </div>
         </div>
     );
