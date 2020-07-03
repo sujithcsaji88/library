@@ -361,7 +361,7 @@ const App = memo(() => {
                 Cell: ({ row }) => {
                     return (
                         <div className="action">
-                            <RowOptions updateCellData={updateCellData} row={row} airportCodeList={airportCodeList} />
+                            <RowOptions deleteRowFromGrid={deleteRowFromGrid} updateCellData={updateCellData} row={row} airportCodeList={airportCodeList} />
                             <span className="expander" {...row.getToggleRowExpandedProps()}>
                                 {row.isExpanded ? (
                                     <i className="fa fa-angle-up" aria-hidden="true"></i>
@@ -521,11 +521,16 @@ const App = memo(() => {
         );
     };
 
+//get triggered when one row item is deleted
+    const deleteRowFromGrid=(rowIndexToBeDeleted)=>{
+        setItems((old) => 
+            old.filter((row, index) => {
+            return index !== rowIndexToBeDeleted
+        }   
+        )
+    );   
+}
 
-    //Gets called when row bulk edit is done
-    const selectBulkData = (selectedRows) => {
-        console.log(selectedRows);
-    };
 
     //Gets called when page scroll reaches the bottom of the grid.
     //Fetch the next set of data and append it to the variable holding grid data and update the state value.
@@ -560,7 +565,6 @@ const App = memo(() => {
                     data={items}
                     globalSearchLogic={globalSearchLogic}
                     updateCellData={updateCellData}
-                    selectBulkData={selectBulkData}
                     calculateRowHeight={calculateRowHeight}
                     renderExpandedContent={renderExpandedContent}
                     hasNextPage={hasNextPage}
