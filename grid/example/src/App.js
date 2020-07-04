@@ -528,11 +528,17 @@ const App = memo(() => {
 
     //Gets triggered when one row item is deleted
     const deleteRowFromGrid = (rowIndexToBeDeleted) => {
+        console.log("Deleting row with index: " + rowIndexToBeDeleted);
         setItems((old) =>
             old.filter((row, index) => {
                 return index !== rowIndexToBeDeleted;
             })
         );
+    };
+
+    //Gets called when row bulk edit is done
+    const selectBulkData = (selectedRows) => {
+        console.log(selectedRows);
     };
 
     //Gets called when page scroll reaches the bottom of the grid.
@@ -568,6 +574,7 @@ const App = memo(() => {
                     data={items}
                     globalSearchLogic={globalSearchLogic}
                     updateCellData={updateCellData}
+                    selectBulkData={selectBulkData}
                     calculateRowHeight={calculateRowHeight}
                     renderExpandedContent={renderExpandedContent}
                     hasNextPage={hasNextPage}
