@@ -85,10 +85,11 @@ const Grid = memo((props) => {
                     return rows;
                 }
             },
-            autoResetSelectedRows: false,
-            autoResetSortBy: false,
             autoResetFilters: false,
-            autoResetExpanded: false
+            autoResetGlobalFilter: false,
+            autoResetSortBy: false,
+            autoResetExpanded: false,
+            autoResetSelectedRows: false
         },
         useFilters,
         useGlobalFilter,
