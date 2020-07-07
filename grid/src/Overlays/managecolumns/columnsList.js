@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import { ItemTypes } from "./ItemTypes";
-import { ColumnItem } from "./columnItem";
+import ColumnItem from "./columnItem";
 
 const ColumnsArray = [
     {
@@ -142,11 +142,11 @@ const ColumnsArray = [
     }
 ];
 
-export const ColumnsList = () => {
+const ColumnsList = () => {
     const [columns, setColumns] = useState(ColumnsArray);
 
     const moveColumn = (id, atIndex) => {
-        const { column, index } = moveColumn(id);
+        const { column, index } = findColumn(id);
         setColumns(
             update(columns, {
                 $splice: [
@@ -157,7 +157,7 @@ export const ColumnsList = () => {
         );
     };
 
-    const moveColumn = (id) => {
+    const findColumn = (id) => {
         const column = columns.filter((c) => `${c.id}` === id)[0];
         return {
             column,
@@ -176,10 +176,12 @@ export const ColumnsList = () => {
                         id={`${column.id}`}
                         text={column.text}
                         moveColumn={moveColumn}
-                        moveColumn={moveColumn}
+                        findColumn={findColumn}
                     />
                 ))}
             </div>
         </React.Fragment>
     );
 };
+
+export default ColumnsList;

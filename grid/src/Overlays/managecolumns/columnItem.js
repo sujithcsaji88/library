@@ -6,7 +6,7 @@ const style = {
     cursor: "move"
 };
 
-export const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
+const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
     const originalIndex = findColumn(id).index;
 
     const [{ isDragging }, drag] = useDrag({
@@ -42,3 +42,5 @@ export const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
         </div>
     );
 };
+
+export default ColumnItem;
