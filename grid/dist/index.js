@@ -6,6 +6,9 @@ var reactTable = require('react-table');
 var reactWindow = require('react-window');
 var AutoSizer = _interopDefault(require('react-virtualized-auto-sizer'));
 var InfiniteLoader = _interopDefault(require('react-window-infinite-loader'));
+var reactDnd = require('react-dnd');
+var reactDndHtml5Backend = require('react-dnd-html5-backend');
+var update = _interopDefault(require('immutability-helper'));
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -112,10 +115,449 @@ var GlobalFilter = React.memo(function (_ref) {
   }));
 });
 
+var ItemTypes = {
+  COLUMN: "column"
+};
+
+var style = {
+  cursor: "move"
+};
+
+var ColumnItem = function ColumnItem(_ref) {
+  var id = _ref.id,
+      text = _ref.text,
+      moveColumn = _ref.moveColumn,
+      findColumn = _ref.findColumn;
+  var originalIndex = findColumn(id).index;
+
+  var _useDrag = reactDnd.useDrag({
+    item: {
+      type: ItemTypes.COLUMN,
+      id: id,
+      originalIndex: originalIndex
+    },
+    collect: function collect(monitor) {
+      return {
+        isDragging: monitor.isDragging()
+      };
+    },
+    end: function end(dropResult, monitor) {
+      var _monitor$getItem = monitor.getItem(),
+          droppedId = _monitor$getItem.id,
+          originalIndex = _monitor$getItem.originalIndex;
+
+      var didDrop = monitor.didDrop();
+
+      if (!didDrop) {
+        moveColumn(droppedId, originalIndex);
+      }
+    }
+  }),
+      isDragging = _useDrag[0].isDragging,
+      drag = _useDrag[1];
+
+  var _useDrop = reactDnd.useDrop({
+    accept: ItemTypes.COLUMN,
+    canDrop: function canDrop() {
+      return false;
+    },
+    hover: function hover(_ref2) {
+      var draggedId = _ref2.id;
+
+      if (draggedId !== id) {
+        var _findColumn = findColumn(id),
+            overIndex = _findColumn.index;
+
+        moveColumn(draggedId, overIndex);
+      }
+    }
+  }),
+      drop = _useDrop[1];
+
+  var opacity = isDragging ? 0 : 1;
+  return /*#__PURE__*/React__default.createElement("div", {
+    ref: function ref(node) {
+      return drag(drop(node));
+    },
+    style: _extends({}, style, {
+      opacity: opacity
+    })
+  }, text);
+};
+
+var ColumnsArray = [{
+  id: 1,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 1"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 2,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 2"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 3,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 3"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 4,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 4"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 5,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 5"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 6,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 6"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 7,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 7"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 8,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 8"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}, {
+  id: 9,
+  text: /*#__PURE__*/React__default.createElement("div", {
+    className: "column__reorder"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-align-justify",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: ""
+  }, "AWB Number 9"), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__wrap"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "column__checkbox"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__txt"
+  }, "Pin Left")))
+}];
+
+var ColumnsList = function ColumnsList() {
+  var _useState = React.useState(ColumnsArray),
+      columns = _useState[0],
+      setColumns = _useState[1];
+
+  var moveColumn = function moveColumn(id, atIndex) {
+    var _findColumn = findColumn(id),
+        column = _findColumn.column,
+        index = _findColumn.index;
+
+    setColumns(update(columns, {
+      $splice: [[index, 1], [atIndex, 0, column]]
+    }));
+  };
+
+  var findColumn = function findColumn(id) {
+    var column = columns.filter(function (c) {
+      return "" + c.id === id;
+    })[0];
+    return {
+      column: column,
+      index: columns.indexOf(column)
+    };
+  };
+
+  var _useDrop = reactDnd.useDrop({
+    accept: ItemTypes.COLUMN
+  }),
+      drop = _useDrop[1];
+
+  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+    ref: drop,
+    style: {
+      display: "flex",
+      flexWrap: "wrap"
+    }
+  }, columns.map(function (column) {
+    return /*#__PURE__*/React__default.createElement(ColumnItem, {
+      key: column.id,
+      id: "" + column.id,
+      text: column.text,
+      moveColumn: moveColumn,
+      findColumn: findColumn
+    });
+  })));
+};
+
+var ColumnReordering = function ColumnReordering(props) {
+  var isManageColumnOpen = props.isManageColumnOpen,
+      manageColumns = props.manageColumns;
+
+  if (isManageColumnOpen) {
+    return /*#__PURE__*/React__default.createElement("div", {
+      className: "columns--grid"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__grid"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__chooser"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__header"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: ""
+    }, /*#__PURE__*/React__default.createElement("strong", null, "Column Chooser"))), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__body"
+    }, /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("input", {
+      type: "text",
+      placeholder: "Search column",
+      className: "custom__ctrl"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__selectAll"
+    }, /*#__PURE__*/React__default.createElement("a", {
+      href: "",
+      className: "column__selectTxt"
+    }, "Select All")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox"
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, "AWB Number")))), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__settings"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__header"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__headerTxt"
+    }, /*#__PURE__*/React__default.createElement("strong", null, "Column Setting")), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__close",
+      onClick: manageColumns
+    }, /*#__PURE__*/React__default.createElement("i", {
+      className: "fa fa-times",
+      "aria-hidden": "true"
+    }))), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__body"
+    }, /*#__PURE__*/React__default.createElement(reactDnd.DndProvider, {
+      backend: reactDndHtml5Backend.HTML5Backend
+    }, /*#__PURE__*/React__default.createElement(ColumnsList, null))), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__footer"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__btns"
+    }, /*#__PURE__*/React__default.createElement("button", {
+      className: "btns"
+    }, "Reset"), /*#__PURE__*/React__default.createElement("button", {
+      className: "btns",
+      onClick: manageColumns
+    }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
+      className: "btns btns__save"
+    }, "Save"))))));
+  } else {
+    return /*#__PURE__*/React__default.createElement("div", null);
+  }
+};
+
 var listRef = React.createRef(null);
 var Grid = React.memo(function (props) {
   var title = props.title,
       gridHeight = props.gridHeight,
+      gridWidth = props.gridWidth,
       columns = props.columns,
       data = props.data,
       globalSearchLogic = props.globalSearchLogic,
@@ -151,6 +593,14 @@ var Grid = React.memo(function (props) {
     setFilterOpen(!isFilterOpen);
   };
 
+  var _useState2 = React.useState(false),
+      isManageColumnOpen = _useState2[0],
+      setManageColumnOpen = _useState2[1];
+
+  var manageColumns = function manageColumns() {
+    setManageColumnOpen(!isManageColumnOpen);
+  };
+
   var defaultColumn = React.useMemo(function () {
     return {
       Filter: DefaultColumnFilter
@@ -169,10 +619,12 @@ var Grid = React.memo(function (props) {
         return rows;
       }
     },
-    autoResetSelectedRows: false,
+    autoResetFilters: false,
+    autoResetGlobalFilter: false,
     autoResetSortBy: false,
-    autoResetFilters: false
-  }, reactTable.useFilters, reactTable.useGlobalFilter, reactTable.useSortBy, reactTable.useRowSelect, reactTable.useFlexLayout, reactTable.useResizeColumns, reactTable.useExpanded, function (hooks) {
+    autoResetExpanded: false,
+    autoResetSelectedRows: false
+  }, reactTable.useFilters, reactTable.useGlobalFilter, reactTable.useSortBy, reactTable.useExpanded, reactTable.useRowSelect, reactTable.useFlexLayout, reactTable.useResizeColumns, function (hooks) {
     hooks.allColumns.push(function (columns) {
       return [{
         id: "selection",
@@ -202,6 +654,17 @@ var Grid = React.memo(function (props) {
       state = _useTable.state,
       setGlobalFilter = _useTable.setGlobalFilter;
 
+  var bulkSelector = function bulkSelector() {
+    if (selectBulkData) {
+      selectBulkData(selectedFlatRows);
+    }
+  };
+
+  React.useEffect(function () {
+    if (listRef && listRef.current) {
+      listRef.current.resetAfterIndex(0, true);
+    }
+  });
   var RenderRow = React.useCallback(function (_ref3) {
     var index = _ref3.index,
         style = _ref3.style;
@@ -224,20 +687,11 @@ var Grid = React.memo(function (props) {
       }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
     }
   }, [prepareRow, rows, renderExpandedContent]);
-
-  var bulkSelector = function bulkSelector() {
-    if (selectBulkData) {
-      selectBulkData(selectedFlatRows);
-    }
-  };
-
-  React.useEffect(function () {
-    if (listRef && listRef.current) {
-      listRef.current.resetAfterIndex(0, true);
-    }
-  });
   return /*#__PURE__*/React__default.createElement("div", {
-    className: "wrapper"
+    className: "wrapper",
+    style: {
+      width: gridWidth ? gridWidth : "100%"
+    }
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "table-filter"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -246,7 +700,10 @@ var Grid = React.memo(function (props) {
     className: "name"
   }, /*#__PURE__*/React__default.createElement("strong", null, rows.length), /*#__PURE__*/React__default.createElement("span", null, " ", title ? title : "Rows"))), /*#__PURE__*/React__default.createElement("div", {
     className: "filter-utilities"
-  }, /*#__PURE__*/React__default.createElement(GlobalFilter, {
+  }, /*#__PURE__*/React__default.createElement(ColumnReordering, {
+    isManageColumnOpen: isManageColumnOpen,
+    manageColumns: manageColumns
+  }), /*#__PURE__*/React__default.createElement(GlobalFilter, {
     globalFilter: state.globalFilter,
     setGlobalFilter: setGlobalFilter
   }), /*#__PURE__*/React__default.createElement("div", {
@@ -259,7 +716,14 @@ var Grid = React.memo(function (props) {
     className: "filter-icon bulk-select",
     onClick: bulkSelector
   }, /*#__PURE__*/React__default.createElement("i", {
-    className: "fa fa-pencil-square-o"
+    className: "fa fa-pencil-square-o",
+    "aria-hidden": "true"
+  })), /*#__PURE__*/React__default.createElement("div", {
+    className: "filter-icon manage-columns",
+    onClick: manageColumns
+  }, /*#__PURE__*/React__default.createElement("i", {
+    className: "fa fa-columns",
+    "aria-hidden": "true"
   })))), /*#__PURE__*/React__default.createElement("div", {
     className: "tableContainer table-outer",
     style: {
@@ -312,7 +776,7 @@ var Grid = React.memo(function (props) {
         style: {
           overflowX: "hidden"
         },
-        height: height - 50,
+        height: height - 60,
         itemCount: rows.length,
         itemSize: function itemSize(index) {
           if (calculateRowHeight && typeof calculateRowHeight === "function") {
