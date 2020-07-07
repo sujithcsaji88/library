@@ -627,7 +627,10 @@ const Grid = memo(props => {
     style: {
       width: gridWidth ? gridWidth : "100%"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("link", {
+    rel: "stylesheet",
+    href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  }), /*#__PURE__*/React.createElement("div", {
     className: "table-filter"
   }, /*#__PURE__*/React.createElement("div", {
     className: "results"
