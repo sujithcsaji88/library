@@ -9,7 +9,9 @@ const ColumnsArray = [
         id: 1,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 1</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -24,7 +26,9 @@ const ColumnsArray = [
         id: 2,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 2</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -39,7 +43,9 @@ const ColumnsArray = [
         id: 3,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 3</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -54,7 +60,9 @@ const ColumnsArray = [
         id: 4,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 4</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -69,7 +77,9 @@ const ColumnsArray = [
         id: 5,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 5</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -84,7 +94,9 @@ const ColumnsArray = [
         id: 6,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 6</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -99,7 +111,9 @@ const ColumnsArray = [
         id: 7,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 7</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -114,7 +128,9 @@ const ColumnsArray = [
         id: 8,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 8</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
@@ -129,7 +145,9 @@ const ColumnsArray = [
         id: 9,
         text: (
             <div className="column__reorder">
-                <div className=""></div>
+                <div className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
                 <div className="">AWB Number 9</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">

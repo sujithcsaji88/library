@@ -92,7 +92,9 @@ const ColumnReordering = (props) => {
                             <div className="column__headerTxt">
                                 <strong>Column Setting</strong>
                             </div>
-                            <div className="column__close"></div>
+                            <div className="column__close" onClick={manageColumns}>
+                                <i className="fa fa-times" aria-hidden="true"></i>
+                            </div>
                         </div>
                         <div className="column__body">
                             <DndProvider backend={HTML5Backend}>
