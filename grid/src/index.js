@@ -15,6 +15,7 @@ import InfiniteLoader from "react-window-infinite-loader";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
+import ColumnReordering from "./Overlays/managecolumns";
 
 const listRef = createRef(null);
 
@@ -51,6 +52,14 @@ const Grid = memo((props) => {
     //Toggle column filter state value based on UI clicks
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
+    };
+
+    //Local state value for hiding/unhiding column management overlay
+    const [isManageColumnOpen, setManageColumnOpen] = useState(false);
+
+    //Toggle column manage overlay show/hide state value based on UI clicks
+    const manageColumns = () => {
+        setManageColumnOpen(!isManageColumnOpen);
     };
 
     //Column filter added for all columns by default
@@ -174,12 +183,16 @@ const Grid = memo((props) => {
                     </div>
                 </div>
                 <div className="filter-utilities">
+                    <ColumnReordering isManageColumnOpen={isManageColumnOpen} manageColumns={manageColumns} />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>
                         <i className="fa fa-filter" aria-hidden="true"></i>
                     </div>
                     <div className="filter-icon bulk-select" onClick={bulkSelector}>
-                        <i className="fa fa-pencil-square-o"></i>
+                        <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </div>
+                    <div className="filter-icon manage-columns" onClick={manageColumns}>
+                        <i className="fa fa-columns" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
