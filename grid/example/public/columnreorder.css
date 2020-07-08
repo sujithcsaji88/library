@@ -9,6 +9,7 @@
     left: 0px;
     transition: 0.5s;
     background: #fff;
+    width: 80%;
 }
 .columns--grid ::-webkit-scrollbar {
     width: 6px;
@@ -72,7 +73,6 @@
     flex-wrap: wrap;
     overflow-y: scroll;
     height: 380px;
-    width: 868px;
 }
 .columns--grid .column__grid .column__settings .column__body .column__reorder {
     border: 1px solid #9ea2a5;
@@ -81,6 +81,7 @@
     height: 180px;
     margin: 10px 5px;
     padding: 10px;
+    min-width: 100px;
 }
 .columns--grid .column__grid .column__settings .column__body .column__reorder .column__wrap {
     display: flex;
