@@ -1,10 +1,16 @@
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
 import ColumnsList from "./columnsList";
 
 const ColumnReordering = (props) => {
     const { isManageColumnOpen, manageColumns } = props;
+
+    const opts = {
+        enableMouseEvents: true,
+        preview: true
+    };
 
     if (isManageColumnOpen) {
         return (
@@ -97,7 +103,7 @@ const ColumnReordering = (props) => {
                             </div>
                         </div>
                         <div className="column__body">
-                            <DndProvider backend={HTML5Backend}>
+                            <DndProvider backend={TouchBackend} options={opts}>
                                 <ColumnsList />
                             </DndProvider>
                         </div>
