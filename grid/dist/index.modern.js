@@ -5,6 +5,8 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
+import MultiBackend, { TouchTransition } from 'react-dnd-multi-backend';
 import update from 'immutability-helper';
 
 const RowSelector = memo(forwardRef(({
@@ -127,7 +129,7 @@ const ColumnItem = ({
     }
 
   });
-  const opacity = isDragging ? 0 : 1;
+  const opacity = isDragging ? 0.5 : 1;
   return /*#__PURE__*/React.createElement("div", {
     ref: node => drag(drop(node)),
     style: { ...style,
@@ -362,6 +364,18 @@ const ColumnReordering = props => {
     isManageColumnOpen,
     manageColumns
   } = props;
+  const HTML5toTouch = {
+    backends: [{
+      backend: HTML5Backend
+    }, {
+      backend: TouchBackend,
+      options: {
+        enableMouseEvents: true
+      },
+      preview: true,
+      transition: TouchTransition
+    }]
+  };
 
   if (isManageColumnOpen) {
     return /*#__PURE__*/React.createElement("div", {
@@ -480,7 +494,8 @@ const ColumnReordering = props => {
     }))), /*#__PURE__*/React.createElement("div", {
       className: "column__body"
     }, /*#__PURE__*/React.createElement(DndProvider, {
-      backend: HTML5Backend
+      backend: MultiBackend,
+      options: HTML5toTouch
     }, /*#__PURE__*/React.createElement(ColumnsList, null))), /*#__PURE__*/React.createElement("div", {
       className: "column__footer"
     }, /*#__PURE__*/React.createElement("div", {

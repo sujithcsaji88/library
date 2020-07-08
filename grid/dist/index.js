@@ -8,6 +8,9 @@ var AutoSizer = _interopDefault(require('react-virtualized-auto-sizer'));
 var InfiniteLoader = _interopDefault(require('react-window-infinite-loader'));
 var reactDnd = require('react-dnd');
 var reactDndHtml5Backend = require('react-dnd-html5-backend');
+var reactDndTouchBackend = require('react-dnd-touch-backend');
+var MultiBackend = require('react-dnd-multi-backend');
+var MultiBackend__default = _interopDefault(MultiBackend);
 var update = _interopDefault(require('immutability-helper'));
 
 function _extends() {
@@ -174,7 +177,7 @@ var ColumnItem = function ColumnItem(_ref) {
   }),
       drop = _useDrop[1];
 
-  var opacity = isDragging ? 0 : 1;
+  var opacity = isDragging ? 0.5 : 1;
   return /*#__PURE__*/React__default.createElement("div", {
     ref: function ref(node) {
       return drag(drop(node));
@@ -417,6 +420,18 @@ var ColumnsList = function ColumnsList() {
 var ColumnReordering = function ColumnReordering(props) {
   var isManageColumnOpen = props.isManageColumnOpen,
       manageColumns = props.manageColumns;
+  var HTML5toTouch = {
+    backends: [{
+      backend: reactDndHtml5Backend.HTML5Backend
+    }, {
+      backend: reactDndTouchBackend.TouchBackend,
+      options: {
+        enableMouseEvents: true
+      },
+      preview: true,
+      transition: MultiBackend.TouchTransition
+    }]
+  };
 
   if (isManageColumnOpen) {
     return /*#__PURE__*/React__default.createElement("div", {
@@ -535,7 +550,8 @@ var ColumnReordering = function ColumnReordering(props) {
     }))), /*#__PURE__*/React__default.createElement("div", {
       className: "column__body"
     }, /*#__PURE__*/React__default.createElement(reactDnd.DndProvider, {
-      backend: reactDndHtml5Backend.HTML5Backend
+      backend: MultiBackend__default,
+      options: HTML5toTouch
     }, /*#__PURE__*/React__default.createElement(ColumnsList, null))), /*#__PURE__*/React__default.createElement("div", {
       className: "column__footer"
     }, /*#__PURE__*/React__default.createElement("div", {
