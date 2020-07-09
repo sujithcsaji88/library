@@ -34,7 +34,7 @@ const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
         }
     });
 
-    const opacity = isDragging ? 0.5 : 1;
+    const opacity = isDragging ? 0.1 : 1;
 
     return (
         <div ref={(node) => drag(drop(node))} style={{ ...style, opacity }}>
