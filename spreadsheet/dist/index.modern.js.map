@@ -1,0 +1,1 @@
+{"version":3,"file":"index.modern.js","sources":["../src/index.js"],"sourcesContent":["import React from 'react'\n\nexport const ExampleComponent = ({ text }) => {\n  return <div>Example Component: {text}</div>\n}\n"],"names":["ExampleComponent","text"],"mappings":";;MAEaA,gBAAgB,GAAG,CAAC;AAAEC,EAAAA;AAAF,CAAD,KAAc;AAC5C,sBAAO,wDAAyBA,IAAzB,CAAP;AACD;;;;"}
