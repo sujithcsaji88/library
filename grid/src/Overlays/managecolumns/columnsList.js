@@ -6,157 +6,31 @@ import ColumnItem from "./columnItem";
 
 const ColumnsArray = [
     {
-        id: 1,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 1</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 1
     },
     {
-        id: 2,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 2</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 2
     },
     {
-        id: 3,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 3</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 3
     },
     {
-        id: 4,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 4</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 4
     },
     {
-        id: 5,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 5</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 5
     },
     {
-        id: 6,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 6</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 6
     },
     {
-        id: 7,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 7</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 7
     },
     {
-        id: 8,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 8</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 8
     },
     {
-        id: 9,
-        text: (
-            <div className="column__reorder">
-                <div className="">
-                    <i className="fa fa-align-justify" aria-hidden="true"></i>
-                </div>
-                <div className="">AWB Number 9</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
-            </div>
-        )
+        id: 9
     }
 ];
 
@@ -189,13 +63,7 @@ const ColumnsList = () => {
         <React.Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
                 {columns.map((column) => (
-                    <ColumnItem
-                        key={column.id}
-                        id={`${column.id}`}
-                        text={column.text}
-                        moveColumn={moveColumn}
-                        findColumn={findColumn}
-                    />
+                    <ColumnItem key={column.id} id={`${column.id}`} moveColumn={moveColumn} findColumn={findColumn} />
                 ))}
             </div>
         </React.Fragment>

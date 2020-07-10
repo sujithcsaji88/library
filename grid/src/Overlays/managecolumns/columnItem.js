@@ -2,10 +2,6 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 
-const style = {
-    cursor: "move"
-};
-
 const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
     const originalIndex = findColumn(id).index;
 
@@ -37,8 +33,19 @@ const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
     const opacity = isDragging ? 0.1 : 1;
 
     return (
-        <div ref={(node) => drag(drop(node))} style={{ ...style, opacity }}>
-            {text}
+        <div style={{ opacity }}>
+            <div className="column__reorder">
+                <div ref={(node) => drag(drop(node))} style={{ cursor: "move" }} className="">
+                    <i className="fa fa-align-justify" aria-hidden="true"></i>
+                </div>
+                <div className="">AWB Number {id}</div>
+                <div className="column__wrap">
+                    <div className="column__checkbox">
+                        <input type="checkbox"></input>
+                    </div>
+                    <div className="column__txt">Pin Left</div>
+                </div>
+            </div>
         </div>
     );
 };
