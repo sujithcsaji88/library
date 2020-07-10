@@ -1,0 +1,132 @@
+/* sorting CSS begins here... @author Krishna */
+.sorts--grid {
+  z-index: 11;
+  box-shadow: 0px 15px 30px rgba(32, 77, 111, 0.2);
+  position: absolute;
+  font-size: 14px;
+  color: #1f567e;
+  line-height: 32px;
+  top: 50px;
+  right: 105px;
+  transition: 0.5s;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+.sorts--grid ::-webkit-scrollbar {
+  width: 6px;
+}
+.sorts--grid ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.sorts--grid ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+}
+.sorts--grid ::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+.sorts--grid .sort__grid {
+  display: flex;
+}
+.sorts--grid .sort__grid :before{
+  width: 0px;
+    height: 0px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #fff;
+    position: absolute;
+    top: -7px;
+    right: 10px;
+    content: "";
+}
+.sorts--grid .sort__grid .sort__settings {
+  width: 667px;
+}
+.sorts--grid .sort__grid .sort__settings .sort__header {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+}
+.sorts--grid .sort__grid .sort__settings .sort__header .sort__close {
+  margin-left: auto;
+  font-size: 18px;
+  color: #98a3ac;
+  cursor: pointer;
+}
+.sorts--grid .sort__grid .sort__settings .sort__body {
+  padding: 10px;
+  min-height: 100px;
+  overflow-y: scroll;
+  max-height: 300px;
+}
+.sorts--grid .sort__grid .sort__settings .sort__body .sort__bodyContent {
+  display: flex;
+}
+.sorts--grid .sort__grid .sort__settings .sort__section {
+  margin: 15px 0px 0px 60px;
+  width: 12%;
+  display: flex;
+  align-items: center;
+  color: #98a3ac;
+}
+.sorts--grid .sort__grid .sort__settings .sort__new .sort__section .sort__txt {
+  margin-left: 5px;
+  color: #98a3ac;
+  cursor: pointer;
+}
+.sorts--grid .sort__grid .sort__settings .sort__body .sort__reorder {
+  padding: 0px 15px 0px 15px;
+}
+.sorts--grid
+  .sort__grid
+  .sort__settings
+  .sort__body
+  .sort__reorder
+  .sort__icon {
+  font-size: 18px;
+  color: #98a3ac;
+  cursor: pointer;
+}
+.sorts--grid
+  .sort__grid
+  .sort__settings
+  .sort__body
+  .sort__reorder
+  .sort__file
+  .custom__ctrl {
+  width: 135px;
+  height: 35px;
+  border-radius: 5px;
+}
+.sorts--grid
+  .sort__grid
+  .sort__settings
+  .sort__body
+  .sort__reorder
+  .sort__file
+  .temp {
+  font-size: 50px;
+}
+.sorts--grid .sort__grid .sort__settings .sort__footer {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  display: flex;
+}
+.sorts--grid .sort__grid .sort__settings .sort__footer .sort__btns {
+  margin-left: auto;
+}
+.sorts--grid .sort__grid .sort__settings .sort__footer .sort__btns .btns {
+  border: 1px solid #0e4bda;
+  background: #fff;
+  border-radius: 5px;
+  width: 100px;
+  margin-left: 10px;
+  color: #0e4bda;
+}
+.sorts--grid .sort__grid .sort__settings .sort__footer .sort__btns .btns__save {
+  color: #fff;
+  background: #034bda;
+}
+.icon-close {
+  font-size: 15px;
+}
+/* Sorting CSS ends here... @author Krishna */
