@@ -1,4 +1,4 @@
-import React, { useMemo, memo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "grid";
 import { fetchData } from "./getData";
 import RowOptions from "./cells/RowOptions";
@@ -6,7 +6,7 @@ import SREdit from "./cells/SREdit";
 import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
-const App = memo(() => {
+const App = () => {
     //Set state value for variable to check if there is anext page available
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
@@ -24,363 +24,348 @@ const App = memo(() => {
     const gridWidth = "100%";
 
     //Create an array of airports
-    const airportCodeList = useMemo(
-        () => [
-            "AAA",
-            "AAB",
-            "AAC",
-            "ABA",
-            "ABB",
-            "ABC",
-            "ACA",
-            "ACB",
-            "ACC",
-            "BAA",
-            "BAB",
-            "BAC",
-            "BBA",
-            "BBB",
-            "BBC",
-            "BCA",
-            "BCB",
-            "BCC",
-            "CAA",
-            "CAB",
-            "CAC",
-            "CBA",
-            "CBB",
-            "CBC",
-            "CCA",
-            "CCB",
-            "CCC",
-            "XXX",
-            "XXY",
-            "XXZ",
-            "XYX",
-            "XYY",
-            "XYZ",
-            "XZX",
-            "XZY",
-            "XZZ",
-            "YXX",
-            "YXY",
-            "YXZ",
-            "YYX",
-            "YYY",
-            "YYZ",
-            "YZX",
-            "YZY",
-            "YZZ",
-            "ZXX",
-            "ZXY",
-            "ZXZ",
-            "ZYX",
-            "ZYY",
-            "ZYZ",
-            "ZZX",
-            "ZZY",
-            "ZZZ"
-        ],
-        []
-    );
+    const airportCodeList = [
+        "AAA",
+        "AAB",
+        "AAC",
+        "ABA",
+        "ABB",
+        "ABC",
+        "ACA",
+        "ACB",
+        "ACC",
+        "BAA",
+        "BAB",
+        "BAC",
+        "BBA",
+        "BBB",
+        "BBC",
+        "BCA",
+        "BCB",
+        "BCC",
+        "CAA",
+        "CAB",
+        "CAC",
+        "CBA",
+        "CBB",
+        "CBC",
+        "CCA",
+        "CCB",
+        "CCC",
+        "XXX",
+        "XXY",
+        "XXZ",
+        "XYX",
+        "XYY",
+        "XYZ",
+        "XZX",
+        "XZY",
+        "XZZ",
+        "YXX",
+        "YXY",
+        "YXZ",
+        "YYX",
+        "YYY",
+        "YYZ",
+        "YZX",
+        "YZY",
+        "YZZ",
+        "ZXX",
+        "ZXY",
+        "ZXZ",
+        "ZYX",
+        "ZYY",
+        "ZYZ",
+        "ZZX",
+        "ZZY",
+        "ZZZ"
+    ];
 
     //Configure columns and its related functions
-    let columns = useMemo(
-        () => [
-            {
-                Header: "Id",
-                accessor: "travelId",
-                disableFilters: true,
-                width: 50
+    let columns = [
+        {
+            Header: "Id",
+            accessor: "travelId",
+            disableFilters: true,
+            width: 50
+        },
+        {
+            Header: "Flight",
+            accessor: "flight",
+            width: 100,
+            Cell: FlightEdit,
+            sortType: (rowA, rowB) => {
+                return rowA.original.flight.flightno > rowB.original.flight.flightno ? -1 : 1;
             },
-            {
-                Header: "Flight",
-                accessor: "flight",
-                width: 100,
-                Cell: FlightEdit,
-                sortType: (rowA, rowB) => {
-                    return rowA.original.flight.flightno > rowB.original.flight.flightno ? -1 : 1;
-                },
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const { flightno, date } = rowValue;
-                        return flightno.toLowerCase().includes(filterText) || date.toLowerCase().includes(filterText);
-                    });
-                }
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    const { flightno, date } = rowValue;
+                    return flightno.toLowerCase().includes(filterText) || date.toLowerCase().includes(filterText);
+                });
+            }
+        },
+        {
+            Header: "Segment",
+            accessor: "segment",
+            width: 100,
+            disableSortBy: true,
+            Cell: (row) => {
+                const otherColumn = "weight";
+                const { value, column } = row;
+                const { index, original } = row.row;
+                return (
+                    <SegmentEdit
+                        airportCodeList={airportCodeList}
+                        index={index}
+                        segmentId={column.id}
+                        segmentValue={value}
+                        weightId={otherColumn}
+                        weightValue={original[otherColumn]}
+                        updateCellData={updateCellData}
+                    />
+                );
             },
-            {
-                Header: "Segment",
-                accessor: "segment",
-                width: 100,
-                disableSortBy: true,
-                Cell: (row) => {
-                    const otherColumn = "weight";
-                    const { value, column } = row;
-                    const { index, original } = row.row;
-                    return (
-                        <SegmentEdit
-                            airportCodeList={airportCodeList}
-                            index={index}
-                            segmentId={column.id}
-                            segmentValue={value}
-                            weightId={otherColumn}
-                            weightValue={original[otherColumn]}
-                            updateCellData={updateCellData}
-                        />
-                    );
-                },
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const { from, to } = rowValue;
-                        return from.toLowerCase().includes(filterText) || to.toLowerCase().includes(filterText);
-                    });
-                }
-            },
-            {
-                Header: "Details",
-                accessor: "details",
-                width: 300,
-                disableSortBy: true,
-                Cell: (row) => {
-                    const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = row.value;
-                    let timeStatusArray = timeStatus.split(" ");
-                    const timeValue = timeStatusArray.shift();
-                    const timeText = timeStatusArray.join(" ");
-                    return (
-                        <div className="details-wrap content">
-                            <ul>
-                                <li>
-                                    {startTime} – {endTime}
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <span>{status}</span>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>{additionalStatus}</li>
-                                <li className="divider">|</li>
-                                <li>{flightModel}</li>
-                                <li className="divider">|</li>
-                                <li>{bodyType}</li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <span>{type}</span>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <strong>{timeValue} </strong>
-                                    <span>{timeText}</span>
-                                </li>
-                            </ul>
-                        </div>
-                    );
-                },
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const {
-                            flightModel,
-                            bodyType,
-                            type,
-                            startTime,
-                            endTime,
-                            status,
-                            additionalStatus,
-                            timeStatus
-                        } = rowValue;
-                        return (
-                            String(flightModel).toLowerCase().includes(filterText) ||
-                            bodyType.toLowerCase().includes(filterText) ||
-                            type.toLowerCase().includes(filterText) ||
-                            startTime.toLowerCase().includes(filterText) ||
-                            endTime.toLowerCase().includes(filterText) ||
-                            status.toLowerCase().includes(filterText) ||
-                            additionalStatus.toLowerCase().includes(filterText) ||
-                            timeStatus.toLowerCase().includes(filterText)
-                        );
-                    });
-                }
-            },
-            {
-                Header: "Weight",
-                accessor: "weight",
-                width: 130,
-                Cell: (row) => {
-                    const { percentage, value } = row.value;
-                    return (
-                        <div className="weight-details content">
-                            <strong className="per">{percentage}</strong>
-                            <span>
-                                <strong>{value.split("/")[0]}/</strong>
-                                {value.split("/")[1]}
-                            </span>
-                        </div>
-                    );
-                },
-                sortType: (rowA, rowB) => {
-                    return rowA.original.weight.percentage > rowB.original.weight.percentage ? -1 : 1;
-                },
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const { percentage, value } = rowValue;
-                        return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
-                    });
-                }
-            },
-            {
-                Header: "Volume",
-                accessor: "volume",
-                width: 100,
-                Cell: (row) => {
-                    const { percentage, value } = row.value;
-                    return (
-                        <div className="weight-details content">
-                            <strong className="per">{percentage}</strong>
-                            <span>
-                                <strong>{value.split("/")[0]}/</strong>
-                                {value.split("/")[1]}
-                            </span>
-                        </div>
-                    );
-                },
-                sortType: (rowA, rowB) => {
-                    return rowA.original.volume.percentage > rowB.original.volume.percentage ? -1 : 1;
-                },
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const { percentage, value } = rowValue;
-                        return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
-                    });
-                }
-            },
-            {
-                Header: "ULD Positions",
-                accessor: "uldPositions",
-                disableSortBy: true,
-                width: 100,
-                Cell: (row) => (
-                    <div className="uld-details content">
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    const { from, to } = rowValue;
+                    return from.toLowerCase().includes(filterText) || to.toLowerCase().includes(filterText);
+                });
+            }
+        },
+        {
+            Header: "Details",
+            accessor: "details",
+            width: 300,
+            disableSortBy: true,
+            Cell: (row) => {
+                const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = row.value;
+                let timeStatusArray = timeStatus.split(" ");
+                const timeValue = timeStatusArray.shift();
+                const timeText = timeStatusArray.join(" ");
+                return (
+                    <div className="details-wrap content">
                         <ul>
-                            {row.value.map((positions, index) => {
-                                return (
-                                    <li key={index}>
-                                        <span>{positions.position}</span>
-                                        <strong>{positions.value}</strong>
-                                    </li>
-                                );
-                            })}
+                            <li>
+                                {startTime} – {endTime}
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{status}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>{additionalStatus}</li>
+                            <li className="divider">|</li>
+                            <li>{flightModel}</li>
+                            <li className="divider">|</li>
+                            <li>{bodyType}</li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{type}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <strong>{timeValue} </strong>
+                                <span>{timeText}</span>
+                            </li>
                         </ul>
                     </div>
-                ),
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        return (
-                            rowValue.findIndex((item) => {
-                                return (item.position + " " + item.value).toLowerCase().includes(filterText);
-                            }) >= 0
-                        );
-                    });
-                }
+                );
             },
-            {
-                Header: "Revenue/Yield",
-                accessor: "revenue",
-                width: 120,
-                Cell: (row) => {
-                    const { revenue, yeild } = row.value;
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    const { flightModel, bodyType, type, startTime, endTime, status, additionalStatus, timeStatus } = rowValue;
                     return (
-                        <div className="revenue-details content">
-                            <span className="large">{revenue}</span>
-                            <span>{yeild}</span>
-                        </div>
+                        String(flightModel).toLowerCase().includes(filterText) ||
+                        bodyType.toLowerCase().includes(filterText) ||
+                        type.toLowerCase().includes(filterText) ||
+                        startTime.toLowerCase().includes(filterText) ||
+                        endTime.toLowerCase().includes(filterText) ||
+                        status.toLowerCase().includes(filterText) ||
+                        additionalStatus.toLowerCase().includes(filterText) ||
+                        timeStatus.toLowerCase().includes(filterText)
                     );
-                },
-                sortType: (rowA, rowB) => {
-                    return rowA.original.revenue.revenue > rowB.original.revenue.revenue ? -1 : 1;
-                },
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const { revenue, yeild } = rowValue;
-                        return revenue.toLowerCase().includes(filterText) || yeild.toLowerCase().includes(filterText);
-                    });
-                }
-            },
-            {
-                Header: "SR",
-                accessor: "sr",
-                width: 90,
-                Cell: SREdit
-            },
-            {
-                Header: "Queued Booking",
-                accessor: "queuedBooking",
-                width: 130,
-                disableSortBy: true,
-                Cell: (row) => {
-                    const { sr, volume } = row.value;
-                    return (
-                        <div className="queued-details content">
-                            <span>
-                                <strong></strong>
-                                {sr}
-                            </span>
-                            <span>
-                                <strong></strong> {volume}
-                            </span>
-                        </div>
-                    );
-                },
-                filter: (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const { sr, volume } = rowValue;
-                        return sr.toLowerCase().includes(filterText) || volume.toLowerCase().includes(filterText);
-                    });
-                }
-            },
-            {
-                id: "custom",
-                disableResizing: true,
-                disableFilters: true,
-                disableSortBy: true,
-                width: 50,
-                Cell: ({ row }) => {
-                    return (
-                        <div className="action">
-                            <RowOptions
-                                deleteRowFromGrid={deleteRowFromGrid}
-                                updateCellData={updateCellData}
-                                row={row}
-                                airportCodeList={airportCodeList}
-                            />
-                            <span className="expander" {...row.getToggleRowExpandedProps()}>
-                                {row.isExpanded ? (
-                                    <i className="fa fa-angle-up" aria-hidden="true"></i>
-                                ) : (
-                                    <i className="fa fa-angle-down" aria-hidden="true"></i>
-                                )}
-                            </span>
-                        </div>
-                    );
-                }
+                });
             }
-        ],
-        [airportCodeList]
-    );
+        },
+        {
+            Header: "Weight",
+            accessor: "weight",
+            width: 130,
+            Cell: (row) => {
+                const { percentage, value } = row.value;
+                return (
+                    <div className="weight-details content">
+                        <strong className="per">{percentage}</strong>
+                        <span>
+                            <strong>{value.split("/")[0]}/</strong>
+                            {value.split("/")[1]}
+                        </span>
+                    </div>
+                );
+            },
+            sortType: (rowA, rowB) => {
+                return rowA.original.weight.percentage > rowB.original.weight.percentage ? -1 : 1;
+            },
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    const { percentage, value } = rowValue;
+                    return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
+                });
+            }
+        },
+        {
+            Header: "Volume",
+            accessor: "volume",
+            width: 100,
+            Cell: (row) => {
+                const { percentage, value } = row.value;
+                return (
+                    <div className="weight-details content">
+                        <strong className="per">{percentage}</strong>
+                        <span>
+                            <strong>{value.split("/")[0]}/</strong>
+                            {value.split("/")[1]}
+                        </span>
+                    </div>
+                );
+            },
+            sortType: (rowA, rowB) => {
+                return rowA.original.volume.percentage > rowB.original.volume.percentage ? -1 : 1;
+            },
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    const { percentage, value } = rowValue;
+                    return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
+                });
+            }
+        },
+        {
+            Header: "ULD Positions",
+            accessor: "uldPositions",
+            disableSortBy: true,
+            width: 100,
+            Cell: (row) => (
+                <div className="uld-details content">
+                    <ul>
+                        {row.value.map((positions, index) => {
+                            return (
+                                <li key={index}>
+                                    <span>{positions.position}</span>
+                                    <strong>{positions.value}</strong>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+            ),
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    return (
+                        rowValue.findIndex((item) => {
+                            return (item.position + " " + item.value).toLowerCase().includes(filterText);
+                        }) >= 0
+                    );
+                });
+            }
+        },
+        {
+            Header: "Revenue/Yield",
+            accessor: "revenue",
+            width: 120,
+            Cell: (row) => {
+                const { revenue, yeild } = row.value;
+                return (
+                    <div className="revenue-details content">
+                        <span className="large">{revenue}</span>
+                        <span>{yeild}</span>
+                    </div>
+                );
+            },
+            sortType: (rowA, rowB) => {
+                return rowA.original.revenue.revenue > rowB.original.revenue.revenue ? -1 : 1;
+            },
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    const { revenue, yeild } = rowValue;
+                    return revenue.toLowerCase().includes(filterText) || yeild.toLowerCase().includes(filterText);
+                });
+            }
+        },
+        {
+            Header: "SR",
+            accessor: "sr",
+            width: 90,
+            Cell: SREdit
+        },
+        {
+            Header: "Queued Booking",
+            accessor: "queuedBooking",
+            width: 130,
+            disableSortBy: true,
+            Cell: (row) => {
+                const { sr, volume } = row.value;
+                return (
+                    <div className="queued-details content">
+                        <span>
+                            <strong></strong>
+                            {sr}
+                        </span>
+                        <span>
+                            <strong></strong> {volume}
+                        </span>
+                    </div>
+                );
+            },
+            filter: (rows, id, filterValue) => {
+                const filterText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    const { sr, volume } = rowValue;
+                    return sr.toLowerCase().includes(filterText) || volume.toLowerCase().includes(filterText);
+                });
+            }
+        },
+        {
+            id: "custom",
+            disableResizing: true,
+            disableFilters: true,
+            disableSortBy: true,
+            width: 50,
+            Cell: ({ row }) => {
+                return (
+                    <div className="action">
+                        <RowOptions
+                            deleteRowFromGrid={deleteRowFromGrid}
+                            updateCellData={updateCellData}
+                            row={row}
+                            airportCodeList={airportCodeList}
+                        />
+                        <span className="expander" {...row.getToggleRowExpandedProps()}>
+                            {row.isExpanded ? (
+                                <i className="fa fa-angle-up" aria-hidden="true"></i>
+                            ) : (
+                                <i className="fa fa-angle-down" aria-hidden="true"></i>
+                            )}
+                        </span>
+                    </div>
+                );
+            }
+        }
+    ];
 
     if (!isDesktop) {
         columns = columns.filter((item) => {
@@ -587,6 +572,6 @@ const App = memo(() => {
     } else {
         return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
     }
-});
+};
 
 export default App;

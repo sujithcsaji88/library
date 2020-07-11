@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import Customgrid from "./Customgrid";
 
 const Grid = memo((props) => {
@@ -23,7 +23,7 @@ const Grid = memo((props) => {
             title={title}
             gridHeight={gridHeight}
             gridWidth={gridWidth}
-            columns={columns}
+            columns={useMemo(() => columns, [])}
             data={data}
             globalSearchLogic={globalSearchLogic}
             updateCellData={updateCellData}
