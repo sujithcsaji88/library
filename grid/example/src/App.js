@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Grid from "grid";
 import { fetchData } from "./getData";
 import RowOptions from "./cells/RowOptions";
@@ -7,13 +7,6 @@ import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = () => {
-    //Set state value for variable to check if there is anext page available
-    const [hasNextPage, setHasNextPage] = useState(true);
-    //Set state value for variable to check if the loading process is going on
-    const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-    //Set state value for variable to hold grid data
-    const [items, setItems] = useState([]);
-
     //Check if device is desktop
     const isDesktop = window.innerWidth > 1024;
 
@@ -498,7 +491,7 @@ const App = () => {
     //Gets called when there is a cell edit
     const updateCellData = (rowIndex, columnId, value) => {
         console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
-        setItems((old) =>
+        /*setItems((old) =>
             old.map((row, index) => {
                 if (index === rowIndex) {
                     return {
@@ -508,17 +501,17 @@ const App = () => {
                 }
                 return row;
             })
-        );
+        );*/
     };
 
     //Gets triggered when one row item is deleted
     const deleteRowFromGrid = (rowIndexToBeDeleted) => {
         console.log("Deleting row with index: " + rowIndexToBeDeleted);
-        setItems((old) =>
+        /*setItems((old) =>
             old.filter((row, index) => {
                 return index !== rowIndexToBeDeleted;
             })
-        );
+        );*/
     };
 
     //Gets called when row bulk edit is done
@@ -526,52 +519,20 @@ const App = () => {
         console.log(selectedRows);
     };
 
-    //Gets called when page scroll reaches the bottom of the grid.
-    //Fetch the next set of data and append it to the variable holding grid data and update the state value.
-    //Also update the hasNextPage state value to False once API response is empty, to avoid unwanted API calls.
-    const loadNextPage = (...args) => {
-        const newIndex = args && args.length > 0 ? args[0] : -1;
-        if (newIndex >= 0 && hasNextPage) {
-            setIsNextPageLoading(true);
-            fetchData(newIndex).then((data) => {
-                setHasNextPage(data && data.length > 0);
-                setIsNextPageLoading(false);
-                setItems(items.concat(data));
-            });
-        }
-    };
-
-    useEffect(() => {
-        //Make API call to fetch initial set of data.
-        fetchData(0).then((data) => {
-            setItems(data);
-        });
-    }, []);
-
-    if (items && items.length > 0) {
-        return (
-            <div>
-                <Grid
-                    title="AWBs"
-                    gridHeight={gridHeight}
-                    gridWidth={gridWidth}
-                    columns={columns}
-                    data={items}
-                    globalSearchLogic={globalSearchLogic}
-                    updateCellData={updateCellData}
-                    selectBulkData={selectBulkData}
-                    calculateRowHeight={calculateRowHeight}
-                    renderExpandedContent={renderExpandedContent}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                />
-                {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
-            </div>
-        );
-    } else {
-        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
-    }
+    return (
+        <Grid
+            title="AWBs"
+            gridHeight={gridHeight}
+            gridWidth={gridWidth}
+            columns={columns}
+            globalSearchLogic={globalSearchLogic}
+            updateCellData={updateCellData}
+            selectBulkData={selectBulkData}
+            calculateRowHeight={calculateRowHeight}
+            renderExpandedContent={renderExpandedContent}
+            fetchData={fetchData}
+        />
+    );
 };
 
 export default App;
