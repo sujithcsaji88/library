@@ -18,12 +18,14 @@ const Grid = memo((props) => {
         loadNextPage
     } = props;
 
+    const gridColumns = useMemo(() => columns, []);
+
     return (
         <Customgrid
             title={title}
             gridHeight={gridHeight}
             gridWidth={gridWidth}
-            columns={useMemo(() => columns, [])}
+            columns={gridColumns}
             data={data}
             globalSearchLogic={globalSearchLogic}
             updateCellData={updateCellData}
