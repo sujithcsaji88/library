@@ -18,7 +18,12 @@ const Grid = memo((props) => {
         loadNextPage
     } = props;
 
-    const gridColumns = useMemo(() => columns, []);
+    let processedColumns = [];
+    columns.forEach((column, index) => {
+        column.columnId = `column_${index}`;
+        processedColumns.push(column);
+    });
+    const gridColumns = useMemo(() => processedColumns, []);
 
     return (
         <Customgrid

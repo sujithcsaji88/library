@@ -4,41 +4,11 @@ import update from "immutability-helper";
 import { ItemTypes } from "./ItemTypes";
 import ColumnItem from "./columnItem";
 
-const ColumnsArray = [
-    {
-        id: 1
-    },
-    {
-        id: 2
-    },
-    {
-        id: 3
-    },
-    {
-        id: 4
-    },
-    {
-        id: 5
-    },
-    {
-        id: 6
-    },
-    {
-        id: 7
-    },
-    {
-        id: 8
-    },
-    {
-        id: 9
-    }
-];
+const ColumnsList = (props) => {
+    const [columns, setColumns] = useState(props.columnsToManage);
 
-const ColumnsList = () => {
-    const [columns, setColumns] = useState(ColumnsArray);
-
-    const moveColumn = (id, atIndex) => {
-        const { column, index } = findColumn(id);
+    const moveColumn = (columnId, atIndex) => {
+        const { column, index } = findColumn(columnId);
         setColumns(
             update(columns, {
                 $splice: [
@@ -49,8 +19,8 @@ const ColumnsList = () => {
         );
     };
 
-    const findColumn = (id) => {
-        const column = columns.filter((c) => `${c.id}` === id)[0];
+    const findColumn = (columnId) => {
+        const column = columns.filter((c) => `${c.columnId}` === columnId)[0];
         return {
             column,
             index: columns.indexOf(column)
@@ -62,9 +32,17 @@ const ColumnsList = () => {
     return (
         <React.Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
-                {columns.map((column) => (
-                    <ColumnItem key={column.id} id={`${column.id}`} moveColumn={moveColumn} findColumn={findColumn} />
-                ))}
+                {columns.map((column, index) => {
+                    return (
+                        <ColumnItem
+                            key={index}
+                            id={`${column.columnId}`}
+                            name={`${column.Header}`}
+                            moveColumn={moveColumn}
+                            findColumn={findColumn}
+                        />
+                    );
+                })}
             </div>
         </React.Fragment>
     );

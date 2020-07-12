@@ -58,7 +58,7 @@ const Customgrid = memo((props) => {
     const [isManageColumnOpen, setManageColumnOpen] = useState(false);
 
     //Toggle column manage overlay show/hide state value based on UI clicks
-    const manageColumns = () => {
+    const toggleManageColumns = () => {
         setManageColumnOpen(!isManageColumnOpen);
     };
 
@@ -112,6 +112,7 @@ const Customgrid = memo((props) => {
             hooks.allColumns.push((columns) => [
                 {
                     id: "selection",
+                    columnId: "column_custom_0",
                     disableResizing: true,
                     disableFilters: true,
                     disableSortBy: true,
@@ -184,7 +185,11 @@ const Customgrid = memo((props) => {
                     </div>
                 </div>
                 <div className="filter-utilities">
-                    <ColumnReordering isManageColumnOpen={isManageColumnOpen} manageColumns={manageColumns} />
+                    <ColumnReordering
+                        isManageColumnOpen={isManageColumnOpen}
+                        toggleManageColumns={toggleManageColumns}
+                        columnsToManage={columns}
+                    />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>
                         <i className="fa fa-filter" aria-hidden="true"></i>
@@ -192,7 +197,7 @@ const Customgrid = memo((props) => {
                     <div className="filter-icon bulk-select" onClick={bulkSelector}>
                         <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
-                    <div className="filter-icon manage-columns" onClick={manageColumns}>
+                    <div className="filter-icon manage-columns" onClick={toggleManageColumns}>
                         <i className="fa fa-columns" aria-hidden="true"></i>
                     </div>
                 </div>

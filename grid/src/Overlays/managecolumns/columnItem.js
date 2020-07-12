@@ -2,7 +2,7 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 
-const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
+const ColumnItem = ({ id, name, moveColumn, findColumn }) => {
     const originalIndex = findColumn(id).index;
 
     const [{ isDragging }, drag] = useDrag({
@@ -38,7 +38,7 @@ const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
                 <div ref={(node) => drag(drop(node))} style={{ cursor: "move" }} className="">
                     <i className="fa fa-align-justify" aria-hidden="true"></i>
                 </div>
-                <div className="">AWB Number {id}</div>
+                <div className="">{name}</div>
                 <div className="column__wrap">
                     <div className="column__checkbox">
                         <input type="checkbox"></input>

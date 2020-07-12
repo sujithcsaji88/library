@@ -6,7 +6,7 @@ import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import ColumnsList from "./columnsList";
 
 const ColumnReordering = (props) => {
-    const { isManageColumnOpen, manageColumns } = props;
+    const { isManageColumnOpen, toggleManageColumns, columnsToManage } = props;
 
     const HTML5toTouch = {
         backends: [
@@ -41,66 +41,16 @@ const ColumnReordering = (props) => {
                                     Select All
                                 </a>
                             </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
-                            <div className="column__wrap">
-                                <div className="column__checkbox">
-                                    <input type="checkbox"></input>
-                                </div>
-                                <div className="column__txt">AWB Number</div>
-                            </div>
+                            {columnsToManage.map((column, index) => {
+                                return (
+                                    <div className="column__wrap" key={index}>
+                                        <div className="column__checkbox">
+                                            <input type="checkbox"></input>
+                                        </div>
+                                        <div className="column__txt">{column.Header}</div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                     <div className="column__settings">
@@ -108,19 +58,19 @@ const ColumnReordering = (props) => {
                             <div className="column__headerTxt">
                                 <strong>Column Setting</strong>
                             </div>
-                            <div className="column__close" onClick={manageColumns}>
+                            <div className="column__close" onClick={toggleManageColumns}>
                                 <i className="fa fa-times" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div className="column__body">
                             <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-                                <ColumnsList />
+                                <ColumnsList columnsToManage={columnsToManage} />
                             </DndProvider>
                         </div>
                         <div className="column__footer">
                             <div className="column__btns">
                                 <button className="btns">Reset</button>
-                                <button className="btns" onClick={manageColumns}>
+                                <button className="btns" onClick={toggleManageColumns}>
                                     Cancel
                                 </button>
                                 <button className="btns btns__save">Save</button>
