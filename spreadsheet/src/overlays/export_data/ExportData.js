@@ -230,11 +230,14 @@ class ExportData extends React.Component {
                 ></input>
               </div>
               <div className="export__selectAll">
-                <div
-                  className="export__selectTxt"
-                  onClick={() => this.selectAllToColumnList()}
-                >
-                  Select All
+                <div>
+                <input 
+									className='column__checkbox'
+									type='checkbox'
+                  onChange={() => this.selectAllToColumnList()}
+								  checked={this.state.isAllSelected}
+								/>
+									Select All
                 </div>
               </div>
               {this.state.columnValueList.length > 0
@@ -348,3 +351,4 @@ class ExportData extends React.Component {
   }
 }
 export default ExportData;
+
