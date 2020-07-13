@@ -1406,22 +1406,6 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
       });
     };
 
-    _this.sortRows = function (data, sortColumn, sortDirection) {
-      var comparer = function comparer(a, b) {
-        if (sortDirection === "ASC") {
-          return a[sortColumn] > b[sortColumn] ? 1 : -1;
-        } else if (sortDirection === "DESC") {
-          return a[sortColumn] < b[sortColumn] ? 1 : -1;
-        }
-      };
-
-      _this.setState({
-        rows: [].concat(_this.state.rows).sort(comparer)
-      });
-
-      return sortDirection === "NONE" ? data : _this.state.rows;
-    };
-
     _this.onGridRowsUpdated = function (_ref) {
       var fromRow = _ref.fromRow,
           toRow = _ref.toRow,
@@ -1508,7 +1492,6 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.handleFilterChange = function (value) {
-      console.log(value);
       var junk = _this.state.junk;
 
       if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
@@ -1537,8 +1520,6 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.getrows = function (rows, filters) {
-      console.log(filters);
-
       if (Object.keys(filters).length <= 0) {
         filters = {};
       }

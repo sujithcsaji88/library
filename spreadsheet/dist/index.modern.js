@@ -1226,21 +1226,6 @@ class spreadsheet extends Component {
       });
     };
 
-    this.sortRows = (data, sortColumn, sortDirection) => {
-      const comparer = (a, b) => {
-        if (sortDirection === "ASC") {
-          return a[sortColumn] > b[sortColumn] ? 1 : -1;
-        } else if (sortDirection === "DESC") {
-          return a[sortColumn] < b[sortColumn] ? 1 : -1;
-        }
-      };
-
-      this.setState({
-        rows: [...this.state.rows].sort(comparer)
-      });
-      return sortDirection === "NONE" ? data : this.state.rows;
-    };
-
     this.onGridRowsUpdated = ({
       fromRow,
       toRow,
@@ -1324,7 +1309,6 @@ class spreadsheet extends Component {
     };
 
     this.handleFilterChange = value => {
-      console.log(value);
       let junk = this.state.junk;
 
       if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
@@ -1351,8 +1335,6 @@ class spreadsheet extends Component {
     };
 
     this.getrows = (rows, filters) => {
-      console.log(filters);
-
       if (Object.keys(filters).length <= 0) {
         filters = {};
       }

@@ -159,21 +159,6 @@ class spreadsheet extends Component {
   closeWarningStatus = () => {
     this.setState({ warningStatus: "" })
   }
-
-  sortRows = (data, sortColumn, sortDirection) => {
-    const comparer = (a, b) => {
-      if (sortDirection === "ASC") {
-        return a[sortColumn] > b[sortColumn] ? 1 : -1;
-      } else if (sortDirection === "DESC") {
-        return a[sortColumn] < b[sortColumn] ? 1 : -1;
-      }
-    };
-    this.setState({
-      rows: [...this.state.rows].sort(comparer),
-    });
-    return sortDirection === "NONE" ? data : this.state.rows;
-  };
-
   componentWillReceiveProps(props) {
     this.setState({
       rows: props.rows,
@@ -281,7 +266,6 @@ class spreadsheet extends Component {
 	 * @param {*} value is the  incoming filtering event
 	 */
   handleFilterChange = (value) => {
-    console.log(value)
     let junk = this.state.junk;
     if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
       junk[value.column.key] = value;
@@ -304,7 +288,6 @@ class spreadsheet extends Component {
     }
   };
   getrows = (rows, filters) => {
-    console.log(filters)
     if (Object.keys(filters).length <= 0) {
       filters = {};
     }
