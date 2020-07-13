@@ -16,21 +16,26 @@ class App extends React.Component {
     super();
     this.state = {
       rowList: [true],
-      sortingOrderList:[{
-        "Sort by":"",
-        "Order":"",
-        "Sort on":""
-      }]
+      rows: [],
+      sortingOrderList: [
+        {
+          sortBy: "",
+          order: "",
+          sortOn: "",
+        },
+      ],
+      errorMessage: false,
     };
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
   }
+
   componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside);
+    document.addEventListener("mousedown", this.handleClickOutside);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
+    document.removeEventListener("mousedown", this.handleClickOutside);
   }
 
   setWrapperRef(node) {
@@ -42,24 +47,26 @@ class App extends React.Component {
       this.props.closeSorting();
     }
   }
+
   add = () => {
     let rowList = [...this.state.rowList];
     rowList.push(true);
-    var existingSortingOrderList= this.state.sortingOrderList
+    var existingSortingOrderList = this.state.sortingOrderList;
     existingSortingOrderList.push({
-      "Sort by":"",
-      "Order":"",
-      "Sort on":""
-    })
-    this.setState({ 
-      rowList, 
-      sortingOrderList: existingSortingOrderList
-   });
+      sortBy: "",
+      order: "",
+      sortOn: "",
+    });
+    this.setState({
+      rowList,
+      sortingOrderList: existingSortingOrderList,
+    });
   };
 
   copy = (i) => {
-    let rowList = [...this.state.rowList];
-    console.log(rowList);
+    let rowList = [...this.state.rows];
+    rowList.push(rowList[i]);
+    this.setState({ rows: rowList });
   };
 
   clearAll = () => {
@@ -73,107 +80,143 @@ class App extends React.Component {
   };
 
   createColumnsArrayFromProps = (rowList) => {
-    return rowList.map((x, i) => {
-      return (
-        <div className="sort__bodyContent" key={i}  >
-          <div className="sort__reorder">
-            <div className="">
-              <div>&nbsp;</div>
+    return rowList.map((i, index) => {
+      return {
+        id: index,
+        text: (
+          <div className="sort__bodyContent" key={i}>
+            <div className="sort__reorder">
+              <div className="">
+                <div>&nbsp;</div>
+              </div>
+              <div className="sort__icon">
+                <FontAwesomeIcon icon={faAlignJustify}></FontAwesomeIcon>
+              </div>
             </div>
-            <div className="sort__icon">
-              <FontAwesomeIcon icon={faAlignJustify}></FontAwesomeIcon>
+            <div className="sort__reorder">
+              <div className="">
+                <div>Sort by</div>
+              </div>
+              <div className="sort__file">
+                <select
+                  className="custom__ctrl"
+                  name={"sortBy"}
+                  onChange={(e) =>
+                    this.captureSortingFeildValues(e, index, "sortBy")
+                  }
+                >
+                  {this.props.columnFieldValue.map((item, index) => (
+                    <option key={index}>{item}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="sort__reorder">
+              <div className="">
+                <div>Sort on</div>
+              </div>
+              <div className="sort__file">
+                <select
+                  className="custom__ctrl"
+                  name={"sortOn"}
+                  onChange={(e) =>
+                    this.captureSortingFeildValues(e, index, "sortOn")
+                  }
+                >
+                  <option>Value</option>
+                </select>
+              </div>
+            </div>
+            <div className="sort__reorder">
+              <div className="">
+                <div>Order</div>
+              </div>
+              <div className="sort__file">
+                <select
+                  className="custom__ctrl"
+                  name={"order"}
+                  onChange={(e) =>
+                    this.captureSortingFeildValues(e, index, "Order")
+                  }
+                >
+                  <option>Ascending</option>
+
+                  <option>Descending</option>
+                </select>
+              </div>
+            </div>
+            <div className="sort__reorder">
+              <div className="">
+                <div>&nbsp;</div>
+              </div>
+              <div className="sort__icon">
+                <FontAwesomeIcon
+                  icon={faCopy}
+                  title="Copy"
+                  onClick={() => this.copy(index)}
+                ></FontAwesomeIcon>
+              </div>
+            </div>
+            <div className="sort__reorder">
+              <div className="">
+                <div>&nbsp;</div>
+              </div>
+              <div className="sort__icon">
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  title="Delete"
+                  onClick={() => this.remove(index)}
+                ></FontAwesomeIcon>
+              </div>
             </div>
           </div>
-          <div className="sort__reorder">
-            <div className="">
-              <div>Sort by</div>
-            </div>
-            <div className="sort__file">
-              <select className="custom__ctrl">
-                {this.props.columnFieldValue.map((item, index) => (
-                  <option key={index}>{item}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="sort__reorder">
-            <div className="">
-              <div>Sort on</div>
-            </div>
-            <div className="sort__file">
-              <select className="custom__ctrl">
-                <option>Value</option>
-              </select>
-            </div>
-          </div>
-          <div className="sort__reorder">
-            <div className="">
-              <div>Order</div>
-            </div>
-            <div className="sort__file">
-              <select className="custom__ctrl">
-                <option>Ascending</option>
-                <option>Descending</option>
-              </select>
-            </div>
-          </div>
-          <div className="sort__reorder">
-            <div className="">
-              <div>&nbsp;</div>
-            </div>
-            <div className="sort__icon">
-              <FontAwesomeIcon
-                icon={faCopy}
-                title="Copy"
-                onClick={() => this.copy(i)}
-              ></FontAwesomeIcon>
-            </div>
-          </div>
-          <div className="sort__reorder">
-            <div className="">
-              <div>&nbsp;</div>
-            </div>
-            <div className="sort__icon">
-              <FontAwesomeIcon
-                icon={faTrash}
-                title="Delete"
-                onClick={() => this.remove(i)}
-              ></FontAwesomeIcon>
-            </div>
-          </div>
-        </div>
-      );
+        ),
+      };
     });
   };
 
-  captureSortingFeildValues=(event, index, sortingKey)=>{
-    var sortingObj= {
+  captureSortingFeildValues = (event, index, sortingKey) => {
+    var sortingObj = {
       //``
-    }
-    var existingSortingOrderList=this.state.sortingOrderList
-    if(sortingKey === "Sort by"){
-      existingSortingOrderList[index]["Sort by"] = event.target.value;
-    }
-    if(sortingKey === "Order"){
-      existingSortingOrderList[index]["Order"] = event.target.value;
-    }
-    
-    if(existingSortingOrderList[index]['Sort on'] === "" || existingSortingOrderList[index]['Sort on'] === undefined){
-      existingSortingOrderList[index]['Sort on'] = "Value"
-    }
-    
+    };
+    var existingSortingOrderList = this.state.sortingOrderList;
+    if (sortingKey === "sortBy") {
+      const { name, value } = event.target;
+    const rows = [...this.state.sortingOrderList];
     this.setState({
-      sortingOrderList : existingSortingOrderList
-    })
+      errorMessage: false,
+    });
+    rows.map((column) => {
+      console.log(column[name]);
+      if (column[name] === value) {
+        this.setState({
+          errorMessage: true,
+        });
+      }
+    });
+      existingSortingOrderList[index]["sortBy"] = event.target.value;
+    }
+    if (sortingKey === "order") {
+      existingSortingOrderList[index]["order"] = event.target.value;
+    }
 
-  }
+    if (
+      existingSortingOrderList[index]["sortOn"] === "" ||
+      existingSortingOrderList[index]["sortOn"] === undefined
+    ) {
+      existingSortingOrderList[index]["sortOn"] = "Value";
+    }
 
-  updateTableAsPerSortCondition=()=>{
-    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList)
-  }
+    this.setState({
+      sortingOrderList: existingSortingOrderList,
+    });
+  };
+  updateTableAsPerSortCondition = () => {
+    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
+  };
 
   render() {
-    let { rowList } = this.state;
+    let { rowList } = this.state.rowList;
     return (
       <div className="sorts--grid" ref={this.setWrapperRef}>
         <div className="sort__grid">
@@ -184,7 +227,7 @@ class App extends React.Component {
               </div>
               <div className="sort__close">
                 <FontAwesomeIcon
-                  className="icon-close" 
+                  className="icon-close"
                   icon={faTimes}
                   onClick={() => this.props.closeSorting()}
                 ></FontAwesomeIcon>
@@ -201,79 +244,6 @@ class App extends React.Component {
                   )}
                 />
               </DndProvider>
-              {rowList.map((x, i) => {
-                return (
-                  <div className="sort__bodyContent" key={i}>
-                    <div className="sort__reorder">
-                      <div className="">
-                        <div>&nbsp;</div>
-                      </div>
-                      <div className="sort__icon">
-                        <FontAwesomeIcon
-                          icon={faAlignJustify}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </div>
-                    <div className="sort__reorder">
-                      <div className="">
-                        <div>Sort by</div>
-                      </div>
-                      <div className="sort__file">
-                        <select className="custom__ctrl" onChange={(e)=>this.captureSortingFeildValues(e, i, "Sort by")}>
-                          {this.props.columnFieldValue.map((item, index) => (
-                            <option key={index}>{item}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="sort__reorder">
-                      <div className="">
-                        <div>Sort on</div>
-                      </div>
-                      <div className="sort__file">
-                        <select className="custom__ctrl" onChange={(e)=>this.captureSortingFeildValues(e, i,  "Sort on")}>
-                          <option>Value</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="sort__reorder">
-                      <div className="">
-                        <div>Order</div>
-                      </div>
-                      <div className="sort__file">
-                        <select className="custom__ctrl" onChange={(e)=>this.captureSortingFeildValues(e, i, "Order")}>
-                          <option>Ascending</option>
-                          <option>Descending</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="sort__reorder">
-                      <div className="">
-                        <div>&nbsp;</div>
-                      </div>
-                      <div className="sort__icon">
-                        <FontAwesomeIcon
-                          icon={faCopy}
-                          title="Copy"
-                          onClick={() => this.copy(i)}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </div>
-                    <div className="sort__reorder">
-                      <div className="">
-                        <div>&nbsp;</div>
-                      </div>
-                      <div className="sort__icon">
-                        <FontAwesomeIcon
-                          icon={faTrash}
-                          title="Delete"
-                          onClick={() => this.remove(i)}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
               <div className="sort__new">
                 <div className="sort__section">
                   <FontAwesomeIcon
@@ -285,18 +255,32 @@ class App extends React.Component {
                   </div>
                 </div>
               </div>
+              <div>
+              {this.state.errorMessage ?
+                <span
+                  style={{ display: this.state.clickTag }}
+                  className="alert alert-danger"
+                >
+                   Please Add New Sort
+                </span>
+                 : ""}
+              </div>
             </div>
             <div className="sort__footer">
               <div className="sort__btns">
                 <button className="btns" onClick={this.clearAll}>
                   Clear All
                 </button>
-                <button className="btns btns__save" onClick={()=>this.updateTableAsPerSortCondition()}>Ok</button>
+                <button
+                  className="btns btns__save"
+                  onClick={() => this.updateTableAsPerSortCondition()}
+                >
+                  Ok
+                </button>
               </div>
             </div>
           </div>
         </div>
-        {/* <button onClick={() => this.add()}>Add New</button> */}
       </div>
     );
   }
