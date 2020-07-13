@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDrop } from "react-dnd";
 import Card from "./SortItem";
 import update from "immutability-helper";
 import { ItemTypes } from "./ItemTypes";
 
 const SortingList = (props) => {
-  const [cards, setCards] = useState(...props.sortsArray);
+  const [cards, setCards] = useState([...props.sortsArray]);
 
   const moveCard = (id, atIndex) => {
     const { card, index } = findCard(id);
@@ -29,12 +29,12 @@ const SortingList = (props) => {
 
   const [, drop] = useDrop({ accept: ItemTypes.CARD });
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCards(props.sortsArray);
   }, [props.sortsArray]);
-
   return (
-    <>
+
+    <React.Fragment>
       <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
         {cards.map((card) => (
           <Card
@@ -46,7 +46,7 @@ const SortingList = (props) => {
           />
         ))}
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

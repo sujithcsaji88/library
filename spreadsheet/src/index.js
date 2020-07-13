@@ -42,6 +42,7 @@ class spreadsheet extends Component {
       airportCodes.push({ id: item, value: item });
     });
     this.state = {
+      warningStatus: "",
       height: 680,
       displayNoRows: "none",
       searchIconDisplay: "",
@@ -56,7 +57,7 @@ class spreadsheet extends Component {
       filteringRows: this.props.rows,
       tempRows: this.props.rows,
       sortingPanelComponent: null,
-      count: this.props.rows.length,
+      count: this.props.count,
       columns: this.props.columns.map((item) => {
         if (item.editor === "DatePicker") {
           item.editor = DatePicker;
@@ -67,7 +68,7 @@ class spreadsheet extends Component {
         } else {
           item.editor = null;
         }
-        if (item.name === "Flight Model") {
+        if (item.type === "numeric") {
           item.filterRenderer = NumericFilter;
         }
         else {
@@ -152,6 +153,13 @@ class spreadsheet extends Component {
     });
   };
 
+  handleWarningStatus = () => {
+    this.setState({ warningStatus: "invalid" })
+  }
+  closeWarningStatus = () => {
+    this.setState({ warningStatus: "" })
+  }
+
   sortRows = (data, sortColumn, sortDirection) => {
     const comparer = (a, b) => {
       if (sortDirection === "ASC") {
@@ -177,6 +185,7 @@ class spreadsheet extends Component {
       textValue: props.textValue,
     });
     this.setState({ count: props.count });
+    this.setState({ warningStatus: props.status })
   }
 
   /**
@@ -272,6 +281,7 @@ class spreadsheet extends Component {
 	 * @param {*} value is the  incoming filtering event
 	 */
   handleFilterChange = (value) => {
+    console.log(value)
     let junk = this.state.junk;
     if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
       junk[value.column.key] = value;
@@ -280,19 +290,21 @@ class spreadsheet extends Component {
     }
     this.setState({ junk });
     const data = this.getrows(this.state.filteringRows, this.state.junk);
+
     this.setState({
       rows: data,
       tempRows: data,
       count: data.length,
     });
-    if (data.length === 0) {
-      this.props.handleWarningStatus();
+    if (this.state.count === 0) {
+      this.handleWarningStatus();
     }
-    else{
-      this.props.closeWarningStatus();
+    else {
+      this.closeWarningStatus();
     }
   };
   getrows = (rows, filters) => {
+    console.log(filters)
     if (Object.keys(filters).length <= 0) {
       filters = {};
     }
@@ -453,7 +465,7 @@ class spreadsheet extends Component {
   };
   clearSearchValue = () => {
     this.setState({ searchValue: "" });
-    this.setState({filteringRows:this.state.filteringRows})
+    //this.setState({filteringRows:this.state.rows})
   };
 
   sortingPanel = () => {
@@ -484,7 +496,7 @@ class spreadsheet extends Component {
       exportComponent: null,
     });
   };
-  
+
   render() {
     return (
       <div>
@@ -531,7 +543,7 @@ class spreadsheet extends Component {
         </div>
         <ErrorMessage
           className='errorDiv'
-          status={this.props.status}
+          status={this.state.warningStatus}
           closeWarningStatus={this.props.closeWarningStatus}
           clearSearchValue={this.clearSearchValue}
         />
