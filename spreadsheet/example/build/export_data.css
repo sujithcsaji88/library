@@ -1,0 +1,188 @@
+
+.exportWarning{
+  position: absolute;
+    margin-top: 300px;
+    right: 5%;
+}
+.exports--grid {
+  z-index:11;
+  box-shadow: 0px 15px 30px rgba(32, 77, 111, 0.2);
+  position: absolute;
+  font-size: 14px;
+  color: #1f567e;
+  line-height: 32px;
+  top: 50px;
+  right: 10px;
+  transition: 0.5s;
+  background: #fff;
+  border: 1px solid #ddd;
+  user-select: none;
+}
+.export__grid:before{
+  width: 0px;
+    height: 0px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #fff;
+    position: absolute;
+    top: -7px;
+    right: 10px;
+    content: "";
+}
+.exports--grid ::-webkit-scrollbar {
+  width: 6px;
+}
+.exports--grid ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.exports--grid ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+}
+.exports--grid ::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+.exports--grid .export__grid {
+  display: flex;
+}
+.exports--grid .export__grid .export__chooser {
+  border-right: 1px solid #eee;
+}
+.exports--grid .export__grid .export__chooser .export__header {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+.exports--grid .export__grid .export__chooser .export__body {
+  padding: 10px;
+  margin-bottom: 50px;
+  height: 390px;
+  overflow-y: scroll;
+}
+.exports--grid .export__grid .export__chooser .export__body .export__selectAll {
+  display: flex;
+}
+.exports--grid .export__grid .export__chooser .export__body .custom__ctrl {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0px 5px;
+}
+.exports--grid .export__grid .export__chooser .export__wrap {
+  display: flex;
+  border: 1px solid #cdd0d5;
+  border-radius: 5px;
+  padding: 0px 10px;
+}
+.exports--grid .export__grid .export__chooser .export__wrap .export__checkbox {
+  margin-right: 10px;
+}
+.exports--grid .export__grid .export__settings .export__header {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  padding: 10px;
+}
+.exports--grid .export__grid .export__settings .export__header .export__close {
+  margin-left: auto;
+}
+.exports--grid .export__grid .export__settings .export__as {
+  padding: 0px 15px;
+}
+.exports--grid .export__grid .export__settings .export__body {
+  display: flex;
+  padding: 10px;
+}
+.exports--grid .export__grid .export__settings .export__body .export__reorder {
+  border: 1px solid #9ea2a5;
+  border-radius: 5px;
+  height: 125px;
+  margin: 10px 5px;
+  padding: 10px;
+}
+.exports--grid
+  .export__grid
+  .export__settings
+  .export__body
+  .export__reorder
+  .export__file {
+  height: 75px;
+  width: 75px;
+  text-align: center;
+}
+.exports--grid
+  .export__grid
+  .export__settings
+  .export__body
+  .export__reorder
+  .export__file
+  .temp {
+  font-size: 50px;
+}
+.exports--grid .export__grid .export__settings .export__footer {
+  padding: 10px;
+  border-top: 1px solid #eee;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 65%;
+  display: flex;
+}
+.exports--grid .export__grid .export__settings .export__footer .export__btns {
+  margin-left: auto;
+}
+.exports--grid
+  .export__grid
+  .export__settings
+  .export__footer
+  .export__btns
+  .btns {
+  border: 1px solid #0e4bda;
+  background: #fff;
+  border-radius: 5px;
+  width: 100px;
+  margin-left: 10px;
+  color: #0e4bda;
+}
+.exports--grid
+  .export__grid
+  .export__settings
+  .export__footer
+  .export__btns
+  .btns__save {
+  color: #fff;
+  background: #034bda;
+}
+@media only screen and (max-width: 667px) {
+  .exports--grid .export__grid {
+    height: 368px;
+    overflow-y: scroll;
+    width: 667px;
+  }
+  .exports--grid .export__grid .export__chooser .export__body {
+    height: 300px;
+    overflow-y: scroll;
+  }
+  .exports--grid .export__grid .export__settings .export__body {
+    height: 230px;
+    overflow-y: scroll;
+    width: 478px;
+  }
+  .exports--grid .export__grid .export__settings .export__footer {
+    width: 74%;
+  }
+}
+.export__header{
+  color:#3c425e;
+}
+.icon-close {
+  font-size: 15px;
+}
+.icon-close path{
+  fill:#9ca1b6;
+}
+.export__body .custom__ctrl{
+  width: 100%;
+}
+.export__selectAll .export__selectTxt{
+  cursor: pointer;
+}
+.export__body .custom__ctrl{
+  width: 100%;
+}
