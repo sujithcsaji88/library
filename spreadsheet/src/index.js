@@ -42,7 +42,6 @@ class spreadsheet extends Component {
       airportCodes.push({ id: item, value: item });
     });
     this.state = {
-      warningStatus: "",
       height: 680,
       displayNoRows: "none",
       searchIconDisplay: "",
@@ -57,7 +56,7 @@ class spreadsheet extends Component {
       filteringRows: this.props.rows,
       tempRows: this.props.rows,
       sortingPanelComponent: null,
-      count: this.props.count,
+      count: this.props.rows.length,
       columns: this.props.columns.map((item) => {
         if (item.editor === "DatePicker") {
           item.editor = DatePicker;
@@ -170,7 +169,6 @@ class spreadsheet extends Component {
       textValue: props.textValue,
     });
     this.setState({ count: props.count });
-    this.setState({ warningStatus: props.status })
   }
 
   /**
@@ -274,7 +272,6 @@ class spreadsheet extends Component {
     }
     this.setState({ junk });
     const data = this.getrows(this.state.filteringRows, this.state.junk);
-
     this.setState({
       rows: data,
       tempRows: data,
@@ -283,8 +280,8 @@ class spreadsheet extends Component {
     if (data.length === 0) {
       this.handleWarningStatus();
     }
-    else {
-      this.closeWarningStatus();
+    else{
+      this.props.closeWarningStatus();
     }
   };
   getrows = (rows, filters) => {
@@ -448,7 +445,7 @@ class spreadsheet extends Component {
   };
   clearSearchValue = () => {
     this.setState({ searchValue: "" });
-    //this.setState({filteringRows:this.state.rows})
+    this.setState({filteringRows:this.state.filteringRows})
   };
 
   sortingPanel = () => {
@@ -479,7 +476,7 @@ class spreadsheet extends Component {
       exportComponent: null,
     });
   };
-
+  
   render() {
     return (
       <div>
