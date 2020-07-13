@@ -16,6 +16,11 @@ class App extends React.Component {
     super();
     this.state = {
       rowList: [true],
+      sortingOrderList:[{
+        "Sort by":"",
+        "Order":"",
+        "Sort on":""
+      }]
     };
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -40,7 +45,16 @@ class App extends React.Component {
   add = () => {
     let rowList = [...this.state.rowList];
     rowList.push(true);
-    this.setState({ rowList });
+    var existingSortingOrderList= this.state.sortingOrderList
+    existingSortingOrderList.push({
+      "Sort by":"",
+      "Order":"",
+      "Sort on":""
+    })
+    this.setState({ 
+      rowList, 
+      sortingOrderList: existingSortingOrderList
+   });
   };
 
   copy = (i) => {
@@ -132,6 +146,32 @@ class App extends React.Component {
     });
   };
 
+  captureSortingFeildValues=(event, index, sortingKey)=>{
+    var sortingObj= {
+      //``
+    }
+    var existingSortingOrderList=this.state.sortingOrderList
+    if(sortingKey === "Sort by"){
+      existingSortingOrderList[index]["Sort by"] = event.target.value;
+    }
+    if(sortingKey === "Order"){
+      existingSortingOrderList[index]["Order"] = event.target.value;
+    }
+    
+    if(existingSortingOrderList[index]['Sort on'] === "" || existingSortingOrderList[index]['Sort on'] === undefined){
+      existingSortingOrderList[index]['Sort on'] = "Value"
+    }
+    
+    this.setState({
+      sortingOrderList : existingSortingOrderList
+    })
+
+  }
+
+  updateTableAsPerSortCondition=()=>{
+    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList)
+  }
+
   render() {
     let { rowList } = this.state;
     return (
@@ -151,7 +191,7 @@ class App extends React.Component {
               </div>
             </div>
             <div className="sort__body">
-              {/* <DndProvider
+              <DndProvider
                 backend={TouchBackend}
                 options={{ enableMouseEvents: true }}
               >
@@ -160,7 +200,7 @@ class App extends React.Component {
                     this.state.rowList
                   )}
                 />
-              </DndProvider> */}
+              </DndProvider>
               {rowList.map((x, i) => {
                 return (
                   <div className="sort__bodyContent" key={i}>
@@ -179,7 +219,7 @@ class App extends React.Component {
                         <div>Sort by</div>
                       </div>
                       <div className="sort__file">
-                        <select className="custom__ctrl">
+                        <select className="custom__ctrl" onChange={(e)=>this.captureSortingFeildValues(e, i, "Sort by")}>
                           {this.props.columnFieldValue.map((item, index) => (
                             <option key={index}>{item}</option>
                           ))}
@@ -191,7 +231,7 @@ class App extends React.Component {
                         <div>Sort on</div>
                       </div>
                       <div className="sort__file">
-                        <select className="custom__ctrl">
+                        <select className="custom__ctrl" onChange={(e)=>this.captureSortingFeildValues(e, i,  "Sort on")}>
                           <option>Value</option>
                         </select>
                       </div>
@@ -201,7 +241,7 @@ class App extends React.Component {
                         <div>Order</div>
                       </div>
                       <div className="sort__file">
-                        <select className="custom__ctrl">
+                        <select className="custom__ctrl" onChange={(e)=>this.captureSortingFeildValues(e, i, "Order")}>
                           <option>Ascending</option>
                           <option>Descending</option>
                         </select>
@@ -251,7 +291,7 @@ class App extends React.Component {
                 <button className="btns" onClick={this.clearAll}>
                   Clear All
                 </button>
-                <button className="btns btns__save">Ok</button>
+                <button className="btns btns__save" onClick={()=>this.updateTableAsPerSortCondition()}>Ok</button>
               </div>
             </div>
           </div>
