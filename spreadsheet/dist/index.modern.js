@@ -295,7 +295,23 @@ class ColumnReordering extends React.Component {
       var existingLeftPinnedList = this.state.leftPinnedColumList;
 
       if (!existingColumnReorderEntityList.includes(typeToBeAdded)) {
-        existingColumnReorderEntityList.push(typeToBeAdded);
+        var indexOfInsertion = this.state.columnSelectList.findIndex(item => item === typeToBeAdded);
+
+        while (indexOfInsertion > 0) {
+          if (existingColumnReorderEntityList.includes(this.state.columnSelectList[indexOfInsertion - 1])) {
+            if (!existingLeftPinnedList.includes(this.state.columnSelectList[indexOfInsertion - 1])) {
+              indexOfInsertion = existingColumnReorderEntityList.findIndex(item => item === this.state.columnSelectList[indexOfInsertion - 1]);
+              indexOfInsertion = indexOfInsertion + 1;
+              break;
+            } else {
+              indexOfInsertion = indexOfInsertion - 1;
+            }
+          } else {
+            indexOfInsertion = indexOfInsertion - 1;
+          }
+        }
+
+        existingColumnReorderEntityList.splice(indexOfInsertion, 0, typeToBeAdded);
       } else {
         existingColumnReorderEntityList = existingColumnReorderEntityList.filter(item => {
           if (item !== typeToBeAdded) return item;
@@ -384,7 +400,7 @@ class ColumnReordering extends React.Component {
 
     this.state = {
       columnReorderEntityList: this.props.headerKeys,
-      columnSelectList: this.props.headerKeys,
+      columnSelectList: this.props.columns.map(item => item.name),
       leftPinnedColumList: this.props.existingPinnedHeadersList,
       isAllSelected: false,
       maxLeftPinnedColumn: this.props.maxLeftPinnedColumn

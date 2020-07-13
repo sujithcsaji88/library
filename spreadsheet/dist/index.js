@@ -373,7 +373,27 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
       var existingLeftPinnedList = _this.state.leftPinnedColumList;
 
       if (!existingColumnReorderEntityList.includes(typeToBeAdded)) {
-        existingColumnReorderEntityList.push(typeToBeAdded);
+        var indexOfInsertion = _this.state.columnSelectList.findIndex(function (item) {
+          return item === typeToBeAdded;
+        });
+
+        while (indexOfInsertion > 0) {
+          if (existingColumnReorderEntityList.includes(_this.state.columnSelectList[indexOfInsertion - 1])) {
+            if (!existingLeftPinnedList.includes(_this.state.columnSelectList[indexOfInsertion - 1])) {
+              indexOfInsertion = existingColumnReorderEntityList.findIndex(function (item) {
+                return item === _this.state.columnSelectList[indexOfInsertion - 1];
+              });
+              indexOfInsertion = indexOfInsertion + 1;
+              break;
+            } else {
+              indexOfInsertion = indexOfInsertion - 1;
+            }
+          } else {
+            indexOfInsertion = indexOfInsertion - 1;
+          }
+        }
+
+        existingColumnReorderEntityList.splice(indexOfInsertion, 0, typeToBeAdded);
       } else {
         existingColumnReorderEntityList = existingColumnReorderEntityList.filter(function (item) {
           if (item !== typeToBeAdded) return item;
@@ -478,7 +498,9 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
 
     _this.state = {
       columnReorderEntityList: _this.props.headerKeys,
-      columnSelectList: _this.props.headerKeys,
+      columnSelectList: _this.props.columns.map(function (item) {
+        return item.name;
+      }),
       leftPinnedColumList: _this.props.existingPinnedHeadersList,
       isAllSelected: false,
       maxLeftPinnedColumn: _this.props.maxLeftPinnedColumn
