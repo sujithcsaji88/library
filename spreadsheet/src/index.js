@@ -68,7 +68,7 @@ class spreadsheet extends Component {
         } else {
           item.editor = null;
         }
-        if (item.type === "numeric") {
+        if (item.filterType === "numeric") {
           item.filterRenderer = NumericFilter;
         }
         else {
@@ -280,7 +280,7 @@ class spreadsheet extends Component {
       tempRows: data,
       count: data.length,
     });
-    if (this.state.count === 0) {
+    if (data.length === 0) {
       this.handleWarningStatus();
     }
     else {
@@ -527,7 +527,10 @@ class spreadsheet extends Component {
         <ErrorMessage
           className='errorDiv'
           status={this.state.warningStatus}
-          closeWarningStatus={this.props.closeWarningStatus}
+          closeWarningStatus={(e) => {
+            this.props.closeWarningStatus();
+            this.closeWarningStatus();
+          }}
           clearSearchValue={this.clearSearchValue}
         />
         <DraggableContainer className='gridDiv' onHeaderDrop={this.onHeaderDrop}>

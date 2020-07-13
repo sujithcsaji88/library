@@ -1327,7 +1327,7 @@ class spreadsheet extends Component {
         count: data.length
       });
 
-      if (this.state.count === 0) {
+      if (data.length === 0) {
         this.handleWarningStatus();
       } else {
         this.closeWarningStatus();
@@ -1528,7 +1528,7 @@ class spreadsheet extends Component {
           item.editor = null;
         }
 
-        if (item.type === "numeric") {
+        if (item.filterType === "numeric") {
           item.filterRenderer = NumericFilter;
         } else {
           item.filterRenderer = AutoCompleteFilter;
@@ -1616,7 +1616,10 @@ class spreadsheet extends Component {
     })), this.state.exportComponent), /*#__PURE__*/React.createElement(ErrorMessage, {
       className: "errorDiv",
       status: this.state.warningStatus,
-      closeWarningStatus: this.props.closeWarningStatus,
+      closeWarningStatus: e => {
+        this.props.closeWarningStatus();
+        this.closeWarningStatus();
+      },
       clearSearchValue: this.clearSearchValue
     }), /*#__PURE__*/React.createElement(DraggableContainer, {
       className: "gridDiv",

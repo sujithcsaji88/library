@@ -28,7 +28,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "date",
@@ -39,7 +40,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "segmentfrom",
@@ -50,7 +52,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "revenue",
@@ -61,7 +64,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "yeild",
@@ -72,7 +76,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "segmentto",
@@ -83,7 +88,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "flightModel",
@@ -93,8 +99,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
-      type:"numeric"
+      width: 150,
+      filterType: "numeric"
     },
     {
       key: "bodyType",
@@ -105,7 +111,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "type",
@@ -116,7 +123,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "startTime",
@@ -127,7 +135,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "endTime",
@@ -138,7 +147,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "status",
@@ -149,7 +159,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "additionalStatus",
@@ -160,7 +171,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "timeStatus",
@@ -171,7 +183,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "weightpercentage",
@@ -182,7 +195,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "weightvalue",
@@ -193,7 +207,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "volumepercentage",
@@ -204,7 +219,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "volumevalue",
@@ -215,7 +231,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldposition1",
@@ -226,7 +243,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldvalue1",
@@ -237,7 +255,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldposition2",
@@ -248,7 +267,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldvalue2",
@@ -259,7 +279,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldposition3",
@@ -270,7 +291,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldvalue3",
@@ -281,7 +303,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldposition4",
@@ -292,7 +315,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "uldvalue4",
@@ -303,7 +327,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
 
     {
@@ -315,7 +340,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "queuedBookingSR",
@@ -326,7 +352,8 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
+      width: 150,
+      filterType: "autoCompleteFilter"
     },
     {
       key: "queuedBookingvolume",
@@ -337,8 +364,9 @@ const App = () => {
       sortable: true,
       resizable: true,
       filterable: true,
-      width: 120,
-    },
+      width: 150,
+      filterType: "autoCompleteFilter"
+    }
   ];
 
   //Configure columns and its related functions

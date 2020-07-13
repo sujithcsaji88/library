@@ -1512,7 +1512,7 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
         count: data.length
       });
 
-      if (_this.state.count === 0) {
+      if (data.length === 0) {
         _this.handleWarningStatus();
       } else {
         _this.closeWarningStatus();
@@ -1743,7 +1743,7 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
           item.editor = null;
         }
 
-        if (item.type === "numeric") {
+        if (item.filterType === "numeric") {
           item.filterRenderer = NumericFilter;
         } else {
           item.filterRenderer = AutoCompleteFilter;
@@ -1839,7 +1839,11 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
     })), this.state.exportComponent), /*#__PURE__*/React__default.createElement(ErrorMessage, {
       className: "errorDiv",
       status: this.state.warningStatus,
-      closeWarningStatus: this.props.closeWarningStatus,
+      closeWarningStatus: function closeWarningStatus(e) {
+        _this2.props.closeWarningStatus();
+
+        _this2.closeWarningStatus();
+      },
       clearSearchValue: this.clearSearchValue
     }), /*#__PURE__*/React__default.createElement(DraggableContainer, {
       className: "gridDiv",
