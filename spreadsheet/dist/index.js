@@ -193,7 +193,7 @@ var DatePicker = /*#__PURE__*/function (_React$Component) {
   return DatePicker;
 }(React__default.Component);
 
-var SEARCH_NOT_FOUNT_ERROR = "No Search Matches. Please try again later.";
+var SEARCH_NOT_FOUNT_ERROR = "No Records found!";
 
 var ErrorMessage = function ErrorMessage(props) {
   var _useState = React.useState(props.status),
@@ -630,6 +630,126 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
   return ColumnReordering;
 }(React__default.Component);
 
+var ItemTypes$1 = {
+  CARD: "sort"
+};
+
+var style$1 = {
+  cursor: "move"
+};
+
+var Card = function Card(_ref) {
+  var id = _ref.id,
+      text = _ref.text,
+      moveCard = _ref.moveCard,
+      findCard = _ref.findCard;
+  var originalIndex = findCard(id).index;
+
+  var _useDrag = reactDnd.useDrag({
+    item: {
+      type: ItemTypes$1.CARD,
+      id: id,
+      originalIndex: originalIndex
+    },
+    collect: function collect(monitor) {
+      return {
+        isDragging: monitor.isDragging()
+      };
+    },
+    end: function end(dropResult, monitor) {
+      var _monitor$getItem = monitor.getItem(),
+          droppedId = _monitor$getItem.id,
+          originalIndex = _monitor$getItem.originalIndex;
+
+      var didDrop = monitor.didDrop();
+
+      if (!didDrop) {
+        moveCard(droppedId, originalIndex);
+      }
+    }
+  }),
+      isDragging = _useDrag[0].isDragging,
+      drag = _useDrag[1];
+
+  var _useDrop = reactDnd.useDrop({
+    accept: ItemTypes$1.CARD,
+    canDrop: function canDrop() {
+      return false;
+    },
+    hover: function hover(_ref2) {
+      var draggedId = _ref2.id;
+
+      if (draggedId !== id) {
+        var _findCard = findCard(id),
+            overIndex = _findCard.index;
+
+        moveCard(draggedId, overIndex);
+      }
+    }
+  }),
+      drop = _useDrop[1];
+
+  var opacity = isDragging ? 0.5 : 1;
+  return /*#__PURE__*/React__default.createElement("div", {
+    ref: function ref(node) {
+      return drag(drop(node));
+    },
+    style: _extends({}, style$1, {
+      opacity: opacity
+    })
+  }, text);
+};
+
+var SortingList = function SortingList(props) {
+  var _useState = React.useState([].concat(props.sortsArray)),
+      cards = _useState[0],
+      setCards = _useState[1];
+
+  var moveCard = function moveCard(id, atIndex) {
+    var _findCard = findCard(id),
+        card = _findCard.card,
+        index = _findCard.index;
+
+    setCards(update(cards, {
+      $splice: [[index, 1], [atIndex, 0, card]]
+    }));
+  };
+
+  var findCard = function findCard(id) {
+    var card = cards.filter(function (c) {
+      return "" + c.id === id;
+    })[0];
+    return {
+      card: card,
+      index: cards.indexOf(card)
+    };
+  };
+
+  var _useDrop = reactDnd.useDrop({
+    accept: ItemTypes$1.CARD
+  }),
+      drop = _useDrop[1];
+
+  React__default.useEffect(function () {
+    setCards(props.sortsArray);
+  }, [props.sortsArray]);
+  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+    ref: drop,
+    style: {
+      display: "flex",
+      flexWrap: "wrap"
+    }
+  }, cards.map(function (card) {
+    return /*#__PURE__*/React__default.createElement(Card, {
+      key: card.id,
+      id: "" + card.id,
+      text: card.text,
+      moveCard: moveCard,
+      findCard: findCard
+    });
+  })));
+};
+
 var App = /*#__PURE__*/function (_React$Component) {
   _inheritsLoose(App, _React$Component);
 
@@ -660,7 +780,9 @@ var App = /*#__PURE__*/function (_React$Component) {
 
     _this.remove = function (i) {
       var rowList = [].concat(_this.state.rowList);
+      console.log(i);
       rowList.splice(i, 1);
+      console.log();
 
       _this.setState({
         rowList: rowList
@@ -668,71 +790,75 @@ var App = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.createColumnsArrayFromProps = function (rowList) {
-      return rowList.map(function (x, i) {
-        return /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__bodyContent",
-          key: i
-        }, /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React__default.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__icon"
-        }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-          icon: freeSolidSvgIcons.faAlignJustify
-        }))), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React__default.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React__default.createElement("div", null, "Sort by")), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__file"
-        }, /*#__PURE__*/React__default.createElement("select", {
-          className: "custom__ctrl"
-        }, _this.props.columnFieldValue.map(function (item, index) {
-          return /*#__PURE__*/React__default.createElement("option", {
-            key: index
-          }, item);
-        })))), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React__default.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React__default.createElement("div", null, "Sort on")), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__file"
-        }, /*#__PURE__*/React__default.createElement("select", {
-          className: "custom__ctrl"
-        }, /*#__PURE__*/React__default.createElement("option", null, "Value")))), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React__default.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React__default.createElement("div", null, "Order")), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__file"
-        }, /*#__PURE__*/React__default.createElement("select", {
-          className: "custom__ctrl"
-        }, /*#__PURE__*/React__default.createElement("option", null, "Ascending"), /*#__PURE__*/React__default.createElement("option", null, "Descending")))), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React__default.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__icon"
-        }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-          icon: freeSolidSvgIcons.faCopy,
-          title: "Copy",
-          onClick: function onClick() {
-            return _this.copy(i);
-          }
-        }))), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React__default.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
-          className: "sort__icon"
-        }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-          icon: freeSolidSvgIcons.faTrash,
-          title: "Delete",
-          onClick: function onClick() {
-            return _this.remove(i);
-          }
-        }))));
+      console.log(_this.state.rowList);
+      return rowList.map(function (i, index) {
+        return {
+          id: index,
+          text: /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__bodyContent",
+            key: i
+          }, /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React__default.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__icon"
+          }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
+            icon: freeSolidSvgIcons.faAlignJustify
+          }))), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React__default.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React__default.createElement("div", null, "Sort by")), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__file"
+          }, /*#__PURE__*/React__default.createElement("select", {
+            className: "custom__ctrl"
+          }, _this.props.columnFieldValue.map(function (item, index) {
+            return /*#__PURE__*/React__default.createElement("option", {
+              key: index
+            }, item);
+          })))), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React__default.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React__default.createElement("div", null, "Sort on")), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__file"
+          }, /*#__PURE__*/React__default.createElement("select", {
+            className: "custom__ctrl"
+          }, /*#__PURE__*/React__default.createElement("option", null, "Value")))), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React__default.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React__default.createElement("div", null, "Order")), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__file"
+          }, /*#__PURE__*/React__default.createElement("select", {
+            className: "custom__ctrl"
+          }, /*#__PURE__*/React__default.createElement("option", null, "Ascending"), /*#__PURE__*/React__default.createElement("option", null, "Descending")))), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React__default.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__icon"
+          }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
+            icon: freeSolidSvgIcons.faCopy,
+            title: "Copy",
+            onClick: function onClick() {
+              return _this.copy(i);
+            }
+          }))), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React__default.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
+            className: "sort__icon"
+          }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
+            icon: freeSolidSvgIcons.faTrash,
+            title: "Delete",
+            onClick: function onClick() {
+              return _this.remove(index);
+            }
+          }))))
+        };
       });
     };
 
@@ -767,7 +893,7 @@ var App = /*#__PURE__*/function (_React$Component) {
   _proto.render = function render() {
     var _this2 = this;
 
-    var rowList = this.state.rowList;
+    console.log(this.state.rowList);
     return /*#__PURE__*/React__default.createElement("div", {
       className: "sorts--grid",
       ref: this.setWrapperRef
@@ -789,72 +915,14 @@ var App = /*#__PURE__*/function (_React$Component) {
       }
     }))), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__body"
-    }, rowList.map(function (x, i) {
-      return /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__bodyContent",
-        key: i
-      }, /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React__default.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__icon"
-      }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-        icon: freeSolidSvgIcons.faAlignJustify
-      }))), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React__default.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React__default.createElement("div", null, "Sort by")), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__file"
-      }, /*#__PURE__*/React__default.createElement("select", {
-        className: "custom__ctrl"
-      }, _this2.props.columnFieldValue.map(function (item, index) {
-        return /*#__PURE__*/React__default.createElement("option", {
-          key: index
-        }, item);
-      })))), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React__default.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React__default.createElement("div", null, "Sort on")), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__file"
-      }, /*#__PURE__*/React__default.createElement("select", {
-        className: "custom__ctrl"
-      }, /*#__PURE__*/React__default.createElement("option", null, "Value")))), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React__default.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React__default.createElement("div", null, "Order")), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__file"
-      }, /*#__PURE__*/React__default.createElement("select", {
-        className: "custom__ctrl"
-      }, /*#__PURE__*/React__default.createElement("option", null, "Ascending"), /*#__PURE__*/React__default.createElement("option", null, "Descending")))), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React__default.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__icon"
-      }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-        icon: freeSolidSvgIcons.faCopy,
-        title: "Copy",
-        onClick: function onClick() {
-          return _this2.copy(i);
-        }
-      }))), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React__default.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
-        className: "sort__icon"
-      }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-        icon: freeSolidSvgIcons.faTrash,
-        title: "Delete",
-        onClick: function onClick() {
-          return _this2.remove(i);
-        }
-      }))));
-    }), /*#__PURE__*/React__default.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement(reactDnd.DndProvider, {
+      backend: reactDndTouchBackend.TouchBackend,
+      options: {
+        enableMouseEvents: true
+      }
+    }, /*#__PURE__*/React__default.createElement(SortingList, {
+      sortsArray: this.createColumnsArrayFromProps(this.state.rowList)
+    })), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__new"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "sort__section"
@@ -1474,7 +1542,7 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
       if (data.length === 0) {
         _this.handleWarningStatus();
       } else {
-        _this.props.closeWarningStatus();
+        _this.closeWarningStatus();
       }
     };
 
@@ -1677,6 +1745,7 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
     });
 
     _this.state = {
+      warningStatus: "",
       height: 680,
       displayNoRows: "none",
       searchIconDisplay: "",
@@ -1739,6 +1808,9 @@ var spreadsheet = /*#__PURE__*/function (_Component) {
     });
     this.setState({
       count: props.count
+    });
+    this.setState({
+      warningStatus: props.status
     });
   };
 

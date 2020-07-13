@@ -42,6 +42,7 @@ class spreadsheet extends Component {
       airportCodes.push({ id: item, value: item });
     });
     this.state = {
+      warningStatus:"",
       height: 680,
       displayNoRows: "none",
       searchIconDisplay: "",
@@ -169,6 +170,7 @@ class spreadsheet extends Component {
       textValue: props.textValue,
     });
     this.setState({ count: props.count });
+    this.setState({warningStatus:props.status})
   }
 
   /**
@@ -280,8 +282,8 @@ class spreadsheet extends Component {
     if (data.length === 0) {
       this.handleWarningStatus();
     }
-    else{
-      this.props.closeWarningStatus();
+    else {
+      this.closeWarningStatus();
     }
   };
   getrows = (rows, filters) => {
@@ -445,7 +447,7 @@ class spreadsheet extends Component {
   };
   clearSearchValue = () => {
     this.setState({ searchValue: "" });
-    this.setState({filteringRows:this.state.filteringRows})
+    this.setState({ filteringRows: this.state.filteringRows })
   };
 
   sortingPanel = () => {
@@ -476,7 +478,7 @@ class spreadsheet extends Component {
       exportComponent: null,
     });
   };
-  
+
   render() {
     return (
       <div>
