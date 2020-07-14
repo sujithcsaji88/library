@@ -1,2 +1,7 @@
 spreadsheet/node_modules
 spreadsheet/example/node_modules
+spreadsheet/dist/
+spreadsheet/dist/index.js
+spreadsheet/dist/index.js.map
+spreadsheet/dist/index.modern.js
+spreadsheet/dist/index.modern.js.map
