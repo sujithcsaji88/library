@@ -257,13 +257,13 @@ class App extends React.Component {
                   )}
                 />
               </DndProvider>
-              <div>
+              <div className="sort-warning">
                 {this.state.errorMessage ? (
                   <span
                     style={{ display: this.state.clickTag }}
                     className="alert alert-danger"
                   >
-                    Please Add New Sort
+                    Sort types opted are same, Please choose different one.
                   </span>
                 ) : (
                   ""
