@@ -27,16 +27,16 @@
 .sorts--grid .sort__grid {
   display: flex;
 }
-.sorts--grid .sort__grid :before{
+.sorts--grid .sort__grid :before {
   width: 0px;
-    height: 0px;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 7px solid #fff;
-    position: absolute;
-    top: -7px;
-    right: 10px;
-    content: "";
+  height: 0px;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #fff;
+  position: absolute;
+  top: -7px;
+  right: 10px;
+  content: "";
 }
 .sorts--grid .sort__grid .sort__settings {
   width: 667px;
@@ -54,7 +54,7 @@
 }
 .sorts--grid .sort__grid .sort__settings .sort__body {
   padding: 10px;
-  min-height: 100px;
+  min-height: 50px;
   overflow-y: scroll;
   max-height: 300px;
 }
@@ -62,7 +62,7 @@
   display: flex;
 }
 .sorts--grid .sort__grid .sort__settings .sort__section {
-  margin: 15px 0px 0px 60px;
+  margin: 0px 0px 15px 70px;
   width: 12%;
   display: flex;
   align-items: center;
@@ -128,5 +128,9 @@
 }
 .icon-close {
   font-size: 15px;
+}
+.sort-warning{
+  margin-top: 15px;
+  padding-left: 62px;
 }
 /* Sorting CSS ends here... @author Krishna */
