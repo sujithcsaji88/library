@@ -69,7 +69,7 @@ class ExportData extends React.Component {
       existingColumnEntityList.push(typeToBeAdded);
     } else {
       existingColumnEntityList = existingColumnEntityList.filter((item) => {
-        return item !== typeToBeAdded 
+        return item !== typeToBeAdded;
       });
     }
     this.setState({
@@ -229,16 +229,15 @@ class ExportData extends React.Component {
                   onChange={this.columnSearchLogic}
                 ></input>
               </div>
-              <div className="export__selectAll">
-                <div>
-                <input 
-									className='column__checkbox'
-									type='checkbox'
-                  onChange={() => this.selectAllToColumnList()}
-								  checked={this.state.isAllSelected}
-								/>
-									Select All
+              <div className="export__wrap export__headertxt">
+                <div className="export__checkbox">
+                  <input
+                    type="checkbox"
+                    onChange={() => this.selectAllToColumnList()}
+                    checked={this.state.isAllSelected}
+                  />
                 </div>
+                <div className="export__txt">Select All</div>
               </div>
               {this.state.columnValueList.length > 0
                 ? this.state.columnValueList.map((column, index) => {
@@ -264,7 +263,11 @@ class ExportData extends React.Component {
             <div className="export__header">
               <div className="export__headerTxt"></div>
               <div className="export__close">
-                <FontAwesomeIcon icon={faTimes} className="icon-close" onClick={this.props.closeExport}></FontAwesomeIcon>
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  className="icon-close"
+                  onClick={this.props.closeExport}
+                ></FontAwesomeIcon>
               </div>
             </div>
             <div className="export__as">Export as</div>
@@ -351,4 +354,3 @@ class ExportData extends React.Component {
   }
 }
 export default ExportData;
-
