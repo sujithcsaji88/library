@@ -8,6 +8,7 @@ const ColumnsList = (props) => {
 	const [columns, setColumns] = useState([...props.columnsArray]);
 
 	const moveColumn = (id, atIndex) => {
+
 		const { column, index } = findColumn(id);
 		setColumns(
 			update(columns, {
@@ -17,6 +18,19 @@ const ColumnsList = (props) => {
 				],
 			})
 		);
+		let values = [];
+		let temp = [];
+		temp = update(columns, {
+			$splice: [
+				[index, 1],
+				[atIndex, 0, column],
+			],
+		})
+		temp.forEach((item) => {
+			values.push(item.id)
+		})
+		//console.log(values)
+		props.handleReorderList(values);
 	};
 
 	const findColumn = (id) => {

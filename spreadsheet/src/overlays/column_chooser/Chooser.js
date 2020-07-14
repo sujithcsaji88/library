@@ -208,12 +208,13 @@ class ColumnReordering extends React.Component {
       );
       existingColumnReorderEntityList.unshift(item);
     });
-
     this.setState({
       columnReorderEntityList: existingColumnReorderEntityList,
     });
   };
-
+  handleReorderList = (reordered) => {
+    this.props.handleheaderNameList(reordered);
+  };
   render() {
     return (
       <div className="columns--grid" ref={this.setWrapperRef}>
@@ -277,28 +278,26 @@ class ColumnReordering extends React.Component {
                 ></FontAwesomeIcon>
               </div>
             </div>
-            <div className="column__header">
-              <div className="column__headerTxt">
+            <div className="column__headerTxt">
+              <strong>
+                &nbsp; &nbsp; Selected Column Count :{" "}
+                {this.state.columnReorderEntityList.length}
+              </strong>
+            </div>
+            <div className="column__headerTxt">
+              {this.state.maxLeftPinnedColumn -
+                this.state.leftPinnedColumList.length >
+              0 ? (
                 <strong>
-                  &nbsp; &nbsp; Selected Column Count :{" "}
-                  {this.state.columnReorderEntityList.length}
+                  &nbsp; &nbsp; Left Pinned Column Count Remaining :{" "}
+                  {this.state.maxLeftPinnedColumn -
+                    this.state.leftPinnedColumList.length}
                 </strong>
-              </div>
-              <div className="column__close">
-                {this.state.maxLeftPinnedColumn -
-                  this.state.leftPinnedColumList.length >
-                0 ? (
-                  <strong>
-                    &nbsp; &nbsp; Left Pinned Column Count Remaining :{" "}
-                    {this.state.maxLeftPinnedColumn -
-                      this.state.leftPinnedColumList.length}
-                  </strong>
-                ) : (
-                  <strong style={{ color: "red" }}>
-                    &nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED
-                  </strong>
-                )}
-              </div>
+              ) : (
+                <strong style={{ color: "red" }}>
+                  &nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED
+                </strong>
+              )}
             </div>
             <div className="column__body">
               <DndProvider
@@ -309,6 +308,7 @@ class ColumnReordering extends React.Component {
                   columnsArray={this.createColumnsArrayFromProps(
                     this.state.columnReorderEntityList
                   )}
+                  handleReorderList={this.handleReorderList}
                 />
               </DndProvider>
             </div>

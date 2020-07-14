@@ -7,13 +7,13 @@ import { FormControl } from "react-bootstrap";
 import DatePicker from "./functions/DatePicker.js";
 //import {onRowsSelected} from "../components/functions/OnRowsSelected.js"
 import {
-	faSortAmountDown,
-	faColumns,
-	// faSyncAlt,
-	faShareAlt,
-	// faAlignLeft,
-	// faFilter,
-	faSortDown,
+  faSortAmountDown,
+  faColumns,
+  // faSyncAlt,
+  faShareAlt,
+  // faAlignLeft,
+  // faFilter,
+  faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ErrorMessage from "./common/ErrorMessage";
@@ -22,7 +22,7 @@ import Sorting from "./overlays/sorting/Sorting";
 import ExportData from "./overlays/export_data/ExportData";
 
 const {
-	DraggableHeader: { DraggableContainer },
+  DraggableHeader: { DraggableContainer },
 } = require("react-data-grid-addons");
 
 const { DropDownEditor } = Editors;
@@ -32,7 +32,7 @@ const defaultParsePaste = (str) => str.split(/\r\n|\n|\r/).map((row) => row.spli
 // let newFilters = {};
 
 const selectors = Data.Selectors;
-
+let headerNameList, rePositionedArray, swapList;
 const { AutoCompleteFilter, NumericFilter } = Filters;
 class spreadsheet extends Component {
   constructor(props) {
@@ -87,12 +87,12 @@ class spreadsheet extends Component {
       return item.formulaApplicable;
     });
   }
-	componentDidUpdate(prevProps) {
-		//Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
-		const resizeEvent = document.createEvent("HTMLEvents");
-		resizeEvent.initEvent("resize", true, false);
-		window.dispatchEvent(resizeEvent);
-	}
+  componentDidUpdate(prevProps) {
+    //Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
+    const resizeEvent = document.createEvent("HTMLEvents");
+    resizeEvent.initEvent("resize", true, false);
+    window.dispatchEvent(resizeEvent);
+  }
   updateRows = (startIdx, newRows) => {
     this.setState((state) => {
       const rows = state.rows.slice();
@@ -247,24 +247,24 @@ class spreadsheet extends Component {
 	 * Method To bulk/individual select of rows
 	 * @param {*} rows is the selected row
 	 */
-	onRowsSelected = (rows) => {
-		this.setState({
-			selectedIndexes: this.state.selectedIndexes.concat(rows.map((r) => r.rowIdx)),
-		});
-		if (this.props.selectBulkData) {
-			this.props.selectBulkData(rows);
-		}
-	};
+  onRowsSelected = (rows) => {
+    this.setState({
+      selectedIndexes: this.state.selectedIndexes.concat(rows.map((r) => r.rowIdx)),
+    });
+    if (this.props.selectBulkData) {
+      this.props.selectBulkData(rows);
+    }
+  };
 	/**
 	 * Method To bulk/individual deselect of rows
 	 * @param {*} rows is the deselected row
 	 */
-	onRowsDeselected = (rows) => {
-		let rowIndexes = rows.map((r) => r.rowIdx);
-		this.setState({
-			selectedIndexes: this.state.selectedIndexes.filter((i) => rowIndexes.indexOf(i) === -1),
-		});
-	};
+  onRowsDeselected = (rows) => {
+    let rowIndexes = rows.map((r) => r.rowIdx);
+    this.setState({
+      selectedIndexes: this.state.selectedIndexes.filter((i) => rowIndexes.indexOf(i) === -1),
+    });
+  };
 
 	/**
 	 * Method To filter the multiple columns
@@ -351,19 +351,36 @@ class spreadsheet extends Component {
       columns: stateCopy.columns,
     });
     this.setState(reorderedColumns);
-  };
+  }
+  /**
+    * Method To dynamically swap the column from column chooser
+    * @param {*} reordered is the swapped array of columns
+    */
+  handleheaderNameList = (reordered) => {
+    swapList = reordered;
+  }
   updateTableAsPerRowChooser = (inComingColumnsHeaderList, pinnedColumnsList) => {
     var existingColumnsHeaderList = this.props.columns;
     existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
       return inComingColumnsHeaderList.includes(item.name);
     });
-
-    var rePositionedArray = existingColumnsHeaderList;
+    rePositionedArray = existingColumnsHeaderList;
     var singleHeaderOneList;
     if (pinnedColumnsList.length > 0) {
       pinnedColumnsList
         .slice(0)
         .reverse()
+        .map((item, index) => {
+          singleHeaderOneList = existingColumnsHeaderList.filter((subItem) => item === subItem.name);
+          rePositionedArray = this.array_move(
+            existingColumnsHeaderList,
+            existingColumnsHeaderList.indexOf(singleHeaderOneList[0]),
+            index
+          );
+        });
+    }
+    if (swapList.length > 0) {
+      swapList
         .map((item, index) => {
           singleHeaderOneList = existingColumnsHeaderList.filter((subItem) => item === subItem.name);
           rePositionedArray = this.array_move(
@@ -379,23 +396,23 @@ class spreadsheet extends Component {
        making all the frozen attribute as false for all the columns and then 
        setting items of pinnedColumnsList as frozen = true
        */
-		existingColumnsHeaderList.map((headerItem, index) => {
-			if (headerItem.frozen !== undefined && headerItem.frozen === true) {
-				existingColumnsHeaderList[index]["frozen"] = false;
-			}
-			if (pinnedColumnsList.includes(headerItem.name)) {
-				existingColumnsHeaderList[index]["frozen"] = true;
-			}
-		});
+    existingColumnsHeaderList.map((headerItem, index) => {
+      if (headerItem.frozen !== undefined && headerItem.frozen === true) {
+        existingColumnsHeaderList[index]["frozen"] = false;
+      }
+      if (pinnedColumnsList.includes(headerItem.name)) {
+        existingColumnsHeaderList[index]["frozen"] = true;
+      }
+    });
 
-		console.log("existingColumnsHeaderList ", existingColumnsHeaderList);
+    console.log("existingColumnsHeaderList ", existingColumnsHeaderList);
 
-		this.setState({
-			columns: existingColumnsHeaderList,
-		});
+    this.setState({
+      columns: existingColumnsHeaderList,
+    });
 
-		this.closeColumnReOrdering();
-	};
+    this.closeColumnReOrdering();
+  };
 
 	/**
 	 * Method To re-position a particular object in an Array from old_index to new_index
@@ -403,91 +420,92 @@ class spreadsheet extends Component {
 	 * @param {*} old_index initial index
 	 * @param {*} new_index final index
 	 */
-	array_move = (arr, old_index, new_index) => {
-		if (new_index >= arr.length) {
-			var k = new_index - arr.length + 1;
-			while (k--) {
-				arr.push(undefined);
-			}
-		}
-		arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-		return arr;
-	};
+  array_move = (arr, old_index, new_index) => {
+    if (new_index >= arr.length) {
+      var k = new_index - arr.length + 1;
+      while (k--) {
+        arr.push(undefined);
+      }
+    }
+    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+    return arr;
+  };
 
 	/**
 	 * Method to render the column Selector Pannel
 	 */
-	columnReorderingPannel = () => {
-		var headerNameList = [];
-		var existingPinnedHeadersList = [];
-		this.state.columns
-			.filter((item) => item.frozen !== undefined && item.frozen === true)
-			.map((item) => existingPinnedHeadersList.push(item.name));
-		this.state.columns.map((item) => headerNameList.push(item.name));
-		this.setState({
-			columnReorderingComponent: (
-				<ColumnReordering
-					maxLeftPinnedColumn={this.props.maxLeftPinnedColumn}
-					updateTableAsPerRowChooser={this.updateTableAsPerRowChooser}
-					headerKeys={headerNameList}
-					closeColumnReOrdering={this.closeColumnReOrdering}
-					existingPinnedHeadersList={existingPinnedHeadersList}
-					{...this.props}
-				/>
-			),
-		});
-	};
+  columnReorderingPannel = () => {
+    headerNameList = [];
+    var existingPinnedHeadersList = [];
+    this.state.columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => existingPinnedHeadersList.push(item.name));
+    this.state.columns.map((item) => headerNameList.push(item.name));
+    this.setState({
+      columnReorderingComponent: (
+        <ColumnReordering
+          maxLeftPinnedColumn={this.props.maxLeftPinnedColumn}
+          updateTableAsPerRowChooser={this.updateTableAsPerRowChooser}
+          headerKeys={headerNameList}
+          closeColumnReOrdering={this.closeColumnReOrdering}
+          existingPinnedHeadersList={existingPinnedHeadersList}
+          handleheaderNameList={this.handleheaderNameList}
+          {...this.props}
+        />
+      ),
+    });
+  };
 
 	/**
 	 * Method to stop the render the column Selector Pannel
 	 */
-	closeColumnReOrdering = () => {
-		this.setState({
-			columnReorderingComponent: null,
-		});
-	};
-	handleSearchValue = (value) => {
-		this.setState({ searchValue: value });
-	};
-	clearSearchValue = () => {
-		this.setState({ searchValue: "" });
-		this.setState({ filteringRows: this.state.filteringRows });
-	};
+  closeColumnReOrdering = () => {
+    this.setState({
+      columnReorderingComponent: null,
+    });
+  };
+  handleSearchValue = (value) => {
+    this.setState({ searchValue: value });
+  };
+  clearSearchValue = () => {
+    this.setState({ searchValue: "" });
+    this.setState({ filteringRows: this.state.filteringRows });
+  };
 
-	sortingPanel = () => {
-		let columnField = [];
-		this.state.columns.map((item) => columnField.push(item.name));
-		this.setState({
-			sortingPanelComponent: <Sorting columnFieldValue={columnField} closeSorting={this.closeSorting} />,
-		});
-	};
+  sortingPanel = () => {
+    let columnField = [];
+    this.state.columns.map((item) => columnField.push(item.name));
+    this.setState({
+      sortingPanelComponent: <Sorting columnFieldValue={columnField} closeSorting={this.closeSorting} />,
+    });
+  };
 
-	closeSorting = () => {
-		this.setState({
-			sortingPanelComponent: null,
-		});
-	};
+  closeSorting = () => {
+    this.setState({
+      sortingPanelComponent: null,
+    });
+  };
 
-	//Export Data Logic
-	exportColumnData = () => {
-		this.setState({
-			exportComponent: (
-				<ExportData rows={this.state.rows} columnsList={this.state.columns} closeExport={this.closeExport} />
-			),
-		});
-	};
+  //Export Data Logic
+  exportColumnData = () => {
+    this.setState({
+      exportComponent: (
+        <ExportData rows={this.state.rows} columnsList={this.state.columns} closeExport={this.closeExport} />
+      ),
+    });
+  };
 
-	closeExport = () => {
-		this.setState({
-			exportComponent: null,
-		});
-	};
+  closeExport = () => {
+    this.setState({
+      exportComponent: null,
+    });
+  };
 
-	render() {
-		return (
-			<div>
-				<div className='parentDiv'>
-					<div className='totalCount'>
+  render() {
+    return (
+      <div>
+        <div className='parentDiv'>
+          <div className='totalCount'>
             Showing <strong> {this.state.count} </strong> records
 					</div>
           <div className='globalSearch'>
@@ -498,32 +516,32 @@ class spreadsheet extends Component {
               placeholder="Search"
               onChange={(e) => {
                 this.handleSearchValue(e.target.value);
-								this.props.globalSearchLogic(e, this.state.tempRows);
-							}}
-							value={this.state.searchValue}
-						/>
-					</div>
-					{/* <div className="filterIcons">
+                this.props.globalSearchLogic(e, this.state.tempRows);
+              }}
+              value={this.state.searchValue}
+            />
+          </div>
+          {/* <div className="filterIcons">
             <FontAwesomeIcon icon={faFilter} />
           </div> */}
-					<div className='filterIcons' onClick={this.sortingPanel}>
-						<FontAwesomeIcon title='Group Sort' icon={faSortAmountDown} />
-						<FontAwesomeIcon icon={faSortDown} className='filterArrow' />
-					</div>
-					{this.state.sortingPanelComponent}
-					<div className='filterIcons' onClick={this.columnReorderingPannel}>
-						<FontAwesomeIcon title='Column Chooser' icon={faColumns} />
-						<FontAwesomeIcon icon={faSortDown} className='filterArrow' />
-					</div>
-					{this.state.columnReorderingComponent}
-					<div className='filterIcons'>
-						<FontAwesomeIcon title='Export' icon={faShareAlt} onClick={this.exportColumnData} />
-					</div>
-					{this.state.exportComponent}
-					{/* <div className="filterIcons">
+          <div className='filterIcons' onClick={this.sortingPanel}>
+            <FontAwesomeIcon title='Group Sort' icon={faSortAmountDown} />
+            <FontAwesomeIcon icon={faSortDown} className='filterArrow' />
+          </div>
+          {this.state.sortingPanelComponent}
+          <div className='filterIcons' onClick={this.columnReorderingPannel}>
+            <FontAwesomeIcon title='Column Chooser' icon={faColumns} />
+            <FontAwesomeIcon icon={faSortDown} className='filterArrow' />
+          </div>
+          {this.state.columnReorderingComponent}
+          <div className='filterIcons'>
+            <FontAwesomeIcon title='Export' icon={faShareAlt} onClick={this.exportColumnData} />
+          </div>
+          {this.state.exportComponent}
+          {/* <div className="filterIcons">
             <FontAwesomeIcon title="Reload" icon={faSyncAlt} />
           </div> */}
-					{/* <div className="filterIcons">
+          {/* <div className="filterIcons">
             <FontAwesomeIcon icon={faAlignLeft} />
           </div> */}
         </div>
@@ -560,7 +578,7 @@ class spreadsheet extends Component {
                 indexes: this.state.selectedIndexes,
               },
             }}
-            onGridSort={(sortColumn, sortDirection) => this.sortRows(this.state.rows, sortColumn, sortDirection)}
+            onGridSort={(sortColumn, sortDirection) => this.sortRows(this.state.filteringRows, sortColumn, sortDirection)}
             cellRangeSelection={{
               onComplete: this.setSelection,
             }}
