@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
@@ -11,7 +11,7 @@ import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import SortingList from "./SortingList";
 
-class App extends Component {
+class App extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -57,6 +57,7 @@ class App extends Component {
       order: "",
       sortOn: "",
     });
+
     this.setState({
       rowList,
       sortingOrderList: existingSortingOrderList,
@@ -67,6 +68,7 @@ class App extends Component {
     let rowList = [...this.state.sortingOrderList];
     rowList.push(JSON.parse(JSON.stringify(rowList[i])));
     this.setState({ sortingOrderList: rowList });
+    console.log(rowList);
   };
 
   clearAll = () => {
@@ -81,6 +83,7 @@ class App extends Component {
 
   createColumnsArrayFromProps = (rowsValue) => {
     return rowsValue.map((row, index) => {
+      console.log(" Index Return  : " + index);
       return {
         id: index,
         text: (
@@ -181,7 +184,9 @@ class App extends Component {
     var sortingObj = {
       //``
     };
+
     var existingSortingOrderList = this.state.sortingOrderList;
+
     if (sortingKey === "sortBy") {
       const { name, value } = event.target;
       const rows = [...this.state.sortingOrderList];
@@ -216,6 +221,8 @@ class App extends Component {
   };
 
   render() {
+    let { rowList } = this.state.rowList;
+
     return (
       <div className="sorts--grid" ref={this.setWrapperRef}>
         <div className="sort__grid">
