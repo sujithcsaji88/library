@@ -93,6 +93,16 @@ const App = () => {
             Header: "Flight",
             accessor: "flight",
             width: 100,
+            innerCells: [
+                {
+                    Header: "Flight No",
+                    accessor: "flightno"
+                },
+                {
+                    Header: "Date",
+                    accessor: "date"
+                }
+            ],
             Cell: FlightEdit,
             sortType: (rowA, rowB) => {
                 return rowA.original.flight.flightno > rowB.original.flight.flightno ? -1 : 1;
@@ -110,6 +120,16 @@ const App = () => {
             Header: "Segment",
             accessor: "segment",
             width: 100,
+            innerCells: [
+                {
+                    Header: "From",
+                    accessor: "from"
+                },
+                {
+                    Header: "To",
+                    accessor: "to"
+                }
+            ],
             disableSortBy: true,
             Cell: (row) => {
                 const otherColumn = "weight";
@@ -140,6 +160,40 @@ const App = () => {
             Header: "Details",
             accessor: "details",
             width: 300,
+            innerCells: [
+                {
+                    Header: "Flight Model",
+                    accessor: "frflightModelom"
+                },
+                {
+                    Header: "Body Type",
+                    accessor: "bodyType"
+                },
+                {
+                    Header: "type",
+                    accessor: "Type"
+                },
+                {
+                    Header: "Start Time",
+                    accessor: "startTime"
+                },
+                {
+                    Header: "End Time",
+                    accessor: "endTime"
+                },
+                {
+                    Header: "Status",
+                    accessor: "status"
+                },
+                {
+                    Header: "Additional Status",
+                    accessor: "additionalStatus"
+                },
+                {
+                    Header: "Time Status",
+                    accessor: "timeStatus"
+                }
+            ],
             disableSortBy: true,
             Cell: (row) => {
                 const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = row.value;
@@ -197,6 +251,16 @@ const App = () => {
             Header: "Weight",
             accessor: "weight",
             width: 130,
+            innerCells: [
+                {
+                    Header: "Percentage",
+                    accessor: "percentage"
+                },
+                {
+                    Header: "Value",
+                    accessor: "value"
+                }
+            ],
             Cell: (row) => {
                 const { percentage, value } = row.value;
                 return (
@@ -225,6 +289,16 @@ const App = () => {
             Header: "Volume",
             accessor: "volume",
             width: 100,
+            innerCells: [
+                {
+                    Header: "Percentage",
+                    accessor: "percentage"
+                },
+                {
+                    Header: "Value",
+                    accessor: "value"
+                }
+            ],
             Cell: (row) => {
                 const { percentage, value } = row.value;
                 return (
@@ -254,6 +328,16 @@ const App = () => {
             accessor: "uldPositions",
             disableSortBy: true,
             width: 100,
+            innerCells: [
+                {
+                    Header: "Position",
+                    accessor: "position"
+                },
+                {
+                    Header: "Value",
+                    accessor: "value"
+                }
+            ],
             Cell: (row) => (
                 <div className="uld-details content">
                     <ul>
@@ -284,6 +368,16 @@ const App = () => {
             Header: "Revenue/Yield",
             accessor: "revenue",
             width: 120,
+            innerCells: [
+                {
+                    Header: "Revenue",
+                    accessor: "revenue"
+                },
+                {
+                    Header: "Yeild",
+                    accessor: "yeild"
+                }
+            ],
             Cell: (row) => {
                 const { revenue, yeild } = row.value;
                 return (
@@ -315,6 +409,16 @@ const App = () => {
             Header: "Queued Booking",
             accessor: "queuedBooking",
             width: 130,
+            innerCells: [
+                {
+                    Header: "Sr",
+                    accessor: "sr"
+                },
+                {
+                    Header: "Volume",
+                    accessor: "volume"
+                }
+            ],
             disableSortBy: true,
             Cell: (row) => {
                 const { sr, volume } = row.value;

@@ -40,6 +40,7 @@ const ColumnsList = (props) => {
                             name={`${column.Header}`}
                             moveColumn={moveColumn}
                             findColumn={findColumn}
+                            innerCells={column.innerCells}
                         />
                     );
                 })}
