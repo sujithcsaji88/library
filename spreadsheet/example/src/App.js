@@ -94,7 +94,7 @@ const App = () => {
     {
       key: "flightModel",
       name: "Flight Model",
-      //draggable: true,
+      draggable: true,
       formulaApplicable: false,
       sortable: true,
       resizable: true,
