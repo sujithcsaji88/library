@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
@@ -57,7 +57,6 @@ class App extends React.Component {
       order: "",
       sortOn: "",
     });
-
     this.setState({
       rowList,
       sortingOrderList: existingSortingOrderList,
@@ -90,14 +89,17 @@ class App extends React.Component {
               <div className="">
                 <div>&nbsp;</div>
               </div>
+
               <div className="sort__icon">
                 <FontAwesomeIcon icon={faAlignJustify}></FontAwesomeIcon>
               </div>
             </div>
+
             <div className="sort__reorder">
               <div className="">
                 <div>Sort by</div>
               </div>
+
               <div className="sort__file">
                 <select
                   className="custom__ctrl"
@@ -113,10 +115,12 @@ class App extends React.Component {
                 </select>
               </div>
             </div>
+
             <div className="sort__reorder">
               <div className="">
                 <div>Sort on</div>
               </div>
+
               <div className="sort__file">
                 <select
                   className="custom__ctrl"
@@ -130,10 +134,12 @@ class App extends React.Component {
                 </select>
               </div>
             </div>
+
             <div className="sort__reorder">
               <div className="">
                 <div>Order</div>
               </div>
+
               <div className="sort__file">
                 <select
                   className="custom__ctrl"
@@ -148,10 +154,12 @@ class App extends React.Component {
                 </select>
               </div>
             </div>
+
             <div className="sort__reorder">
               <div className="">
                 <div>&nbsp;</div>
               </div>
+
               <div className="sort__icon">
                 <FontAwesomeIcon
                   icon={faCopy}
@@ -160,10 +168,12 @@ class App extends React.Component {
                 ></FontAwesomeIcon>
               </div>
             </div>
+
             <div className="sort__reorder">
               <div className="">
                 <div>&nbsp;</div>
               </div>
+
               <div className="sort__icon">
                 <FontAwesomeIcon
                   icon={faTrash}
@@ -186,18 +196,6 @@ class App extends React.Component {
     var existingSortingOrderList = this.state.sortingOrderList;
 
     if (sortingKey === "sortBy") {
-      const { name, value } = event.target;
-      const rows = [...this.state.sortingOrderList];
-      this.setState({
-        errorMessage: false,
-      });
-      rows.map((column) => {
-        if (column[name] === value) {
-          this.setState({
-            errorMessage: true,
-          });
-        }
-      });
       existingSortingOrderList[index]["sortBy"] = event.target.value;
     }
     if (sortingKey === "order") {
@@ -215,12 +213,21 @@ class App extends React.Component {
   };
 
   updateTableAsPerSortCondition = () => {
-    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
+    const unique = new Set();
+    const showError = this.state.sortingOrderList.some(
+      (element) => unique.size === unique.add(element.sortBy).size
+    );
+    showError
+      ? this.setState({
+          errorMessage: true,
+        })
+      : this.setState({
+          errorMessage: false,
+        });
   };
 
   render() {
     let { rowList } = this.state.rowList;
-
     return (
       <div className="sorts--grid" ref={this.setWrapperRef}>
         <div className="sort__grid">
