@@ -68,7 +68,6 @@ class App extends React.Component {
     let rowList = [...this.state.sortingOrderList];
     rowList.push(JSON.parse(JSON.stringify(rowList[i])));
     this.setState({ sortingOrderList: rowList });
-    console.log(rowList);
   };
 
   clearAll = () => {
@@ -83,7 +82,6 @@ class App extends React.Component {
 
   createColumnsArrayFromProps = (rowsValue) => {
     return rowsValue.map((row, index) => {
-      console.log(" Index Return  : " + index);
       return {
         id: index,
         text: (
