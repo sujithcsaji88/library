@@ -32,7 +32,7 @@ const defaultParsePaste = (str) => str.split(/\r\n|\n|\r/).map((row) => row.spli
 // let newFilters = {};
 
 const selectors = Data.Selectors;
-let headerNameList, rePositionedArray, swapList;
+let swapList = [];
 const { AutoCompleteFilter, NumericFilter } = Filters;
 class spreadsheet extends Component {
   constructor(props) {
@@ -364,7 +364,7 @@ class spreadsheet extends Component {
     existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
       return inComingColumnsHeaderList.includes(item.name);
     });
-    rePositionedArray = existingColumnsHeaderList;
+    var rePositionedArray = existingColumnsHeaderList;
     var singleHeaderOneList;
     if (pinnedColumnsList.length > 0) {
       pinnedColumnsList
@@ -435,7 +435,7 @@ class spreadsheet extends Component {
 	 * Method to render the column Selector Pannel
 	 */
   columnReorderingPannel = () => {
-    headerNameList = [];
+    var headerNameList = [];
     var existingPinnedHeadersList = [];
     this.state.columns
       .filter((item) => item.frozen !== undefined && item.frozen === true)
@@ -631,9 +631,9 @@ class spreadsheet extends Component {
               },
             }}
             onGridSort={(sortColumn, sortDirection) => this.sortRows(this.state.filteringRows, sortColumn, sortDirection)}
-            cellRangeSelection={{
-              onComplete: this.setSelection,
-            }}
+          // cellRangeSelection={{
+          //   onComplete: this.setSelection,
+          // }}
           />
         </DraggableContainer>
       </div>
