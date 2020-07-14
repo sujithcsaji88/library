@@ -32,7 +32,6 @@ const defaultParsePaste = (str) => str.split(/\r\n|\n|\r/).map((row) => row.spli
 // let newFilters = {};
 
 const selectors = Data.Selectors;
-// let headerNameList, rePositionedArray;
 let swapList = [];
 const { AutoCompleteFilter, NumericFilter } = Filters;
 class spreadsheet extends Component {
