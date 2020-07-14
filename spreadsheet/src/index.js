@@ -476,7 +476,9 @@ class spreadsheet extends Component {
     let columnField = [];
     this.state.columns.map((item) => columnField.push(item.name));
     this.setState({
-      sortingPanelComponent: <Sorting columnFieldValue={columnField} closeSorting={this.closeSorting} />,
+      sortingPanelComponent: <Sorting setTableAsPerSortingParams={(args) =>this.setTableAsPerSortingParams(args)}
+      columnFieldValue={columnField} 
+      closeSorting={this.closeSorting} />,
     });
   };
 
@@ -499,6 +501,56 @@ class spreadsheet extends Component {
     this.setState({
       exportComponent: null,
     });
+  };
+
+  setTableAsPerSortingParams = (tableSortList) => {
+   
+    var existingRows = this.state.rows;
+    var sortingOrderNameList = [];
+    tableSortList.map((item, index) => {
+      var nameOfItem = "";
+      Object.keys(this.state.rows[0]).map(rowItem=>{
+        if(item.sortBy === "Flight #" && rowItem === "flightno"){
+          nameOfItem = "flightno";
+        }
+        else if(rowItem.toLowerCase() === this.toCamelCase(item.sortBy).toLowerCase()){
+          nameOfItem= rowItem;
+        }
+      })
+      console.log(nameOfItem)
+      var typeOfItem = this.state.rows[0][
+        item.sortBy === "Flight #" ? "flightno" : nameOfItem
+      ];
+      if (typeof typeOfItem === "number") {
+        sortingOrderNameList.push({
+          name:nameOfItem,
+          primer: parseInt,
+          reverse: item.order === "Ascending" ? false : true,
+        });
+      } else {
+        sortingOrderNameList.push({
+          name: nameOfItem,
+          reverse: item.order === "Ascending" ? false : true,
+        });
+      }
+    });
+    existingRows.sort(sort_by(...sortingOrderNameList));
+    this.setState({
+      rows: existingRows,
+    });
+
+    this.closeSorting();
+  };
+
+  toCamelCase = (str) => {
+    return str
+      .replace(/\s(.)/g, function ($1) {
+        return $1.toUpperCase();
+      })
+      .replace(/\s/g, "")
+      .replace(/^(.)/, function ($1) {
+        return $1.toLowerCase();
+      });
   };
 
   render() {
@@ -588,4 +640,71 @@ class spreadsheet extends Component {
     );
   }
 }
+
+/**
+ * Global Method To Sort The Grid.
+ */
+var sort_by;
+(function () {
+  // utility functions
+  var default_cmp = function (a, b) {
+      if (a == b) return 0;
+      return a < b ? -1 : 1;
+    },
+    getCmpFunc = function (primer, reverse) {
+      var cmp = default_cmp;
+      if (primer) {
+        cmp = function (a, b) {
+          return default_cmp(primer(a), primer(b));
+        };
+      }
+      if (reverse) {
+        return function (a, b) {
+          return -1 * cmp(a, b);
+        };
+      }
+      return cmp;
+    };
+
+  // actual implementation
+  sort_by = function () {
+    var fields = [],
+      n_fields = arguments.length,
+      field,
+      name,
+      reverse,
+      cmp;
+
+    // preprocess sorting options
+    for (var i = 0; i < n_fields; i++) {
+      field = arguments[i];
+      if (typeof field === "string") {
+        name = field;
+        cmp = default_cmp;
+      } else {
+        name = field.name;
+        cmp = getCmpFunc(field.primer, field.reverse);
+      }
+      fields.push({
+        name: name,
+        cmp: cmp,
+      });
+    }
+
+    return function (A, B) {
+      var a, b, name, cmp, result;
+      for (var i = 0, l = n_fields; i < l; i++) {
+        result = 0;
+        field = fields[i];
+        name = field.name;
+        cmp = field.cmp;
+
+        result = cmp(A[name], B[name]);
+        if (result !== 0) break;
+      }
+      return result;
+    };
+  };
+})();
+
 export default spreadsheet;
