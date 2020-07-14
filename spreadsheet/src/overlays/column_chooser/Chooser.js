@@ -12,7 +12,7 @@ class ColumnReordering extends React.Component {
       columnReorderEntityList: this.props.headerKeys,
       columnSelectList: this.props.columns.map(item=> item.name),
       leftPinnedColumList: this.props.existingPinnedHeadersList,
-      isAllSelected: false,
+      isAllSelected: true,
       maxLeftPinnedColumn: this.props.maxLeftPinnedColumn,
     };
     this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -41,8 +41,9 @@ class ColumnReordering extends React.Component {
 	 */
 	resetColumnReorderList = () => {
 		this.setState({
-			columnReorderEntityList: [],
-			isAllSelected: false,
+			columnReorderEntityList: this.props.columns.map(item=> item.name),
+			leftPinnedColumList:[],
+			isAllSelected: true,
 		});
 	};
 
@@ -51,9 +52,20 @@ class ColumnReordering extends React.Component {
 	 */
 	selectAllToColumnReOrderList = () => {
 		this.resetColumnReorderList();
+		var existingColumnReorderEntityList = this.state.columnReorderEntityList;
+		var isExistingAllSelect = this.state.isAllSelected;
+		if(!isExistingAllSelect){
+			existingColumnReorderEntityList = this.props.columns.map(item=> item.name)
+			isExistingAllSelect=true;
+		}
+		else{
+			existingColumnReorderEntityList=[];
+			isExistingAllSelect = false
+		}
 		this.setState({
-			columnReorderEntityList: this.props.columns.map(item=> item.name),
-			isAllSelected: true,
+			columnReorderEntityList: existingColumnReorderEntityList,
+			isAllSelected: isExistingAllSelect,
+			leftPinnedColumList:[]
 		});
 	};
 
@@ -197,14 +209,14 @@ class ColumnReordering extends React.Component {
 									onChange={this.filterColumnReorderList}
 								></input>
 							</div>
-							<div className='column__selectAll'>
-								<a
-									className='column__selectTxt'
-									type='button'
-									onClick={() => this.selectAllToColumnReOrderList()}
-								>
+							<div className='column__selectTxt'>
+								<input 
+									className='column__checkbox'
+									type='checkbox'
+									onChange={() => this.selectAllToColumnReOrderList()}
+									checked={this.state.columnReorderEntityList.length === this.props.columns.length}
+								/>
 									Select All
-								</a>
 							</div>
 							{this.state.columnSelectList.map((item) => {
 								return (
@@ -284,3 +296,4 @@ class ColumnReordering extends React.Component {
 }
 
 export default ColumnReordering;
+
