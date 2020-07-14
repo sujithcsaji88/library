@@ -6,43 +6,43 @@ import { faTimes, faAlignJustify } from "@fortawesome/free-solid-svg-icons";
 import ColumnsList from "./columnsList";
 
 class ColumnReordering extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      columnReorderEntityList: this.props.headerKeys,
-      columnSelectList: this.props.columns.map(item=> item.name),
-      leftPinnedColumList: this.props.existingPinnedHeadersList,
-      isAllSelected: true,
-      maxLeftPinnedColumn: this.props.maxLeftPinnedColumn,
-    };
-    this.setWrapperRef = this.setWrapperRef.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
-  }
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside);
-  }
+	constructor(props) {
+		super(props);
+		this.state = {
+			columnReorderEntityList: this.props.headerKeys,
+			columnSelectList: this.props.columns.map(item => item.name),
+			leftPinnedColumList: this.props.existingPinnedHeadersList,
+			isAllSelected: true,
+			maxLeftPinnedColumn: this.props.maxLeftPinnedColumn,
+		};
+		this.setWrapperRef = this.setWrapperRef.bind(this);
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+	componentDidMount() {
+		document.addEventListener('mousedown', this.handleClickOutside);
+	}
 
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
+	componentWillUnmount() {
+		document.removeEventListener('mousedown', this.handleClickOutside);
+	}
 
-  setWrapperRef(node) {
-    this.wrapperRef = node;
-  }
+	setWrapperRef(node) {
+		this.wrapperRef = node;
+	}
 
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      this.props.closeColumnReOrdering()
-    }
-  }
+	handleClickOutside(event) {
+		if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+			this.props.closeColumnReOrdering()
+		}
+	}
 
 	/**
 	 * Method to reset the coloumn list onClick of Reset button
 	 */
 	resetColumnReorderList = () => {
 		this.setState({
-			columnReorderEntityList: this.props.columns.map(item=> item.name),
-			leftPinnedColumList:[],
+			columnReorderEntityList: this.props.columns.map(item => item.name),
+			leftPinnedColumList: [],
 			isAllSelected: true,
 		});
 	};
@@ -54,18 +54,18 @@ class ColumnReordering extends React.Component {
 		this.resetColumnReorderList();
 		var existingColumnReorderEntityList = this.state.columnReorderEntityList;
 		var isExistingAllSelect = this.state.isAllSelected;
-		if(!isExistingAllSelect){
-			existingColumnReorderEntityList = this.props.columns.map(item=> item.name)
-			isExistingAllSelect=true;
+		if (!isExistingAllSelect) {
+			existingColumnReorderEntityList = this.props.columns.map(item => item.name)
+			isExistingAllSelect = true;
 		}
-		else{
-			existingColumnReorderEntityList=[];
+		else {
+			existingColumnReorderEntityList = [];
 			isExistingAllSelect = false
 		}
 		this.setState({
 			columnReorderEntityList: existingColumnReorderEntityList,
 			isAllSelected: isExistingAllSelect,
-			leftPinnedColumList:[]
+			leftPinnedColumList: []
 		});
 	};
 
@@ -77,24 +77,24 @@ class ColumnReordering extends React.Component {
 		var existingColumnReorderEntityList = this.state.columnReorderEntityList;
 		var existingLeftPinnedList = this.state.leftPinnedColumList;
 		if (!existingColumnReorderEntityList.includes(typeToBeAdded)) {
-			var indexOfInsertion=this.state.columnSelectList.findIndex(item=> item === typeToBeAdded);
-			while(indexOfInsertion>0){
-				if(existingColumnReorderEntityList.includes(this.state.columnSelectList[indexOfInsertion-1])){
-					if(!existingLeftPinnedList.includes(this.state.columnSelectList[indexOfInsertion-1])){
-						indexOfInsertion = existingColumnReorderEntityList.findIndex(item => 
-							item === this.state.columnSelectList[indexOfInsertion-1])
-							indexOfInsertion = indexOfInsertion + 1;
-							break;
+			var indexOfInsertion = this.state.columnSelectList.findIndex(item => item === typeToBeAdded);
+			while (indexOfInsertion > 0) {
+				if (existingColumnReorderEntityList.includes(this.state.columnSelectList[indexOfInsertion - 1])) {
+					if (!existingLeftPinnedList.includes(this.state.columnSelectList[indexOfInsertion - 1])) {
+						indexOfInsertion = existingColumnReorderEntityList.findIndex(item =>
+							item === this.state.columnSelectList[indexOfInsertion - 1])
+						indexOfInsertion = indexOfInsertion + 1;
+						break;
 					}
-					else{
-						indexOfInsertion = indexOfInsertion-1;
+					else {
+						indexOfInsertion = indexOfInsertion - 1;
 					}
 				}
-				else{
-					indexOfInsertion = indexOfInsertion-1;
+				else {
+					indexOfInsertion = indexOfInsertion - 1;
 				}
 			}
-			existingColumnReorderEntityList.splice(indexOfInsertion, 
+			existingColumnReorderEntityList.splice(indexOfInsertion,
 				0, typeToBeAdded);
 		} else {
 			existingColumnReorderEntityList = existingColumnReorderEntityList.filter((item) => {
@@ -117,14 +117,14 @@ class ColumnReordering extends React.Component {
 	 */
 	filterColumnReorderList = (e) => {
 		var searchKey = String(e.target.value).toLowerCase();
-		var existingList = this.props.columns.map(item=> item.name);
+		var existingList = this.props.columns.map(item => item.name);
 		let filtererdColumnReorderList = [];
 		if (searchKey.length > 0) {
 			filtererdColumnReorderList = existingList.filter((item) => {
 				return item.toLowerCase().includes(searchKey);
 			});
 		} else {
-			filtererdColumnReorderList = this.props.columns.map(item=> item.name);
+			filtererdColumnReorderList = this.props.columns.map(item => item.name);
 		}
 		this.setState({
 			columnSelectList: filtererdColumnReorderList,
@@ -184,15 +184,18 @@ class ColumnReordering extends React.Component {
 			existingColumnReorderEntityList = existingColumnReorderEntityList.filter((subItem) => subItem !== item);
 			existingColumnReorderEntityList.unshift(item);
 		});
-
 		this.setState({
 			columnReorderEntityList: existingColumnReorderEntityList,
 		});
 	};
+	handleReorderList = (reordered) => {
+		this.props.handleheaderNameList(reordered);
 
+
+	}
 	render() {
 		return (
-			<div className='columns--grid'ref={this.setWrapperRef}>
+			<div className='columns--grid' ref={this.setWrapperRef}>
 				<div className='column__grid'>
 					<div className='column__chooser'>
 						<div className='column__header'>
@@ -210,7 +213,7 @@ class ColumnReordering extends React.Component {
 								></input>
 							</div>
 							<div className='column__selectTxt'>
-								<input 
+								<input
 									className='column__checkbox'
 									type='checkbox'
 									onChange={() => this.selectAllToColumnReOrderList()}
@@ -241,7 +244,7 @@ class ColumnReordering extends React.Component {
 							</div>
 							<div className='column__close'>
 								<FontAwesomeIcon
-									className="icon-close" 
+									className="icon-close"
 									icon={faTimes}
 									onClick={() => this.props.closeColumnReOrdering()}
 								></FontAwesomeIcon>
@@ -257,13 +260,14 @@ class ColumnReordering extends React.Component {
 									{this.state.maxLeftPinnedColumn - this.state.leftPinnedColumList.length}
 								</strong>
 							) : (
-								<strong style={{ color: "red" }}>&nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED</strong>
-							)}
+									<strong style={{ color: "red" }}>&nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED</strong>
+								)}
 						</div>
 						<div className='column__body'>
 							<DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
 								<ColumnsList
 									columnsArray={this.createColumnsArrayFromProps(this.state.columnReorderEntityList)}
+									handleReorderList={this.handleReorderList}
 								/>
 							</DndProvider>
 						</div>
