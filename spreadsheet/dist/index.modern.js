@@ -140,7 +140,7 @@ class DatePicker extends React.Component {
 
 }
 
-const SEARCH_NOT_FOUNT_ERROR = "No Search Matches. Please try again later.";
+const SEARCH_NOT_FOUNT_ERROR = "No Records found!";
 
 const ErrorMessage = props => {
   const [status, setStatus] = useState(props.status);
@@ -295,7 +295,23 @@ class ColumnReordering extends React.Component {
       var existingLeftPinnedList = this.state.leftPinnedColumList;
 
       if (!existingColumnReorderEntityList.includes(typeToBeAdded)) {
-        existingColumnReorderEntityList.push(typeToBeAdded);
+        var indexOfInsertion = this.state.columnSelectList.findIndex(item => item === typeToBeAdded);
+
+        while (indexOfInsertion > 0) {
+          if (existingColumnReorderEntityList.includes(this.state.columnSelectList[indexOfInsertion - 1])) {
+            if (!existingLeftPinnedList.includes(this.state.columnSelectList[indexOfInsertion - 1])) {
+              indexOfInsertion = existingColumnReorderEntityList.findIndex(item => item === this.state.columnSelectList[indexOfInsertion - 1]);
+              indexOfInsertion = indexOfInsertion + 1;
+              break;
+            } else {
+              indexOfInsertion = indexOfInsertion - 1;
+            }
+          } else {
+            indexOfInsertion = indexOfInsertion - 1;
+          }
+        }
+
+        existingColumnReorderEntityList.splice(indexOfInsertion, 0, typeToBeAdded);
       } else {
         existingColumnReorderEntityList = existingColumnReorderEntityList.filter(item => {
           if (item !== typeToBeAdded) return item;
@@ -384,7 +400,7 @@ class ColumnReordering extends React.Component {
 
     this.state = {
       columnReorderEntityList: this.props.headerKeys,
-      columnSelectList: this.props.headerKeys,
+      columnSelectList: this.props.columns.map(item => item.name),
       leftPinnedColumList: this.props.existingPinnedHeadersList,
       isAllSelected: false,
       maxLeftPinnedColumn: this.props.maxLeftPinnedColumn
@@ -496,6 +512,111 @@ class ColumnReordering extends React.Component {
 
 }
 
+const ItemTypes$1 = {
+  CARD: "sort"
+};
+
+const style$1 = {
+  cursor: "move"
+};
+
+const Card = ({
+  id,
+  text,
+  moveCard,
+  findCard
+}) => {
+  const originalIndex = findCard(id).index;
+  const [{
+    isDragging
+  }, drag] = useDrag({
+    item: {
+      type: ItemTypes$1.CARD,
+      id,
+      originalIndex
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging()
+    }),
+    end: (dropResult, monitor) => {
+      const {
+        id: droppedId,
+        originalIndex
+      } = monitor.getItem();
+      const didDrop = monitor.didDrop();
+
+      if (!didDrop) {
+        moveCard(droppedId, originalIndex);
+      }
+    }
+  });
+  const [, drop] = useDrop({
+    accept: ItemTypes$1.CARD,
+    canDrop: () => false,
+
+    hover({
+      id: draggedId
+    }) {
+      if (draggedId !== id) {
+        const {
+          index: overIndex
+        } = findCard(id);
+        moveCard(draggedId, overIndex);
+      }
+    }
+
+  });
+  const opacity = isDragging ? 0.5 : 1;
+  return /*#__PURE__*/React.createElement("div", {
+    ref: node => drag(drop(node)),
+    style: { ...style$1,
+      opacity
+    }
+  }, text);
+};
+
+const SortingList = props => {
+  const [cards, setCards] = useState([...props.sortsArray]);
+
+  const moveCard = (id, atIndex) => {
+    const {
+      card,
+      index
+    } = findCard(id);
+    setCards(update(cards, {
+      $splice: [[index, 1], [atIndex, 0, card]]
+    }));
+  };
+
+  const findCard = id => {
+    const card = cards.filter(c => `${c.id}` === id)[0];
+    return {
+      card,
+      index: cards.indexOf(card)
+    };
+  };
+
+  const [, drop] = useDrop({
+    accept: ItemTypes$1.CARD
+  });
+  React.useEffect(() => {
+    setCards(props.sortsArray);
+  }, [props.sortsArray]);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    ref: drop,
+    style: {
+      display: "flex",
+      flexWrap: "wrap"
+    }
+  }, cards.map(card => /*#__PURE__*/React.createElement(Card, {
+    key: card.id,
+    id: `${card.id}`,
+    text: card.text,
+    moveCard: moveCard,
+    findCard: findCard
+  }))));
+};
+
 class App extends React.Component {
   constructor() {
     super();
@@ -521,72 +642,78 @@ class App extends React.Component {
 
     this.remove = i => {
       let rowList = [...this.state.rowList];
+      console.log(i);
       rowList.splice(i, 1);
+      console.log();
       this.setState({
         rowList
       });
     };
 
     this.createColumnsArrayFromProps = rowList => {
-      return rowList.map((x, i) => {
-        return /*#__PURE__*/React.createElement("div", {
-          className: "sort__bodyContent",
-          key: i
-        }, /*#__PURE__*/React.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
-          className: "sort__icon"
-        }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-          icon: faAlignJustify
-        }))), /*#__PURE__*/React.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React.createElement("div", null, "Sort by")), /*#__PURE__*/React.createElement("div", {
-          className: "sort__file"
-        }, /*#__PURE__*/React.createElement("select", {
-          className: "custom__ctrl"
-        }, this.props.columnFieldValue.map((item, index) => /*#__PURE__*/React.createElement("option", {
-          key: index
-        }, item))))), /*#__PURE__*/React.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React.createElement("div", null, "Sort on")), /*#__PURE__*/React.createElement("div", {
-          className: "sort__file"
-        }, /*#__PURE__*/React.createElement("select", {
-          className: "custom__ctrl"
-        }, /*#__PURE__*/React.createElement("option", null, "Value")))), /*#__PURE__*/React.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React.createElement("div", null, "Order")), /*#__PURE__*/React.createElement("div", {
-          className: "sort__file"
-        }, /*#__PURE__*/React.createElement("select", {
-          className: "custom__ctrl"
-        }, /*#__PURE__*/React.createElement("option", null, "Ascending"), /*#__PURE__*/React.createElement("option", null, "Descending")))), /*#__PURE__*/React.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
-          className: "sort__icon"
-        }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-          icon: faCopy,
-          title: "Copy",
-          onClick: () => this.copy(i)
-        }))), /*#__PURE__*/React.createElement("div", {
-          className: "sort__reorder"
-        }, /*#__PURE__*/React.createElement("div", {
-          className: ""
-        }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
-          className: "sort__icon"
-        }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-          icon: faTrash,
-          title: "Delete",
-          onClick: () => this.remove(i)
-        }))));
+      console.log(this.state.rowList);
+      return rowList.map((i, index) => {
+        return {
+          id: index,
+          text: /*#__PURE__*/React.createElement("div", {
+            className: "sort__bodyContent",
+            key: i
+          }, /*#__PURE__*/React.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
+            className: "sort__icon"
+          }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+            icon: faAlignJustify
+          }))), /*#__PURE__*/React.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React.createElement("div", null, "Sort by")), /*#__PURE__*/React.createElement("div", {
+            className: "sort__file"
+          }, /*#__PURE__*/React.createElement("select", {
+            className: "custom__ctrl"
+          }, this.props.columnFieldValue.map((item, index) => /*#__PURE__*/React.createElement("option", {
+            key: index
+          }, item))))), /*#__PURE__*/React.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React.createElement("div", null, "Sort on")), /*#__PURE__*/React.createElement("div", {
+            className: "sort__file"
+          }, /*#__PURE__*/React.createElement("select", {
+            className: "custom__ctrl"
+          }, /*#__PURE__*/React.createElement("option", null, "Value")))), /*#__PURE__*/React.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React.createElement("div", null, "Order")), /*#__PURE__*/React.createElement("div", {
+            className: "sort__file"
+          }, /*#__PURE__*/React.createElement("select", {
+            className: "custom__ctrl"
+          }, /*#__PURE__*/React.createElement("option", null, "Ascending"), /*#__PURE__*/React.createElement("option", null, "Descending")))), /*#__PURE__*/React.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
+            className: "sort__icon"
+          }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+            icon: faCopy,
+            title: "Copy",
+            onClick: () => this.copy(i)
+          }))), /*#__PURE__*/React.createElement("div", {
+            className: "sort__reorder"
+          }, /*#__PURE__*/React.createElement("div", {
+            className: ""
+          }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
+            className: "sort__icon"
+          }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+            icon: faTrash,
+            title: "Delete",
+            onClick: () => this.remove(index)
+          }))))
+        };
       });
     };
 
@@ -616,9 +743,7 @@ class App extends React.Component {
   }
 
   render() {
-    let {
-      rowList
-    } = this.state;
+    console.log(this.state.rowList);
     return /*#__PURE__*/React.createElement("div", {
       className: "sorts--grid",
       ref: this.setWrapperRef
@@ -638,66 +763,14 @@ class App extends React.Component {
       onClick: () => this.props.closeSorting()
     }))), /*#__PURE__*/React.createElement("div", {
       className: "sort__body"
-    }, rowList.map((x, i) => {
-      return /*#__PURE__*/React.createElement("div", {
-        className: "sort__bodyContent",
-        key: i
-      }, /*#__PURE__*/React.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
-        className: "sort__icon"
-      }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-        icon: faAlignJustify
-      }))), /*#__PURE__*/React.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React.createElement("div", null, "Sort by")), /*#__PURE__*/React.createElement("div", {
-        className: "sort__file"
-      }, /*#__PURE__*/React.createElement("select", {
-        className: "custom__ctrl"
-      }, this.props.columnFieldValue.map((item, index) => /*#__PURE__*/React.createElement("option", {
-        key: index
-      }, item))))), /*#__PURE__*/React.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React.createElement("div", null, "Sort on")), /*#__PURE__*/React.createElement("div", {
-        className: "sort__file"
-      }, /*#__PURE__*/React.createElement("select", {
-        className: "custom__ctrl"
-      }, /*#__PURE__*/React.createElement("option", null, "Value")))), /*#__PURE__*/React.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React.createElement("div", null, "Order")), /*#__PURE__*/React.createElement("div", {
-        className: "sort__file"
-      }, /*#__PURE__*/React.createElement("select", {
-        className: "custom__ctrl"
-      }, /*#__PURE__*/React.createElement("option", null, "Ascending"), /*#__PURE__*/React.createElement("option", null, "Descending")))), /*#__PURE__*/React.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
-        className: "sort__icon"
-      }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-        icon: faCopy,
-        title: "Copy",
-        onClick: () => this.copy(i)
-      }))), /*#__PURE__*/React.createElement("div", {
-        className: "sort__reorder"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: ""
-      }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
-        className: "sort__icon"
-      }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-        icon: faTrash,
-        title: "Delete",
-        onClick: () => this.remove(i)
-      }))));
-    }), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement(DndProvider, {
+      backend: TouchBackend,
+      options: {
+        enableMouseEvents: true
+      }
+    }, /*#__PURE__*/React.createElement(SortingList, {
+      sortsArray: this.createColumnsArrayFromProps(this.state.rowList)
+    })), /*#__PURE__*/React.createElement("div", {
       className: "sort__new"
     }, /*#__PURE__*/React.createElement("div", {
       className: "sort__section"
@@ -1162,19 +1235,16 @@ class spreadsheet extends Component {
       });
     };
 
-    this.sortRows = (data, sortColumn, sortDirection) => {
-      const comparer = (a, b) => {
-        if (sortDirection === "ASC") {
-          return a[sortColumn] > b[sortColumn] ? 1 : -1;
-        } else if (sortDirection === "DESC") {
-          return a[sortColumn] < b[sortColumn] ? 1 : -1;
-        }
-      };
-
+    this.handleWarningStatus = () => {
       this.setState({
-        rows: [...this.state.rows].sort(comparer)
+        warningStatus: "invalid"
       });
-      return sortDirection === "NONE" ? data : this.state.rows;
+    };
+
+    this.closeWarningStatus = () => {
+      this.setState({
+        warningStatus: ""
+      });
     };
 
     this.onGridRowsUpdated = ({
@@ -1279,9 +1349,9 @@ class spreadsheet extends Component {
       });
 
       if (data.length === 0) {
-        this.props.handleWarningStatus();
+        this.handleWarningStatus();
       } else {
-        this.props.closeWarningStatus();
+        this.closeWarningStatus();
       }
     };
 
@@ -1453,6 +1523,7 @@ class spreadsheet extends Component {
       });
     });
     this.state = {
+      warningStatus: "",
       height: 680,
       displayNoRows: "none",
       searchIconDisplay: "",
@@ -1481,7 +1552,7 @@ class spreadsheet extends Component {
           item.editor = null;
         }
 
-        if (item.name === "Flight Model") {
+        if (item.filterType === "numeric") {
           item.filterRenderer = NumericFilter;
         } else {
           item.filterRenderer = AutoCompleteFilter;
@@ -1512,6 +1583,9 @@ class spreadsheet extends Component {
     });
     this.setState({
       count: props.count
+    });
+    this.setState({
+      warningStatus: props.status
     });
   }
 
@@ -1565,8 +1639,11 @@ class spreadsheet extends Component {
       onClick: this.exportColumnData
     })), this.state.exportComponent), /*#__PURE__*/React.createElement(ErrorMessage, {
       className: "errorDiv",
-      status: this.props.status,
-      closeWarningStatus: this.props.closeWarningStatus,
+      status: this.state.warningStatus,
+      closeWarningStatus: e => {
+        this.props.closeWarningStatus();
+        this.closeWarningStatus();
+      },
       clearSearchValue: this.clearSearchValue
     }), /*#__PURE__*/React.createElement(DraggableContainer, {
       className: "gridDiv",

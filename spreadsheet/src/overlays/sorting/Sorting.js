@@ -75,10 +75,11 @@ class App extends React.Component {
 
   remove = (i) => {
     let rowList = [...this.state.rowList];
+    console.log(i)
     rowList.splice(i, 1);
+    console.log()
     this.setState({ rowList });
   };
-
   createColumnsArrayFromProps = (rowList) => {
     return rowList.map((i, index) => {
       return {
@@ -239,9 +240,7 @@ class App extends React.Component {
                 options={{ enableMouseEvents: true }}
               >
                 <SortingList
-                  sortsArray={this.createColumnsArrayFromProps(
-                    this.state.rowList
-                  )}
+                  sortsArray={this.createColumnsArrayFromProps(this.state.rowList)}
                 />
               </DndProvider>
               <div className="sort__new">

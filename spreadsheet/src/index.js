@@ -35,221 +35,214 @@ const selectors = Data.Selectors;
 
 const { AutoCompleteFilter, NumericFilter } = Filters;
 class spreadsheet extends Component {
-	constructor(props) {
-		super(props);
-		const airportCodes = [];
-		this.props.airportCodes.forEach((item) => {
-			airportCodes.push({ id: item, value: item });
-		});
-		this.state = {
-			height: 680,
-			displayNoRows: "none",
-			searchIconDisplay: "",
-			searchValue: "",
-			filter: {},
-			rows: this.props.rows,
-			selectedIndexes: [],
-			junk: {},
-			topLeft: {},
-			columnReorderingComponent: null,
-			exportComponent: null,
-			filteringRows: this.props.rows,
-			tempRows: this.props.rows,
-			sortingPanelComponent: null,
-			count: this.props.rows.length,
-			columns: this.props.columns.map((item) => {
-				if (item.editor === "DatePicker") {
-					item.editor = DatePicker;
-				} else if (item.editor === "DropDown") {
-					item.editor = <DropDownEditor options={airportCodes} />;
-				} else if (item.editor === "Text") {
-					item.editor = "text";
-				} else {
-					item.editor = null;
-				}
-				if (item.name === "Flight Model") {
-					item.filterRenderer = NumericFilter;
-				} else {
-					item.filterRenderer = AutoCompleteFilter;
-				}
-				return item;
-			}),
-		};
-		document.addEventListener("copy", this.handleCopy);
-		document.addEventListener("paste", this.handlePaste);
-		this.handleSearchValue = this.handleSearchValue.bind(this);
-		this.clearSearchValue = this.clearSearchValue.bind(this);
-		this.handleFilterChange = this.handleFilterChange.bind(this);
+  constructor(props) {
+    super(props);
+    const airportCodes = [];
+    this.props.airportCodes.forEach((item) => {
+      airportCodes.push({ id: item, value: item });
+    });
+    this.state = {
+      warningStatus: "",
+      height: 680,
+      displayNoRows: "none",
+      searchIconDisplay: "",
+      searchValue: "",
+      filter: {},
+      rows: this.props.rows,
+      selectedIndexes: [],
+      junk: {},
+      topLeft: {},
+      columnReorderingComponent: null,
+      exportComponent: null,
+      filteringRows: this.props.rows,
+      tempRows: this.props.rows,
+      sortingPanelComponent: null,
+      count: this.props.rows.length,
+      columns: this.props.columns.map((item) => {
+        if (item.editor === "DatePicker") {
+          item.editor = DatePicker;
+        } else if (item.editor === "DropDown") {
+          item.editor = <DropDownEditor options={airportCodes} />;
+        } else if (item.editor === "Text") {
+          item.editor = "text";
+        } else {
+          item.editor = null;
+        }
+        if (item.filterType === "numeric") {
+          item.filterRenderer = NumericFilter;
+        }
+        else {
+          item.filterRenderer = AutoCompleteFilter;
+        }
+        return item;
+      }),
+    };
+    document.addEventListener("copy", this.handleCopy);
+    document.addEventListener("paste", this.handlePaste);
+    this.handleSearchValue = this.handleSearchValue.bind(this);
+    this.clearSearchValue = this.clearSearchValue.bind(this);
+    this.handleFilterChange = this.handleFilterChange.bind(this);
 
-		this.formulaAppliedCols = this.props.columns.filter((item) => {
-			return item.formulaApplicable;
-		});
-	}
-
-	updateRows = (startIdx, newRows) => {
-		this.setState((state) => {
-			const rows = state.rows.slice();
-			for (let i = 0; i < newRows.length; i++) {
-				if (startIdx + i < rows.length) {
-					rows[startIdx + i] = {
-						...rows[startIdx + i],
-						...newRows[i],
-					};
-				}
-			}
-			return {
-				rows,
-			};
-		});
-	};
-
-	rowGetter = (i) => {
-		const { rows } = this.state;
-		return rows[i];
-	};
-
-	handleCopy = (e) => {
-		e.preventDefault();
-		const { topLeft, botRight } = this.state;
-		const text = range(topLeft.rowIdx, botRight.rowIdx + 1)
-			.map((rowIdx) =>
-				this.state.columns
-					.slice(topLeft.colIdx - 1, botRight.colIdx)
-					.map((col) => this.rowGetter(rowIdx)[col.key])
-					.join("\t")
-			)
-			.join("\n");
-		e.clipboardData.setData("text/plain", text);
-	};
-
-	handlePaste = (e) => {
-		e.preventDefault();
-		const { topLeft } = this.state;
-		const newRows = [];
-		const pasteData = defaultParsePaste(e.clipboardData.getData("text/plain"));
-		pasteData.forEach((row) => {
-			const rowData = {};
-			// Merge the values from pasting and the keys from the columns
-			this.state.columns.slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length).forEach((col, j) => {
-				rowData[col.key] = row[j];
-			});
-			newRows.push(rowData);
-		});
-		this.updateRows(topLeft.rowIdx, newRows);
-	};
-
-	setSelection = (args) => {
-		this.setState({
-			topLeft: {
-				rowIdx: args.topLeft.rowIdx,
-				colIdx: args.topLeft.idx,
-			},
-			botRight: {
-				rowIdx: args.bottomRight.rowIdx,
-				colIdx: args.bottomRight.idx,
-			},
-		});
-	};
-
-	sortRows = (data, sortColumn, sortDirection) => {
-		const comparer = (a, b) => {
-			if (sortDirection === "ASC") {
-				return a[sortColumn] > b[sortColumn] ? 1 : -1;
-			} else if (sortDirection === "DESC") {
-				return a[sortColumn] < b[sortColumn] ? 1 : -1;
-			}
-		};
-		this.setState({
-			rows: [...this.state.rows].sort(comparer),
-		});
-		return sortDirection === "NONE" ? data : this.state.rows;
-	};
-
-	componentWillReceiveProps(props) {
-		this.setState({
-			rows: props.rows,
-		});
-		this.setState({
-			status: props.status,
-		});
-		this.setState({
-			textValue: props.textValue,
-		});
-		this.setState({ count: props.count });
-	}
-
+    this.formulaAppliedCols = this.props.columns.filter((item) => {
+      return item.formulaApplicable;
+    });
+  }
 	componentDidUpdate(prevProps) {
 		//Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
 		const resizeEvent = document.createEvent("HTMLEvents");
 		resizeEvent.initEvent("resize", true, false);
 		window.dispatchEvent(resizeEvent);
 	}
+  updateRows = (startIdx, newRows) => {
+    this.setState((state) => {
+      const rows = state.rows.slice();
+      for (let i = 0; i < newRows.length; i++) {
+        if (startIdx + i < rows.length) {
+          rows[startIdx + i] = {
+            ...rows[startIdx + i],
+            ...newRows[i],
+          };
+        }
+      }
+      return {
+        rows,
+      };
+    });
+  }
 
-	/**
-	 * Method To update the cell/cells with the edited values
-	 * @param {*} fromRow is the row from which this edit is performed
-	 * @param {*} toRow is the row upto which this edit is performed
-	 * @param {*} updated is the value of change
-	 * @param {*} action is type of edit action performed
-	 */
-	onGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
-		let columnName = "";
-		const filter = this.formulaAppliedCols.filter((item) => {
-			if (updated[item.key] !== null && updated[item.key] !== undefined) {
-				columnName = item.key;
-				return true;
-			} else return false;
-		});
+  rowGetter = (i) => {
+    const { rows } = this.state;
+    return rows[i];
+  };
 
-		if (filter.length > 0) {
-			updated = applyFormula(updated, columnName);
-		}
+  handleCopy = (e) => {
+    e.preventDefault();
+    const { topLeft, botRight } = this.state;
+    const text = range(topLeft.rowIdx, botRight.rowIdx + 1)
+      .map((rowIdx) =>
+        this.state.columns
+          .slice(topLeft.colIdx - 1, botRight.colIdx)
+          .map((col) => this.rowGetter(rowIdx)[col.key])
+          .join("\t")
+      )
+      .join("\n");
+    e.clipboardData.setData("text/plain", text);
+  };
 
-		if (action !== "COPY_PASTE") {
-			this.setState((state) => {
-				const rows = state.rows.slice();
-				for (let i = fromRow; i <= toRow; i++) {
-					rows[i] = {
-						...rows[i],
-						...updated,
-					};
-				}
+  handlePaste = (e) => {
+    e.preventDefault();
+    const { topLeft } = this.state;
+    const newRows = [];
+    const pasteData = defaultParsePaste(e.clipboardData.getData("text/plain"));
+    pasteData.forEach((row) => {
+      const rowData = {};
+      // Merge the values from pasting and the keys from the columns
+      this.state.columns.slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length).forEach((col, j) => {
+        rowData[col.key] = row[j];
+      });
+      newRows.push(rowData);
+    });
+    this.updateRows(topLeft.rowIdx, newRows);
+  };
 
-				return {
-					rows,
-				};
-			});
-			this.setState((state) => {
-				const filteringRows = state.filteringRows.slice();
-				for (let i = fromRow; i <= toRow; i++) {
-					filteringRows[i] = {
-						...filteringRows[i],
-						...updated,
-					};
-				}
+  setSelection = (args) => {
+    this.setState({
+      topLeft: {
+        rowIdx: args.topLeft.rowIdx,
+        colIdx: args.topLeft.idx,
+      },
+      botRight: {
+        rowIdx: args.bottomRight.rowIdx,
+        colIdx: args.bottomRight.idx,
+      },
+    });
+  };
 
-				return {
-					filteringRows,
-				};
-			});
-			this.setState((state) => {
-				const tempRows = state.tempRows.slice();
-				for (let i = fromRow; i <= toRow; i++) {
-					tempRows[i] = {
-						...tempRows[i],
-						...updated,
-					};
-				}
+  handleWarningStatus = () => {
+    this.setState({ warningStatus: "invalid" })
+  }
+  closeWarningStatus = () => {
+    this.setState({ warningStatus: "" })
+  }
+  componentWillReceiveProps(props) {
+    this.setState({
+      rows: props.rows,
+    });
+    this.setState({
+      status: props.status,
+    });
+    this.setState({
+      textValue: props.textValue,
+    });
+    this.setState({ count: props.count });
+    this.setState({ warningStatus: props.status })
+  }
 
-				return {
-					tempRows,
-				};
-			});
-		}
-		if (this.props.updateCellData) {
-			this.props.updateCellData(this.state.tempRows[fromRow], this.state.tempRows[toRow], updated, action);
-		}
-	};
+  /**
+ * Method To update the cell/cells with the edited values
+ * @param {*} fromRow is the row from which this edit is performed
+ * @param {*} toRow is the row upto which this edit is performed
+ * @param {*} updated is the value of change
+ * @param {*} action is type of edit action performed
+ */
+  onGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
+    let columnName = "";
+    const filter = this.formulaAppliedCols.filter((item) => {
+      if (updated[item.key] !== null && updated[item.key] !== undefined) {
+        columnName = item.key;
+        return true;
+      } else return false;
+    });
+
+    if (filter.length > 0) {
+      updated = applyFormula(updated, columnName);
+    }
+
+    if (action !== "COPY_PASTE") {
+      this.setState((state) => {
+        const rows = state.rows.slice();
+        for (let i = fromRow; i <= toRow; i++) {
+          rows[i] = {
+            ...rows[i],
+            ...updated,
+          };
+        }
+
+        return {
+          rows,
+        };
+      });
+      this.setState((state) => {
+        const filteringRows = state.filteringRows.slice();
+        for (let i = fromRow; i <= toRow; i++) {
+          filteringRows[i] = {
+            ...filteringRows[i],
+            ...updated,
+          };
+        }
+
+        return {
+          filteringRows,
+        };
+      });
+      this.setState((state) => {
+        const tempRows = state.tempRows.slice();
+        for (let i = fromRow; i <= toRow; i++) {
+          tempRows[i] = {
+            ...tempRows[i],
+            ...updated,
+          };
+        }
+
+        return {
+          tempRows,
+        };
+      });
+    }
+    if (this.props.updateCellData) {
+      this.props.updateCellData(this.state.tempRows[fromRow], this.state.tempRows[toRow], updated, action);
+    }
+  };
 	/**
 	 * Method To bulk/individual select of rows
 	 * @param {*} rows is the selected row
@@ -277,110 +270,111 @@ class spreadsheet extends Component {
 	 * Method To filter the multiple columns
 	 * @param {*} value is the  incoming filtering event
 	 */
-	handleFilterChange = (value) => {
-		let junk = this.state.junk;
-		if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
-			junk[value.column.key] = value;
-		} else {
-			delete junk[value.column.key];
-		}
-		this.setState({ junk });
-		const data = this.getrows(this.state.filteringRows, this.state.junk);
-		this.setState({
-			rows: data,
-			tempRows: data,
-			count: data.length,
-		});
-		if (data.length === 0) {
-			this.props.handleWarningStatus();
-		} else {
-			this.props.closeWarningStatus();
-		}
-	};
-	getrows = (rows, filters) => {
-		if (Object.keys(filters).length <= 0) {
-			filters = {};
-		}
-		selectors.getRows({ rows: [], filters: {} });
-		return selectors.getRows({ rows: rows, filters: filters });
-	};
+  handleFilterChange = (value) => {
+    let junk = this.state.junk;
+    if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
+      junk[value.column.key] = value;
+    } else {
+      delete junk[value.column.key];
+    }
+    this.setState({ junk });
+    const data = this.getrows(this.state.filteringRows, this.state.junk);
+    this.setState({
+      rows: data,
+      tempRows: data,
+      count: data.length,
+    });
+    if (data.length === 0) {
+      this.handleWarningStatus();
+    }
+    else {
+      this.closeWarningStatus();
+    }
+  };
+  getrows = (rows, filters) => {
+    if (Object.keys(filters).length <= 0) {
+      filters = {};
+    }
+    selectors.getRows({ rows: [], filters: {} });
+    return selectors.getRows({ rows: rows, filters: filters });
+  };
 
-	/**
-	 * Method To render the filter values for filtering rows
-	 * @param {*} rows is the row data to be considered for filtering
-	 * @param {*} columnId is the specific columnId for which the row datas are being considered
-	 */
-	getValidFilterValues(rows, columnId) {
-		return rows
-			.map((r) => r[columnId])
-			.filter((item, i, a) => {
-				return i === a.indexOf(item);
-			});
-	}
-	/**
-	 * Method To sort the rows for a particular column
-	 * @param {*} data is the row datas to be considered for sorting
-	 * @param {*} sortColumn is the specific column for which the row sort is being triggered
-	 * @param {*} sortDirection is the type of sort
-	 */
-	sortRows = (data, sortColumn, sortDirection) => {
-		const comparer = (a, b) => {
-			if (sortDirection === "ASC") {
-				return a[sortColumn] > b[sortColumn] ? 1 : -1;
-			} else if (sortDirection === "DESC") {
-				return a[sortColumn] < b[sortColumn] ? 1 : -1;
-			}
-		};
-		this.setState({
-			rows: [...data].sort(comparer),
-		});
-		return sortDirection === "NONE" ? data : this.state.rows;
-	};
-	/**
-	 * Method To swap the columns
-	 * @param {*} source is source column
-	 * @param {*} target is the target column
-	 */
-	onHeaderDrop = (source, target) => {
-		const stateCopy = Object.assign({}, this.state);
-		const columnSourceIndex = this.state.columns.findIndex((i) => i.key === source);
-		const columnTargetIndex = this.state.columns.findIndex((i) => i.key === target);
+  /**
+ * Method To render the filter values for filtering rows
+ * @param {*} rows is the row data to be considered for filtering
+ * @param {*} columnId is the specific columnId for which the row datas are being considered
+ */
+  getValidFilterValues(rows, columnId) {
+    return rows
+      .map((r) => r[columnId])
+      .filter((item, i, a) => {
+        return i === a.indexOf(item);
+      });
+  }
+  /**
+* Method To sort the rows for a particular column
+* @param {*} data is the row datas to be considered for sorting
+* @param {*} sortColumn is the specific column for which the row sort is being triggered
+* @param {*} sortDirection is the type of sort
+*/
+  sortRows = (data, sortColumn, sortDirection) => {
+    const comparer = (a, b) => {
+      if (sortDirection === "ASC") {
+        return a[sortColumn] > b[sortColumn] ? 1 : -1;
+      } else if (sortDirection === "DESC") {
+        return a[sortColumn] < b[sortColumn] ? 1 : -1;
+      }
+    };
+    this.setState({
+      rows: [...data].sort(comparer),
+    });
+    return sortDirection === "NONE" ? data : this.state.rows;
+  };
+  /**
+     * Method To swap the columns
+     * @param {*} source is source column
+     * @param {*} target is the target column 
+     */
+  onHeaderDrop = (source, target) => {
+    const stateCopy = Object.assign({}, this.state);
+    const columnSourceIndex = this.state.columns.findIndex((i) => i.key === source);
+    const columnTargetIndex = this.state.columns.findIndex((i) => i.key === target);
 
-		stateCopy.columns.splice(columnTargetIndex, 0, stateCopy.columns.splice(columnSourceIndex, 1)[0]);
+    stateCopy.columns.splice(columnTargetIndex, 0, stateCopy.columns.splice(columnSourceIndex, 1)[0]);
 
-		const emptyColumns = Object.assign({}, this.state, {
-			columns: [],
-		});
-		this.setState(emptyColumns);
+    const emptyColumns = Object.assign({}, this.state, {
+      columns: [],
+    });
+    this.setState(emptyColumns);
 
-		const reorderedColumns = Object.assign({}, this.state, {
-			columns: stateCopy.columns,
-		});
-		this.setState(reorderedColumns);
-	};
-	updateTableAsPerRowChooser = (inComingColumnsHeaderList, pinnedColumnsList) => {
-		var existingColumnsHeaderList = this.props.columns;
-		existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
-			return inComingColumnsHeaderList.includes(item.name);
-		});
+    const reorderedColumns = Object.assign({}, this.state, {
+      columns: stateCopy.columns,
+    });
+    this.setState(reorderedColumns);
+  };
+  updateTableAsPerRowChooser = (inComingColumnsHeaderList, pinnedColumnsList) => {
+    var existingColumnsHeaderList = this.props.columns;
+    existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
+      return inComingColumnsHeaderList.includes(item.name);
+    });
 
-		var rePositionedArray = existingColumnsHeaderList;
-		var singleHeaderOneList;
-		if (pinnedColumnsList.length > 0) {
-			pinnedColumnsList
-				.slice(0)
-				.reverse()
-				.map((item, index) => {
-					singleHeaderOneList = existingColumnsHeaderList.filter((subItem) => item === subItem.name);
-					rePositionedArray = this.array_move(
-						existingColumnsHeaderList,
-						existingColumnsHeaderList.indexOf(singleHeaderOneList[0]),
-						index
-					);
-				});
-		}
+    var rePositionedArray = existingColumnsHeaderList;
+    var singleHeaderOneList;
+    if (pinnedColumnsList.length > 0) {
+      pinnedColumnsList
+        .slice(0)
+        .reverse()
+        .map((item, index) => {
+          singleHeaderOneList = existingColumnsHeaderList.filter((subItem) => item === subItem.name);
+          rePositionedArray = this.array_move(
+            existingColumnsHeaderList,
+            existingColumnsHeaderList.indexOf(singleHeaderOneList[0]),
+            index
+          );
+        });
+    }
 
-		existingColumnsHeaderList = rePositionedArray;
+    existingColumnsHeaderList = rePositionedArray;
 		/**
        making all the frozen attribute as false for all the columns and then 
        setting items of pinnedColumnsList as frozen = true
@@ -532,48 +526,48 @@ class spreadsheet extends Component {
 					{/* <div className="filterIcons">
             <FontAwesomeIcon icon={faAlignLeft} />
           </div> */}
-				</div>
-				<ErrorMessage
-					className='errorDiv'
-					status={this.props.status}
-					closeWarningStatus={this.props.closeWarningStatus}
-					clearSearchValue={this.clearSearchValue}
-				/>
-				<DraggableContainer className='gridDiv' onHeaderDrop={this.onHeaderDrop}>
-					<ExtDataGrid
-						toolbar={<Toolbar enableFilter={true} />}
-						getValidFilterValues={(columnKey) => this.getValidFilterValues(this.state.filteringRows, columnKey)}
-						minHeight={this.state.height}
-						columns={this.state.columns}
-						rowGetter={(i) => this.state.rows[i]}
-						rowsCount={this.state.rows.length}
-						onGridRowsUpdated={this.onGridRowsUpdated}
-						enableCellSelect={true}
-						onClearFilters={() => {
-							this.setState({ junk: {} });
-						}}
-						onColumnResize={(idx, width) => console.log(`Column ${idx} has been resized to ${width}`)}
-						onAddFilter={(filter) => this.handleFilterChange(filter)}
-						rowSelection={{
-							showCheckbox: true,
-							enableShiftSelect: true,
-							onRowsSelected: this.onRowsSelected,
-							onRowsDeselected: this.onRowsDeselected,
-							selectBy: {
-								indexes: this.state.selectedIndexes,
-							},
-						}}
-						onGridSort={(sortColumn, sortDirection) => this.sortRows(this.state.rows, sortColumn, sortDirection)}
-						//**************************/
-						//--Todo-- This is commented aspart of fixing column filtering
-						// cellRangeSelection={{
-						//   onComplete: this.setSelection,
-						// }}
-						//***********************/
-					/>
-				</DraggableContainer>
-			</div>
-		);
-	}
+        </div>
+        <ErrorMessage
+          className='errorDiv'
+          status={this.state.warningStatus}
+          closeWarningStatus={(e) => {
+            this.props.closeWarningStatus();
+            this.closeWarningStatus();
+          }}
+          clearSearchValue={this.clearSearchValue}
+        />
+        <DraggableContainer className='gridDiv' onHeaderDrop={this.onHeaderDrop}>
+          <ExtDataGrid
+            toolbar={<Toolbar enableFilter={true} />}
+            getValidFilterValues={(columnKey) => this.getValidFilterValues(this.state.filteringRows, columnKey)}
+            minHeight={this.state.height}
+            columns={this.state.columns}
+            rowGetter={(i) => this.state.rows[i]}
+            rowsCount={this.state.rows.length}
+            onGridRowsUpdated={this.onGridRowsUpdated}
+            enableCellSelect={true}
+            onClearFilters={() => {
+              this.setState({ junk: {} });
+            }}
+            onColumnResize={(idx, width) => console.log(`Column ${idx} has been resized to ${width}`)}
+            onAddFilter={(filter) => this.handleFilterChange(filter)}
+            rowSelection={{
+              showCheckbox: true,
+              enableShiftSelect: true,
+              onRowsSelected: this.onRowsSelected,
+              onRowsDeselected: this.onRowsDeselected,
+              selectBy: {
+                indexes: this.state.selectedIndexes,
+              },
+            }}
+            onGridSort={(sortColumn, sortDirection) => this.sortRows(this.state.rows, sortColumn, sortDirection)}
+            cellRangeSelection={{
+              onComplete: this.setSelection,
+            }}
+          />
+        </DraggableContainer>
+      </div>
+    );
+  }
 }
 export default spreadsheet;
