@@ -6,7 +6,7 @@ class ExtDataGrid extends ReactDataGrid {
   componentDidMount() {
     this._mounted = true;
     this.dataGridComponent = document.getElementsByClassName(
-      "react-grid-Container"
+      "react-grid-Viewport"
     )[0]; //assumes only one react datagrid component exists
     window.addEventListener("resize", this.metricsUpdated);
     if (this.props.cellRangeSelection) {

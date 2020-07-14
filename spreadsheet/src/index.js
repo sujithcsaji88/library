@@ -42,7 +42,7 @@ class spreadsheet extends Component {
       airportCodes.push({ id: item, value: item });
     });
     this.state = {
-      warningStatus:"",
+      warningStatus: "",
       height: 680,
       displayNoRows: "none",
       searchIconDisplay: "",
@@ -170,7 +170,7 @@ class spreadsheet extends Component {
       textValue: props.textValue,
     });
     this.setState({ count: props.count });
-    this.setState({warningStatus:props.status})
+    this.setState({ warningStatus: props.status })
   }
 
   /**
@@ -557,12 +557,9 @@ class spreadsheet extends Component {
               },
             }}
             onGridSort={(sortColumn, sortDirection) => this.sortRows(this.state.rows, sortColumn, sortDirection)}
-          //**************************/
-          //--Todo-- This is commented aspart of fixing column filtering 
-          // cellRangeSelection={{
-          //   onComplete: this.setSelection,
-          // }}
-          //***********************/
+            cellRangeSelection={{
+              onComplete: this.setSelection,
+            }}
           />
         </DraggableContainer>
       </div>
