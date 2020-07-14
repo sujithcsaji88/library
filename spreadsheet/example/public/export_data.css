@@ -1,11 +1,10 @@
-
-.exportWarning{
+.exportWarning {
   position: absolute;
-    margin-top: 300px;
-    right: 5%;
+  margin-top: 300px;
+  right: 5%;
 }
 .exports--grid {
-  z-index:11;
+  z-index: 11;
   box-shadow: 0px 15px 30px rgba(32, 77, 111, 0.2);
   position: absolute;
   font-size: 14px;
@@ -18,16 +17,16 @@
   border: 1px solid #ddd;
   user-select: none;
 }
-.export__grid:before{
+.export__grid:before {
   width: 0px;
-    height: 0px;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 7px solid #fff;
-    position: absolute;
-    top: -7px;
-    right: 10px;
-    content: "";
+  height: 0px;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #fff;
+  position: absolute;
+  top: -7px;
+  right: 10px;
+  content: "";
 }
 .exports--grid ::-webkit-scrollbar {
   width: 6px;
@@ -57,8 +56,8 @@
   height: 390px;
   overflow-y: scroll;
 }
-.exports--grid .export__grid .export__chooser .export__body .export__selectAll {
-  display: flex;
+.exports--grid .export__grid .export__chooser .export__body .export__headertxt {
+  border: none;
 }
 .exports--grid .export__grid .export__chooser .export__body .custom__ctrl {
   border: 1px solid #ddd;
@@ -168,21 +167,21 @@
     width: 74%;
   }
 }
-.export__header{
-  color:#3c425e;
+.export__header {
+  color: #3c425e;
 }
 .icon-close {
   font-size: 15px;
 }
-.icon-close path{
-  fill:#9ca1b6;
+.icon-close path {
+  fill: #9ca1b6;
 }
-.export__body .custom__ctrl{
+.export__body .custom__ctrl {
   width: 100%;
 }
-.export__selectAll .export__selectTxt{
+.export__selectAll .export__selectTxt {
   cursor: pointer;
 }
-.export__body .custom__ctrl{
+.export__body .custom__ctrl {
   width: 100%;
 }

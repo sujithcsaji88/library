@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
@@ -57,6 +57,7 @@ class App extends React.Component {
       order: "",
       sortOn: "",
     });
+
     this.setState({
       rowList,
       sortingOrderList: existingSortingOrderList,
@@ -64,28 +65,27 @@ class App extends React.Component {
   };
 
   copy = (i) => {
-    let rowList = [...this.state.rows];
-    rowList.push(rowList[i]);
-    this.setState({ rows: rowList });
+    let rowList = [...this.state.sortingOrderList];
+    rowList.push(JSON.parse(JSON.stringify(rowList[i])));
+    this.setState({ sortingOrderList: rowList });
   };
 
   clearAll = () => {
-    this.setState({ rowList: [] });
+    this.setState({ sortingOrderList: [] });
   };
 
   remove = (i) => {
-    let rowList = [...this.state.rowList];
-    console.log(i)
-    rowList.splice(i, 1);
-    console.log()
-    this.setState({ rowList });
+    let sortingOrderList = [...this.state.sortingOrderList];
+    sortingOrderList.splice(i, 1);
+    this.setState({ sortingOrderList });
   };
-  createColumnsArrayFromProps = (rowList) => {
-    return rowList.map((i, index) => {
+
+  createColumnsArrayFromProps = (rowsValue) => {
+    return rowsValue.map((row, index) => {
       return {
         id: index,
         text: (
-          <div className="sort__bodyContent" key={i}>
+          <div className="sort__bodyContent" key={index}>
             <div className="sort__reorder">
               <div className="">
                 <div>&nbsp;</div>
@@ -105,6 +105,7 @@ class App extends React.Component {
                   onChange={(e) =>
                     this.captureSortingFeildValues(e, index, "sortBy")
                   }
+                  value={row.sortBy}
                 >
                   {this.props.columnFieldValue.map((item, index) => (
                     <option key={index}>{item}</option>
@@ -123,6 +124,7 @@ class App extends React.Component {
                   onChange={(e) =>
                     this.captureSortingFeildValues(e, index, "sortOn")
                   }
+                  value={row.sortOn}
                 >
                   <option>Value</option>
                 </select>
@@ -137,11 +139,11 @@ class App extends React.Component {
                   className="custom__ctrl"
                   name={"order"}
                   onChange={(e) =>
-                    this.captureSortingFeildValues(e, index, "Order")
+                    this.captureSortingFeildValues(e, index, "order")
                   }
+                  value={row.order}
                 >
                   <option>Ascending</option>
-
                   <option>Descending</option>
                 </select>
               </div>
@@ -180,44 +182,45 @@ class App extends React.Component {
     var sortingObj = {
       //``
     };
+
     var existingSortingOrderList = this.state.sortingOrderList;
+
     if (sortingKey === "sortBy") {
       const { name, value } = event.target;
-    const rows = [...this.state.sortingOrderList];
-    this.setState({
-      errorMessage: false,
-    });
-    rows.map((column) => {
-      console.log(column[name]);
-      if (column[name] === value) {
-        this.setState({
-          errorMessage: true,
-        });
-      }
-    });
+      const rows = [...this.state.sortingOrderList];
+      this.setState({
+        errorMessage: false,
+      });
+      rows.map((column) => {
+        if (column[name] === value) {
+          this.setState({
+            errorMessage: true,
+          });
+        }
+      });
       existingSortingOrderList[index]["sortBy"] = event.target.value;
     }
     if (sortingKey === "order") {
       existingSortingOrderList[index]["order"] = event.target.value;
     }
-
     if (
       existingSortingOrderList[index]["sortOn"] === "" ||
       existingSortingOrderList[index]["sortOn"] === undefined
     ) {
       existingSortingOrderList[index]["sortOn"] = "Value";
     }
-
     this.setState({
       sortingOrderList: existingSortingOrderList,
     });
   };
+
   updateTableAsPerSortCondition = () => {
     console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
   };
 
   render() {
     let { rowList } = this.state.rowList;
+
     return (
       <div className="sorts--grid" ref={this.setWrapperRef}>
         <div className="sort__grid">
@@ -226,6 +229,7 @@ class App extends React.Component {
               <div className="sort__headerTxt">
                 <strong>Sort </strong>
               </div>
+
               <div className="sort__close">
                 <FontAwesomeIcon
                   className="icon-close"
@@ -234,35 +238,41 @@ class App extends React.Component {
                 ></FontAwesomeIcon>
               </div>
             </div>
+
             <div className="sort__body">
               <DndProvider
                 backend={TouchBackend}
                 options={{ enableMouseEvents: true }}
               >
                 <SortingList
-                  sortsArray={this.createColumnsArrayFromProps(this.state.rowList)}
+                  sortsArray={this.createColumnsArrayFromProps(
+                    this.state.sortingOrderList
+                  )}
                 />
               </DndProvider>
-              <div className="sort__new">
-                <div className="sort__section">
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="sort__icon"
-                  ></FontAwesomeIcon>
-                  <div className="sort__txt" onClick={() => this.add()}>
-                    New Sort
-                  </div>
-                </div>
-              </div>
               <div>
-              {this.state.errorMessage ?
-                <span
-                  style={{ display: this.state.clickTag }}
-                  className="alert alert-danger"
-                >
-                   Please Add New Sort
-                </span>
-                 : ""}
+                {this.state.errorMessage ? (
+                  <span
+                    style={{ display: this.state.clickTag }}
+                    className="alert alert-danger"
+                  >
+                    Please Add New Sort
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+            <div className="sort__new">
+              <div className="sort__section">
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  className="sort__icon"
+                ></FontAwesomeIcon>
+
+                <div className="sort__txt" onClick={() => this.add()}>
+                  New Sort
+                </div>
               </div>
             </div>
             <div className="sort__footer">
@@ -270,6 +280,7 @@ class App extends React.Component {
                 <button className="btns" onClick={this.clearAll}>
                   Clear All
                 </button>
+
                 <button
                   className="btns btns__save"
                   onClick={() => this.updateTableAsPerSortCondition()}
