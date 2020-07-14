@@ -278,26 +278,28 @@ class ColumnReordering extends React.Component {
                 ></FontAwesomeIcon>
               </div>
             </div>
-            <div className="column__headerTxt">
-              <strong>
-                &nbsp; &nbsp; Selected Column Count :{" "}
-                {this.state.columnReorderEntityList.length}
-              </strong>
-            </div>
-            <div className="column__headerTxt">
-              {this.state.maxLeftPinnedColumn -
-                this.state.leftPinnedColumList.length >
-              0 ? (
+            <div className="column__header">
+              <div className="column__headerTxt">
                 <strong>
-                  &nbsp; &nbsp; Left Pinned Column Count Remaining :{" "}
-                  {this.state.maxLeftPinnedColumn -
-                    this.state.leftPinnedColumList.length}
+                  &nbsp; &nbsp; Selected Column Count :{" "}
+                  {this.state.columnReorderEntityList.length}
                 </strong>
-              ) : (
-                <strong style={{ color: "red" }}>
-                  &nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED
-                </strong>
-              )}
+              </div>
+              <div className="column__headerTxt">
+                {this.state.maxLeftPinnedColumn -
+                  this.state.leftPinnedColumList.length >
+                0 ? (
+                  <strong>
+                    &nbsp; &nbsp; Left Pinned Column Count Remaining :{" "}
+                    {this.state.maxLeftPinnedColumn -
+                      this.state.leftPinnedColumList.length}
+                  </strong>
+                ) : (
+                  <strong style={{ color: "red" }}>
+                    &nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED
+                  </strong>
+                )}
+              </div>
             </div>
             <div className="column__body">
               <DndProvider
