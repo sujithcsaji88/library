@@ -2,7 +2,7 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 
-const ColumnItem = ({ id, name, moveColumn, findColumn }) => {
+const ColumnItem = ({ id, name, moveColumn, findColumn, innerCells }) => {
     const originalIndex = findColumn(id).index;
 
     const [{ isDragging }, drag] = useDrag({
@@ -39,12 +39,18 @@ const ColumnItem = ({ id, name, moveColumn, findColumn }) => {
                     <i className="fa fa-align-justify" aria-hidden="true"></i>
                 </div>
                 <div className="">{name}</div>
-                <div className="column__wrap">
-                    <div className="column__checkbox">
-                        <input type="checkbox"></input>
-                    </div>
-                    <div className="column__txt">Pin Left</div>
-                </div>
+                {innerCells && innerCells.length
+                    ? innerCells.map((cell, index) => {
+                          return (
+                              <div className="column__wrap" key={index}>
+                                  <div className="column__checkbox">
+                                      <input type="checkbox"></input>
+                                  </div>
+                                  <div className="column__txt">{cell.Header}</div>
+                              </div>
+                          );
+                      })
+                    : null}
             </div>
         </div>
     );
